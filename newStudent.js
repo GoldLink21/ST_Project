@@ -9,7 +9,7 @@ var students=[];
  * @param {number} classPeriod The 1st period that the student has the class
  * @param {number} year The year the student is enrolled in. 1 || 2
  */
-function addPerson(firstName,lastName,curHours,curMins,classPeriod,year){
+function addStudent(firstName,lastName,curHours,curMins,classPeriod,year){
     if(firstName&&lastName&&curHours&&curMins&&classPeriod&&year){
         var cur={
             name:{

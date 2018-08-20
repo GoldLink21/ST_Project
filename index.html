@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    
+    <script src = newStudent.js></script>
     <link rel="stylesheet" href="index.css" type="text/css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +16,18 @@
         <p>Current Minutes:</p><input type="number" id="curMins"><br>
         <p>Class Period</p><input type="number" id="classPeriod"><br>
         <p>Year:</p><input type="number" id="year"><br>
-        <p><button>Submit</button></p>
+        <p><button id="submit" onclick = "temp()">Submit</button></p>
+        <script>
+            function temp(){
+                var first=document.getElementById('firstName').value;
+                var last = document.getElementById('lastName').value;
+                var hour=document.getElementById('curHours').value;
+                var min=document.getElementById('curMins').value;
+                var classNum=document.getElementById('classPeriod').value;
+                var year=document.getElementById('year').value;
+                addStudent(first,last,hour,min,classNum,year);
+            }
+        </script>
     </div>
     
     

@@ -1,23 +1,23 @@
 p {
- font-size:50px;
+ font-size:15px;
 }
 
 input {
-    width: 800px;
-    height: 100px;
-    font-size: 50px;
+    width: 150px;
+    height: 25px;
+    font-size: 15px;
 }
 
 #newStudent {
     text-align: center;
     border: 2px black dashed;
     margin: auto;
-    padding:15px;
-    width:900px;
+    padding: 1px;
+    width:300px;
 }
 
 button {
-    width: 250px;
-    height: 75px;
-    font-size: 45px;
+    width: 125px;
+    height: 30px;
+    font-size: 15px;
 }

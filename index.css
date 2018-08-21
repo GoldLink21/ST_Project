@@ -10,10 +10,13 @@ input {
 
 #newStudent {
     text-align: center;
-    border: 2px black dashed;
-    margin: auto;
-    padding: 1px;
-    width:300px;
+    border: 2px black solid;
+    margin: 5px;
+    margin-right: 20px;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    float: right;
+    width:225px;
 }
 
 button {

@@ -1,5 +1,7 @@
 var students=[];
-
+function studentInit(){
+    
+}
 /**
  * @description Adds a new student to the students array
  * @param {string} firstName The student's first name
@@ -21,7 +23,7 @@ function addStudent(firstName,lastName,curHours,curMins,classPeriod,year){
                 hours:curHours,
                 min:curMins
             },
-            class:classPeriod,
+            period:classPeriod,
         }
         students.push(cur);
         //Sorts alphabetically by last name
@@ -30,8 +32,12 @@ function addStudent(firstName,lastName,curHours,curMins,classPeriod,year){
             var tempB=b.name.last.toUpperCase();
             return(tempA<tempB)?-1:(tempA>tempB)?1:0;
         });
+        return true;
     }else{
         alert("Please enter all the requested data");
+        return false;
     }
 }
 
+function showNewStudentWindow(){document.getElementById('newStudent').hidden=false;}
+function hideNewStudentWindow(){document.getElementById('newStudent').hidden=true;}

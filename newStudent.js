@@ -32,6 +32,8 @@ function addStudent(firstName,lastName,curHours,curMins,classPeriod,year){
             var tempB=b.name.last.toUpperCase();
             return(tempA<tempB)?-1:(tempA>tempB)?1:0;
         });
+        //alert(firstName+" "+lastName+' was added successfully')
+        addCompletedWindow(firstName,lastName);
         return true;
     }else{
         alert("Please enter all the requested data");
@@ -39,5 +41,15 @@ function addStudent(firstName,lastName,curHours,curMins,classPeriod,year){
     }
 }
 
-function showNewStudentWindow(){document.getElementById('newStudent').hidden=false;}
-function hideNewStudentWindow(){document.getElementById('newStudent').hidden=true;}
+function addCompletedWindow(first,last){
+    var win=document.createElement('div');
+    win.id='addedStudent'
+    /*win.style.width=50+'px'
+    win.style.height=50+'px'
+    win.style.cssFloat='right';
+    win.style.border='solid black 2px'*/
+    document.body.appendChild(win);
+}
+
+function showNewStudentWindow(){document.getElementById('newStudent').style.visibility="visible"}
+function hideNewStudentWindow(){document.getElementById('newStudent').style.visibility='hidden'}

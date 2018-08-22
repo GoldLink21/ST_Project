@@ -48,6 +48,7 @@ function addCompletedWindow(first,last){
     win.style.height=50+'px'
     win.style.cssFloat='right';
     win.style.border='solid black 2px'*/
+    
     document.body.appendChild(win);
 }
 

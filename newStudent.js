@@ -44,6 +44,7 @@ function addStudent(firstName,lastName,curHours,curMins,classPeriod,year){
 function addCompletedWindow(first,last){
     var win=document.createElement('div');
     win.id='addedStudent'
+    win.innerHTML=first+' '+last+' was added successfully'
     document.body.appendChild(win);
 }
 

@@ -27,8 +27,9 @@ button {
 }
 
 #addedStudent{
-    width:50px;
-    height:50px;
+    width:150px;
+    height:150px;
+    text-align: center;
     border:black solid 2px;
     float:right;
 }

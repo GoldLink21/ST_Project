@@ -19,13 +19,20 @@
         <p><button id="submit" onclick = "temp()">Submit</button></p>
         <script>
             function temp(){
-                var first=document.getElementById('firstName').value;
-                var last = document.getElementById('lastName').value;
-                var hour=document.getElementById('curHours').value;
-                var min=document.getElementById('curMins').value;
-                var classNum=document.getElementById('classPeriod').value;
-                var year=document.getElementById('year').value;
-                addStudent(first,last,hour,min,classNum,year);
+                var first=document.getElementById('firstName');
+                var last = document.getElementById('lastName');
+                var hour=document.getElementById('curHours');
+                var min=document.getElementById('curMins');
+                var classNum=document.getElementById('classPeriod');
+                var year=document.getElementById('year');
+                if(addStudent(first.value,last.value,hour.value,min.value,classNum.value,year.value)){
+                    first.value="";
+                    last.value="";
+                    hour.value=null;
+                    min.value=null;
+                    classNum.value=null;
+                    year.value=null;
+                }
             }
         </script>
     </div>

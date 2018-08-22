@@ -44,12 +44,26 @@ function addStudent(firstName,lastName,curHours,curMins,classPeriod,year){
 function addCompletedWindow(first,last){
     var win=document.createElement('div');
     win.id='addedStudent'
-    /*win.style.width=50+'px'
-    win.style.height=50+'px'
-    win.style.cssFloat='right';
-    win.style.border='solid black 2px'*/
-    
     document.body.appendChild(win);
+}
+
+function eleInit(){
+    document.getElementById('newStudent').style.visibility='hidden';
+}
+
+function toggleNewStudentWindow(){
+    var newStu=document.getElementById('newStudent')
+    var stuBtn=document.getElementById('studentBtn')
+    switch(newStu.style.visibility){
+        case 'visible':
+            newStu.style.visibility='hidden'
+            stuBtn.style.visibility='visible'
+            break
+        case 'hidden':
+            newStu.style.visibility='visible'
+            stuBtn.style.visibility='hidden'            
+            break
+    }
 }
 
 function showNewStudentWindow(){document.getElementById('newStudent').style.visibility="visible"}

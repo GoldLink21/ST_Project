@@ -9,7 +9,7 @@
     <title>PROJECTS</title>
 </head>
 <body>
-    <button id="studentBtn" onclick="showNewStudentWindow()">Add Student</button>
+    <button id="studentBtn" onclick="toggleNewStudentWindow()">Add Student</button>
     <div id="newStudent" >
         <p>First Name:</p><input type="text" id="firstName"><br>
         <p>Last Name:</p><input type="text" id="lastName"><br>
@@ -18,7 +18,9 @@
         <p>Class Period</p><input type="number" id="classPeriod"><br>
         <p>Year:</p><input type="number" id="year"><br>
         <p><button id="submit" onclick = "temp()">Submit</button></p>
+        <p><button id='close' onclick="toggleNewStudentWindow()">Close</button></p>
         <script>
+            eleInit();
             function temp(){
                 var first=document.getElementById('firstName');
                 var last = document.getElementById('lastName');

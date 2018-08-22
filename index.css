@@ -17,6 +17,7 @@ input {
     padding-bottom: 25px;
     float: right;
     width:225px;
+    visibility: hidden;
 }
 
 button {

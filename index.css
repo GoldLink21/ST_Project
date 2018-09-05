@@ -33,6 +33,11 @@ button {
     font-size: 15px;
 }
 
+#studentBtn{
+    position: absolute;
+    float: right;
+}
+
 #addedStudent{
     width: 210px;
     height:auto;

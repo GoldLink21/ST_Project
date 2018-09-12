@@ -14,22 +14,18 @@ function studentInit(){
 function addStudent(firstName,lastName,curHours,curMins,classPeriod,year){
     if(firstName&&lastName&&curHours&&curMins&&classPeriod&&year){
         var cur={
-            name:{
-                first:firstName,
-                last:lastName
-            },
-            time:{
-                year:year,
-                hours:curHours,
-                min:curMins
-            },
-            period:classPeriod,
+            firstName:firstName,
+            lastName:lastName,
+            year:year,
+            hours:curHours,
+            min:curMins,
+            period:classPeriod
         }
         students.push(cur);
         //Sorts alphabetically by last name
         students.sort(function(a,b){
-            var tempA=a.name.last.toUpperCase();
-            var tempB=b.name.last.toUpperCase();
+            var tempA=a.lastName.toUpperCase();
+            var tempB=b.lastName.toUpperCase();
             return(tempA<tempB)?-1:(tempA>tempB)?1:0;
         });
         //alert(firstName+" "+lastName+' was added successfully')
@@ -66,6 +62,3 @@ function toggleNewStudentWindow(){
             break
     }
 }
-
-function showNewStudentWindow(){document.getElementById('newStudent').style.visibility="visible"}
-function hideNewStudentWindow(){document.getElementById('newStudent').style.visibility='hidden'}

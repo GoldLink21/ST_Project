@@ -9,7 +9,7 @@ function studentInit(){
  * @param {number} curHours The current ammount of hours the student has
  * @param {number} curMins The current ammount of minutes out of an hour the student has
  * @param {number} classPeriod The 1st period that the student has the class
- * @param {number} year The year the student is enrolled in. 1 || 2
+ * @param {1|2} year The year the student is enrolled in. 1 || 2
  */
 function addStudent(firstName,lastName,curHours,curMins,classPeriod,year){
     if(firstName&&lastName&&curHours&&curMins&&classPeriod&&year){
@@ -37,15 +37,23 @@ function addStudent(firstName,lastName,curHours,curMins,classPeriod,year){
     }
 }
 
+var completedWindowTimeout=0,newWindow=false;
+const completedWindowTimeoutMax=100;
+
 function addCompletedWindow(first,last){
-    var win=document.createElement('div');
-    win.id='addedStudent'
-    win.innerHTML=first+' '+last+' was added successfully'
-    document.body.appendChild(win);
+    var ele=document.getElementById('addedStudent')
+    ele.innerHTML=first+' '+last+' was added successfully'
+    ele.style.visibility='visible'
+    newWindow=true
+
 }
 
 function eleInit(){
     document.getElementById('newStudent').style.visibility='hidden';
+    var win=document.createElement('div');
+    win.id='addedStudent'
+    win.style.visibility='hidden'
+    document.body.appendChild(win);
 }
 
 function toggleNewStudentWindow(){
@@ -62,3 +70,13 @@ function toggleNewStudentWindow(){
             break
     }
 }
+
+var completedTimeout=setInterval(()=>{
+    if(newWindow&&completedWindowTimeout<completedWindowTimeoutMax){
+        completedWindowTimeout++
+    }else{
+        completedWindowTimeout=0
+        newWindow=false;
+        document.getElementById('addedStudent').style.visibility='hidden'
+    }
+},60)

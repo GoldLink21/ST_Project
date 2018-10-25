@@ -1,6 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    
+<script src="https://www.gstatic.com/firebasejs/5.5.2/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyD95RzrdQpI6PBNMfEOBRfmCpnN9ucqTbU",
+    authDomain: "st-project-36358.firebaseapp.com",
+    databaseURL: "https://st-project-36358.firebaseio.com",
+    projectId: "st-project-36358",
+    storageBucket: "st-project-36358.appspot.com",
+    messagingSenderId: "236006288802"
+  };
+  firebase.initializeApp(config);
+</script>
     <script src = newStudent.js></script>
     <link rel="stylesheet" href="index.css" type="text/css">
     <meta charset="UTF-8">
@@ -19,6 +33,7 @@
         <p>Year:</p><input type="number" id="year"><br>
         <p><button id="submit" onclick = "temp()">Submit</button></p>
         <p><button id='close' onclick="toggleNewStudentWindow()">Close</button></p>
+        
         <script>
             eleInit();
             function temp(){

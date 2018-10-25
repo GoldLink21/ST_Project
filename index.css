@@ -1,55 +1,54 @@
 p {
     font-size:15px;
-   }
+}
    
    input {
        width: 150px;
        height: 25px;
        font-size: 15px;
-   }
+}
    
-   #newStudent {
-       text-align: center;
-       border: 2px black solid;
-       margin: 5px;
-       margin-right: -246px;
-       padding-top: 10px;
-       float: right;
-       width:225px;
-       visibility: hidden;
-   }
+#newStudent {
+    text-align: center;
+    border: 2px black solid;
+    margin: 5px;
+    margin-right: -246px;
+    visibility: hidden;
+    float: right;
+    width:225px;
+    padding-top: 10px;
+}
    
-   button {
-       width: 125px;
-       height: 30px;
-       font-size: 15px;
+button {
+    width: 125px;
+    height: 30px;
+    font-size: 15px;
+}
+#close {
+    height: 25px;
+    width: 75px;
+    padding-bottom: 5px;
+    margin: auto;
+    font-size: 15px;
+}
    
-   }
-   #close {
-       width: 75px;
-       height: 25px;
-       margin: auto;
-       padding-bottom: 5px;
-       font-size: 15px;
-   }
-   
-   .newStudent{
-       width: 210px;
-       height:auto;
-       text-align: center;
-       padding: 10px;
-       margin: 5px;
-       float:right;
-   }
-   .overlap{
-       position: relative;
-   }
-   #addedStudent{
-       width: 210px;
-       height:auto;
-       text-align: center;
-       padding: 10px;
-       margin: 5px;
-       border:black solid 2px;
-       float:right;
-   }
+.newStudent{
+    height:auto;
+    width: 210px;
+    padding: 10px;
+    text-align: center;
+    float:right;
+    margin: 5px;
+}
+.overlap{
+    position: relative;
+}
+#addedStudent{
+    height:auto;
+    text-align: center;
+    padding: 10px;
+    margin: 5px;
+    border:black solid 2px;
+    float:right;
+    width: 210px;
+}

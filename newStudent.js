@@ -1,3 +1,13 @@
+var firebase= require('firebase')
+
+firebase.initializeApp({
+    "ServiceAccount":"node-client-app/service-account.json",
+    "databaseURL":""
+})
+
+var ref=firebase.app().database().ref()
+var userRef=ref.child('users')
+
 var students=[];
 function studentInit(){
     
@@ -72,9 +82,9 @@ function toggleNewStudentWindow(){
 }
 
 var completedTimeout=setInterval(()=>{
-    if(newWindow&&completedWindowTimeout<completedWindowTimeoutMax){
+    if(newWindow&&completedWindowTimeout<completedWindowTimeoutMax)
         completedWindowTimeout++
-    }else{
+    else{
         completedWindowTimeout=0
         newWindow=false;
         document.getElementById('addedStudent').style.visibility='hidden'

@@ -1,20 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    
-<script src="https://www.gstatic.com/firebasejs/5.5.2/firebase.js"></script>
-<script>
-  // Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyD95RzrdQpI6PBNMfEOBRfmCpnN9ucqTbU",
-    authDomain: "st-project-36358.firebaseapp.com",
-    databaseURL: "https://st-project-36358.firebaseio.com",
-    projectId: "st-project-36358",
-    storageBucket: "st-project-36358.appspot.com",
-    messagingSenderId: "236006288802"
-  };
-  firebase.initializeApp(config);
-</script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.6/firebase.js"></script>
     <script src = newStudent.js></script>
     <link rel="stylesheet" href="index.css" type="text/css">
     <meta charset="UTF-8">
@@ -23,6 +10,18 @@
     <title>PROJECTS</title>
 </head>
 <body>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyD95RzrdQpI6PBNMfEOBRfmCpnN9ucqTbU",
+            authDomain: "st-project-36358.firebaseapp.com",
+            databaseURL: "https://st-project-36358.firebaseio.com",
+            projectId: "st-project-36358",
+            storageBucket: "st-project-36358.appspot.com",
+            messagingSenderId: "236006288802"
+        };
+        firebase.initializeApp(config);
+    </script>
     <div class="newStudent"><button id="studentBtn" onclick="toggleNewStudentWindow()">Add Student</button></div>
     <div id="newStudent" class='newStudent overlap' >
         <p>First Name:</p><input type="text" id="firstName"><br>

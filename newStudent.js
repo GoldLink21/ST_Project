@@ -2,7 +2,7 @@ var firebase= require('firebase')
 
 firebase.initializeApp({
     "ServiceAccount":"node-client-app/service-account.json",
-    "databaseURL":""
+    "databaseURL":"https://st-project-36358.firebaseio.com"
 })
 
 var ref=firebase.app().database().ref()

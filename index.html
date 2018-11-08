@@ -2,14 +2,6 @@
 <html lang="en">
 <head>
     <script src="https://www.gstatic.com/firebasejs/5.5.6/firebase.js"></script>
-    <script src = newStudent.js></script>
-    <link rel="stylesheet" href="index.css" type="text/css">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>PROJECTS</title>
-</head>
-<body>
     <script>
         // Initialize Firebase
         var config = {
@@ -18,10 +10,21 @@
             databaseURL: "https://st-project-36358.firebaseio.com",
             projectId: "st-project-36358",
             storageBucket: "st-project-36358.appspot.com",
-            messagingSenderId: "236006288802"
+            messagingSenderId: "236006288802", 
+            ServiceAccount:"node-client-app/service-account.json",
+            databaseURL:"https://st-project-36358.firebaseio.com"
         };
         firebase.initializeApp(config);
     </script>
+    <script src = newStudent.js></script>
+    <link rel="stylesheet" href="index.css" type="text/css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>PROJECTS</title>
+</head>
+<body>
+    
     <div class="newStudent"><button id="studentBtn" onclick="toggleNewStudentWindow()">Add Student</button></div>
     <div id="newStudent" class='newStudent overlap' >
         <p>First Name:</p><input type="text" id="firstName"><br>

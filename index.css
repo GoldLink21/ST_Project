@@ -8,6 +8,38 @@ p {
        font-size: 15px;
 }
    
+button {
+    width: 125px;
+    height: 30px;
+    font-size: 15px;
+}
+
+#close {
+    height: 25px;
+    width: 75px;
+    padding-bottom: 5px;
+    margin: auto;
+    font-size: 15px;
+}
+
+.overlap{
+    position: relative;
+}
+
+#addedStudent{
+    height:auto;
+    text-align: center;
+    padding: 10px;
+    margin: 5px;
+    border:black solid 2px;
+    float:right;
+    width: 210px;
+}
+
+body{
+    background-color: #ffedba
+}
+
 #newStudent {
     text-align: center;
     border: 2px black solid;
@@ -18,20 +50,7 @@ p {
     width:225px;
     padding-top: 10px;
 }
-   
-button {
-    width: 125px;
-    height: 30px;
-    font-size: 15px;
-}
-#close {
-    height: 25px;
-    width: 75px;
-    padding-bottom: 5px;
-    margin: auto;
-    font-size: 15px;
-}
-   
+
 .newStudent{
     height:auto;
     width: 210px;
@@ -40,15 +59,33 @@ button {
     float:right;
     margin: 5px;
 }
-.overlap{
-    position: relative;
+
+#listView{
+    margin: auto;
+    height: auto;
+    width: 60%;
+    padding: 70px;
 }
-#addedStudent{
-    height:auto;
-    text-align: center;
-    padding: 10px;
-    margin: 5px;
-    border:black solid 2px;
-    float:right;
-    width: 210px;
+
+.stuView{
+    border-collapse: collapse;
+    width: 100%
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(odd){
+    background-color: #ffffff;
+}
+
+tr:nth-child(even){
+    background-color: #dddddd;
+}
+
+.theader{
+    position: sticky;
 }

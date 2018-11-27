@@ -3,9 +3,91 @@ var ref=firebase.app().database().ref()
 var userRef=ref.child('users')
 
 var students=[];
-function studentInit(){
+
+async function getStudent(fn,ln){
+    return new Promise((resolve,reject)=>{
+        ref.once('value',(snapshot)=>{
+            var val=snapshot.val()
+            for(p1 in val){
+                for(p2 in val[p1]){
+                    var obj={},toAdd=false;
+                    for(p3 in val[p1][p2]){
     
+                        //p3 == names of property
+                        //p2 is object above
+    
+                        if(p3==='firstName'&&val[p1][p2][p3]===fn){
+                            toAdd=true
+                            //console.log("First name good")
+                        }else if(p3==='firstName'&&p3!==fn){
+                            return false
+                        }
+                        if(p3==='lastName'&&val[p1][p2][p3]===ln){
+                            //console.log('Last name good')
+                            toAdd=true
+                        }else if(p3==='lastName'&&p3!==ln){
+                            return false
+                        }
+    
+                        if(toAdd){
+                            obj[p3]=val[p1][p2][p3]
+                        }
+                    }
+                    if(toAdd){
+                        resolve(obj)
+                    }
+                }
+            }
+        })
+    })
 }
+
+function addToTable(stu){
+    function m(t){return document.createElement(t)}
+    var row=m('tr')
+    function addToRow(t,s){
+        var ele=m(t);
+        ele.innerHTML=s
+        row.appendChild(ele)
+        return ele;
+    }
+    var table=document.getElementById('stuView')
+    
+    addToRow('td',stu.lastName+", "+stu.firstName)
+    addToRow('td',stu.hours+' hours, '+stu.min+' minutes')
+    addToRow('td',stu.period)
+    addToRow('td',stu.year)
+
+    table.appendChild(row)
+}
+
+function studentInit(){
+    ref.once('value',(snapshot)=>{
+        var val=snapshot.val();
+        for(p1 in val){
+            for(p2 in val[p1]){
+                //Adds all the students to the table
+                addToTable(val[p1][p2])
+            }
+        }
+    })
+}
+
+function listStudents(){
+    ref.once('value',function(snapshot){
+        var val = snapshot.val();
+        //console.log(val)
+        for(part in val){
+            //console.log(val[part])
+            for(prop in val[part]){
+                console.log(val[part][prop])
+            }
+        }
+    },function (errorObject){
+        console.log('Read Failed: '+errorObject.code)
+    })
+}
+
 /**
  * @description Adds a new student to the students array
  * @param {string} firstName The student's first name
@@ -25,14 +107,7 @@ function addStudent(firstName,lastName,curHours,curMins,classPeriod,year){
             min:curMins,
             period:classPeriod
         }
-        students.push(cur);
-        //Sorts alphabetically by last name
-        students.sort(function(a,b){
-            var tempA=a.lastName.toUpperCase();
-            var tempB=b.lastName.toUpperCase();
-            return(tempA<tempB)?-1:(tempA>tempB)?1:0;
-        });
-        //alert(firstName+" "+lastName+' was added successfully')
+        userRef.push(cur)
         addCompletedWindow(firstName,lastName);
         return true;
     }else{
@@ -49,7 +124,6 @@ function addCompletedWindow(first,last){
     ele.innerHTML=first+' '+last+' was added successfully'
     ele.style.visibility='visible'
     newWindow=true
-
 }
 
 function eleInit(){

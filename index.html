@@ -22,7 +22,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>PROJECTS</title>
 </head>
-<body>
+<body onload="studentInit()">
     <div class="newStudent"><button id="studentBtn" onclick="toggleNewStudentWindow()">Add Student</button></div>
     <div id="newStudent" class='newStudent overlap' >
         <p>First Name:</p><input type="text" id="firstName"><br>
@@ -54,19 +54,15 @@
             }
         </script>
     </div>
-    <div id="listView"><table id = "stuView" class = "stuView">
-        <tr class="theader">
-            <th>Student Name</th>
-            <th>Student Time</th>
-            <th>Period</th>
-            <th>Year</th>
-        </tr>
-        <tr>
-            <td>Test</td>
-            <td>Test</td>
-            <td>Test</td>
-            <td>Test</td>
-        </tr>
+    <div id="listView"><table table id = "stuView" class = "header stuView">
+        <tbody>
+            <tr class="theader">
+                <th>Student Name</th>
+                <th>Student Time</th>
+                <th>Period</th>
+                <th>Year</th>
+           </tr>
+        </tbody>
     </table></div>
 </body>
 </html>

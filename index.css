@@ -49,6 +49,7 @@ body{
     float: right;
     width:225px;
     padding-top: 10px;
+    position: fixed;
 }
 
 .newStudent{
@@ -56,15 +57,15 @@ body{
     width: 210px;
     padding: 10px;
     text-align: center;
-    float:right;
     margin: 5px;
+    position: fixed;
 }
 
 #listView{
     margin: auto;
-    height: auto;
+    height: 70%;
     width: 60%;
-    padding: 70px;
+    padding-top: 10px;
 }
 
 .stuView{
@@ -73,7 +74,7 @@ body{
 }
 
 td, th {
-    border: 1px solid #dddddd;
+    border: 1px solid black;
     text-align: left;
     padding: 8px;
 }
@@ -86,6 +87,8 @@ tr:nth-child(even){
     background-color: #dddddd;
 }
 
-.theader{
-    position: sticky;
+.header{
+    border-collapse: collapse;
+    width: inherit;
+    position: fixed;
 }

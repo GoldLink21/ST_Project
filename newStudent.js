@@ -10,37 +10,47 @@ async function getStudent(fn,ln){
             var val=snapshot.val()
             for(p1 in val){
                 for(p2 in val[p1]){
-                    var obj={},toAdd=false;
-                    for(p3 in val[p1][p2]){
-    
-                        //p3 == names of property
-                        //p2 is object above
-    
-                        if(p3==='firstName'&&val[p1][p2][p3]===fn){
-                            toAdd=true
-                            //console.log("First name good")
-                        }else if(p3==='firstName'&&p3!==fn){
-                            return false
-                        }
-                        if(p3==='lastName'&&val[p1][p2][p3]===ln){
-                            //console.log('Last name good')
-                            toAdd=true
-                        }else if(p3==='lastName'&&p3!==ln){
-                            return false
-                        }
-    
-                        if(toAdd){
-                            obj[p3]=val[p1][p2][p3]
-                        }
-                    }
-                    if(toAdd){
-                        resolve(obj)
+                    if(val[p1][p2]['firstName']===fn&&val[p1][p2]['lastName']===ln){
+                        resolve(val[p1][p2])
                     }
                 }
             }
         })
     })
 }
+
+ref.orderByChild("lastName").on('child_added',()=>{})
+
+function setStuData(fn,ln,{min,hours,firstName,lastName,period,year}={}){  
+    ref.once('value',(snapshot)=>{
+        var val=snapshot.val()
+        for(p1 in val){
+            for(p2 in val[p1]){
+                if(val[p1][p2]['firstName']===fn&&val[p1][p2]['lastName']===ln){
+                    var refrence=p1+'/'+p2+'/' //This is the student
+                    var updateObj={}
+                    if(min)
+                        updateObj[refrence+'min']=min
+                    if(hours)
+                        updateObj[refrence+'hours']=hours
+                    if(firstName)
+                        updateObj[refrence+'firstName']=firstName
+                    if(lastName)
+                        updateObj[refrence+'lastName']=lastName
+                    if(period)
+                        updateObj[refrence+'period']=period
+                    if(year)
+                        updateObj[refrence+'year']=year
+
+                    ref.update(updateObj)
+                }
+            }
+        }
+    })//.then(()=>updateTable())
+}
+
+
+
 
 function addToTable(stu){
     function m(t){return document.createElement(t)}
@@ -99,15 +109,15 @@ function listStudents(){
  */
 function addStudent(firstName,lastName,curHours,curMins,classPeriod,year){
     if(firstName&&lastName&&curHours&&curMins&&classPeriod&&year){
-        var cur={
+        userRef.push({
             firstName:firstName,
             lastName:lastName,
             year:year,
             hours:curHours,
             min:curMins,
             period:classPeriod
-        }
-        userRef.push(cur)
+        })
+
         addCompletedWindow(firstName,lastName);
         return true;
     }else{
@@ -158,3 +168,22 @@ var completedTimeout=setInterval(()=>{
         document.getElementById('addedStudent').style.visibility='hidden'
     }
 },60)
+
+function clearTable(){
+    var div=document.getElementById('listView')
+    var table=div.querySelector('table')
+    var rows=table.querySelectorAll('tr')
+    for(let i=1;i<rows.length;i++){
+        table.removeChild(rows[i])
+    }
+}
+
+ref.on('child_added',()=>updateTable())
+ref.on('child_removed',()=>updateTable())
+ref.on('child_changed',()=>updateTable())
+ref.on('child_moved',()=>updateTable())
+
+function updateTable(){
+    clearTable()
+    studentInit()
+}

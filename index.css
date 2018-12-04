@@ -42,7 +42,7 @@ body{
 
 #newStudent {
     text-align: center;
-    border: 2px black solid;
+    border: 1px black solid;
     margin: 5px;
     margin-right: -246px;
     visibility: hidden;
@@ -59,6 +59,8 @@ body{
     text-align: center;
     margin: 5px;
     position: fixed;
+    background-color: #dddddd;
+    border: 1px solid black;
 }
 
 #listView{

@@ -4,6 +4,7 @@ var userRef=ref.child('users')
 
 var students=[];
 
+/**@returns {Promise} a promise with the student data in it */
 async function getStudent(fn,ln){
     return new Promise((resolve,reject)=>{
         ref.once('value',(snapshot)=>{
@@ -49,24 +50,56 @@ function setStuData(fn,ln,{min,hours,firstName,lastName,period,year}={}){
     })//.then(()=>updateTable())
 }
 
+function removeStu(fn,ln){  
+    ref.once('value',(snapshot)=>{
+        var val=snapshot.val()
+        for(p1 in val){
+            for(p2 in val[p1]){
+                if(val[p1][p2]['firstName']===fn&&val[p1][p2]['lastName']===ln){
+                    var refrence=p1+'/'+p2 //This is the student
+                    var updateObj={}
+                    updateObj[refrence]=null
+                    ref.update(updateObj)
+                }
+            }
+        }
+    })
+}
 
-
+/**Moves the minutes that are greater than 60 to the hours */
+function updateStuHours(){
+    ref.once('value',(snapshot)=>{
+        var val=snapshot.val()
+        for(p1 in val){
+            for(p2 in val[p1]){
+                if(val[p1][p2].min>=60){
+                    var newMin=parseInt(val[p1][p2].min),
+                        newHours=parseInt(val[p1][p2].hours)
+                    while(newMin>=60){
+                        newMin-=60
+                        newHours++
+                    }
+                    setStuData(val[p1][p2].firstName,val[p1][p2].lastName,{min:newMin,hours:newHours})
+                }
+            }
+        }
+    })
+}
 
 function addToTable(stu){
-    function m(t){return document.createElement(t)}
-    var row=m('tr')
-    function addToRow(t,s){
-        var ele=m(t);
+    var row=document.createElement('tr')
+    function addToRow(s){
+        var ele=document.createElement('td')
         ele.innerHTML=s
         row.appendChild(ele)
         return ele;
     }
     var table=document.getElementById('stuView')
     
-    addToRow('td',stu.lastName+", "+stu.firstName)
-    addToRow('td',stu.hours+' hours, '+stu.min+' minutes')
-    addToRow('td',stu.period)
-    addToRow('td',stu.year)
+    addToRow(stu.lastName+", "+stu.firstName)
+    addToRow(stu.hours+' hours, '+stu.min+' minutes')
+    addToRow(stu.period)
+    addToRow(stu.year)
 
     table.appendChild(row)
 }
@@ -83,17 +116,13 @@ function studentInit(){
     })
 }
 
-function listStudents(){
+function listStudentsInConsole(){
     ref.once('value',function(snapshot){
         var val = snapshot.val();
-        //console.log(val)
-        for(part in val){
-            //console.log(val[part])
-            for(prop in val[part]){
+        for(part in val)
+            for(prop in val[part])
                 console.log(val[part][prop])
-            }
-        }
-    },function (errorObject){
+    },(errorObject)=>{
         console.log('Read Failed: '+errorObject.code)
     })
 }
@@ -107,8 +136,8 @@ function listStudents(){
  * @param {number} classPeriod The 1st period that the student has the class
  * @param {1|2} year The year the student is enrolled in. 1 || 2
  */
-function addStudent(firstName,lastName,curHours,curMins,classPeriod,year){
-    if(firstName&&lastName&&curHours&&curMins&&classPeriod&&year){
+function addStudent(firstName,lastName,classPeriod,year,curHours=0,curMins=0){
+    if(firstName===undefined&&lastName===undefined&&curHours===undefined&&curMins===undefined&&classPeriod===undefined&&year===undefined){
         userRef.push({
             firstName:firstName,
             lastName:lastName,
@@ -138,10 +167,6 @@ function addCompletedWindow(first,last){
 
 function eleInit(){
     document.getElementById('newStudent').style.visibility='hidden';
-    var win=document.createElement('div');
-    win.id='addedStudent'
-    win.style.visibility='hidden'
-    document.body.appendChild(win);
 }
 
 function toggleNewStudentWindow(){
@@ -165,7 +190,7 @@ var completedTimeout=setInterval(()=>{
     else{
         completedWindowTimeout=0
         newWindow=false;
-        document.getElementById('addedStudent').style.visibility='hidden'
+        //document.getElementById('addedStudent').style.visibility='hidden'
     }
 },60)
 

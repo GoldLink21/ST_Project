@@ -24,15 +24,16 @@
     <title>PROJECTS</title>
 </head>
 
-<body onload="studentInit()">
+<body>
+
+    <div id="addedStudent">is here</div>
+
     <div class="newStudent"><button id="studentBtn" onclick="toggleNewStudentWindow()">Add Student</button></div>
     <div id="newStudent" class='newStudent overlap'>
         <p>First Name:</p><input type="text" id="firstName"><br>
         <p>Last Name:</p><input type="text" id="lastName"><br>
-        <p>Current Hours:</p><input type="number" id="curHours"><br>
-        <p>Current Minutes:</p><input type="number" id="curMins"><br>
-        <p>Class Period</p><input type="number" id="classPeriod"><br>
-        <p>Year:</p><input type="number" id="year"><br>
+        <p>Class Period:</p><input type="number" id="classPeriod"><br>
+        <p>Year (1 or 2):</p><input type="number" id="year"><br>
         <p><button id="submit" onclick="temp()">Submit</button></p>
         <p><button id='close' onclick="toggleNewStudentWindow()">Close</button></p>
     </div>
@@ -59,7 +60,7 @@
             var min = document.getElementById('curMins');
             var classNum = document.getElementById('classPeriod');
             var year = document.getElementById('year');
-            if (addStudent(first.value, last.value, hour.value, min.value, classNum.value, year.value)) {
+            if (addStudent(first.value, last.value, classNum.value, year.value)) {
                 first.value = "";
                 last.value = "";
                 hour.value = null;

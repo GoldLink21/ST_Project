@@ -56,15 +56,11 @@
         function temp() {
             var first = document.getElementById('firstName');
             var last = document.getElementById('lastName');
-            var hour = document.getElementById('curHours');
-            var min = document.getElementById('curMins');
             var classNum = document.getElementById('classPeriod');
             var year = document.getElementById('year');
             if (addStudent(first.value, last.value, classNum.value, year.value)) {
                 first.value = "";
                 last.value = "";
-                hour.value = null;
-                min.value = null;
                 classNum.value = null;
                 year.value = null;
             }

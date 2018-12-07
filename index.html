@@ -26,7 +26,7 @@
 
 <body>
 
-    <div id="addedStudent">is here</div>
+    <div id="addedStudent"></div>
 
     <div class="newStudent"><button id="studentBtn" onclick="toggleNewStudentWindow()">Add Student</button></div>
     <div id="newStudent" class='newStudent overlap'>
@@ -36,6 +36,11 @@
         <p>Year (1 or 2):</p><input type="number" id="year"><br>
         <p><button id="submit" onclick="temp()">Submit</button></p>
         <p><button id='close' onclick="toggleNewStudentWindow()">Close</button></p>
+        <p>Previous Time for Student?<input type="checkbox" id="check" onclick="showExtraFataInput()"></p>
+        <div id="preTime">
+            <p>Hours:<input type="number"></p>
+            <p>Minutes:<input type="number"></p>
+        </div>
     </div>
     <div id="listView">
         <table id="stuView" class="stuView">

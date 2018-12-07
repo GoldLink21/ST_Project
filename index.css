@@ -34,6 +34,7 @@ button {
     border:black solid 2px;
     float:right;
     width: 210px;
+    visibility: hidden;
 }
 
 body{
@@ -93,4 +94,9 @@ tr:nth-child(even){
     border-collapse: collapse;
     width: inherit;
     position: fixed;
+}
+
+#preTime{
+    visibility: hidden;
+    
 }

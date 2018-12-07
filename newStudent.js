@@ -133,11 +133,13 @@ function listStudentsInConsole(){
  * @param {string} lastName The student's last name
  * @param {number} curHours The current ammount of hours the student has
  * @param {number} curMins The current ammount of minutes out of an hour the student has
- * @param {number} classPeriod The 1st period that the student has the class
+ * @param {1|2|3|4|5|6|7} classPeriod The 1st period that the student has the class
  * @param {1|2} year The year the student is enrolled in. 1 || 2
  */
 function addStudent(firstName,lastName,classPeriod,year,curHours=0,curMins=0){
-    if(firstName===undefined&&lastName===undefined&&curHours===undefined&&curMins===undefined&&classPeriod===undefined&&year===undefined){
+    var hasData=(firstName!==undefined&&lastName!==undefined&&classPeriod!==undefined&&year!==undefined),
+        dataGood=(/[1-7]/.test(classPeriod)&&/[1-2]/.test(year)&&parseInt(classPeriod)===parseFloat(classPeriod)&&parseInt(year)===parseFloat(year))
+    if(hasData&&dataGood){
         userRef.push({
             firstName:firstName,
             lastName:lastName,
@@ -150,6 +152,7 @@ function addStudent(firstName,lastName,classPeriod,year,curHours=0,curMins=0){
         addCompletedWindow(firstName,lastName);
         return true;
     }else{
+        //console.log('fn',firstName!==undefined,'\nln',lastName!==undefined,'\nclassPer',classPeriod!==undefined,/[1-7]/.test(classPeriod),'\nyear',year!==undefined,)
         alert("Please enter all the requested data");
         return false;
     }
@@ -167,6 +170,10 @@ function addCompletedWindow(first,last){
 
 function eleInit(){
     document.getElementById('newStudent').style.visibility='hidden';
+}
+
+function showExtraDataInput(){
+    document.getElementById('preTime').style.visibility=(document.getElementById('check').checked)?'visible':'hidden'
 }
 
 function toggleNewStudentWindow(){
@@ -190,7 +197,7 @@ var completedTimeout=setInterval(()=>{
     else{
         completedWindowTimeout=0
         newWindow=false;
-        //document.getElementById('addedStudent').style.visibility='hidden'
+        document.getElementById('addedStudent').style.visibility='hidden'
     }
 },60)
 
@@ -203,10 +210,15 @@ function clearTable(){
     }
 }
 
-ref.on('child_added',()=>updateTable())
-ref.on('child_removed',()=>updateTable())
-ref.on('child_changed',()=>updateTable())
-ref.on('child_moved',()=>updateTable())
+ref.on('child_added',updateAll)
+ref.on('child_removed',updateAll)
+ref.on('child_changed',updateAll)
+ref.on('child_moved',updateAll)
+
+function updateAll(){
+    updateStuHours()
+    updateTable()
+}
 
 function updateTable(){
     clearTable()

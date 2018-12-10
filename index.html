@@ -32,10 +32,21 @@
     <div id="newStudent" class='newStudent overlap'>
         <p>First Name:</p><input type="text" id="firstName"><br>
         <p>Last Name:</p><input type="text" id="lastName"><br>
-        <p>Class Period</p><input type="number" id="classPeriod"><br>
-        <p>Year:</p><input type="number" id="year"><br>
+        <p>Class Period</p><input type="number" value=1 min=1 max=7 id="classPeriod"><br>
+        <p>Year:</p>
+        <input type=radio name=year value=1 class="radio" checked>1 &emsp;
+        <input type=radio name=year value=2 class='radio'>2
+        <br>
         <p><button id="submit" onclick="temp()">Submit</button></p>
         <p><button id='close' onclick="toggleNewStudentWindow()">Close</button></p>
+        <p>Does the Student have previous time?</p>
+        <input type='checkbox' id="checked">
+        <div id="preTime">
+            <p>Hours:</p>
+            <input type="number" value=0 id="preHour">
+            <p>Minutes:</p>
+            <input type="number" value=0 id="preMin">
+        </div>
     </div>
     <div id="listView">
         <table id="stuView" class="stuView">

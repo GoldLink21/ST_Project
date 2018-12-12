@@ -172,9 +172,9 @@ function eleInit(){
     document.getElementById('newStudent').style.visibility='hidden';
 }
 
-document.getElementById('checked').addEventListener('change',()=>{
+function showExtraDataInput(){
     document.getElementById('preTime').style.visibility=(document.getElementById('checked').checked)?'visible':'hidden'
-})
+}
 
 function toggleNewStudentWindow(){
     var newStu=document.getElementById('newStudent')

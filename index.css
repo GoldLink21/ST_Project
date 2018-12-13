@@ -9,7 +9,7 @@ p {
 }
    
 button {
-    width: 125px;
+    width: 150px;
     height: 30px;
     font-size: 15px;
 }
@@ -109,4 +109,29 @@ tr:nth-child(even){
     margin-right: 5px;
     height: 20px;
     width: 20px;
+}
+
+#RemovedStu{
+    height:auto;
+    width: 210px;
+    padding: 10px;
+    text-align: center;
+    margin: 5px;
+    margin-left: 84%;
+    position: fixed;
+    background-color: #dddddd;
+    border: 1px solid black;
+}
+
+#RemoveMenu{
+    height:auto;
+    width: 210px;
+    padding: 10px;
+    text-align: center;
+    margin: 5px;
+    margin-left: 84%;
+    position: fixed;
+    background-color: #dddddd;
+    border: 1px solid black;
+    visibility: hidden;
 }

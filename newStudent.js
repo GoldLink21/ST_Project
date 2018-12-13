@@ -169,6 +169,8 @@ function addCompletedWindow(first,last){
 
 function eleInit(){
     document.getElementById('newStudent').style.visibility='hidden';
+    document.getElementById('RemoveStu').style.visibility='visible'
+    
 }
 
 function showExtraDataInput(){
@@ -180,6 +182,9 @@ function toggleNewStudentWindow(){
     var stuBtn=document.getElementById('studentBtn')
     switch(newStu.style.visibility){
         case 'visible':
+            var checked=document.getElementById('checked')
+            if(checked.checked)
+                checked.click()
             newStu.style.visibility='hidden'
             stuBtn.style.visibility='visible'
             break
@@ -187,6 +192,21 @@ function toggleNewStudentWindow(){
             newStu.style.visibility='visible'
             stuBtn.style.visibility='hidden'            
             break
+    }
+}
+
+function toggleRemoveStudentWindow(){
+    var btn=document.getElementById('RemoveStu')
+    var window=document.getElementById('RemoveMenu')
+    switch(btn.style.visibility){
+        case 'visible':
+            btn.style.visibility='hidden'
+            window.style.visibility='visible'
+            break
+        case 'hidden':
+            btn.style.visibility='visible'
+            window.style.visibility='hidden'
+
     }
 }
 

@@ -2,7 +2,7 @@ p {
     font-size:15px;
 }
    
-   input {
+input {
        width: 150px;
        height: 25px;
        font-size: 15px;
@@ -20,10 +20,6 @@ button {
     padding-bottom: 5px;
     margin: auto;
     font-size: 15px;
-}
-
-.overlap{
-    position: relative;
 }
 
 #addedStudent{
@@ -111,7 +107,7 @@ tr:nth-child(even){
     width: 20px;
 }
 
-#RemovedStu{
+#RemoveStu{
     height:auto;
     width: 210px;
     padding: 10px;

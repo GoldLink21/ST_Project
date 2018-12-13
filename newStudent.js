@@ -137,7 +137,7 @@ function listStudentsInConsole(){
  * @param {1|2} year The year the student is enrolled in. 1 || 2
  */
 function addStudent(firstName,lastName,classPeriod,year,curHours=0,curMins=0){
-    var hasData=(firstName!==undefined&&lastName!==undefined&&classPeriod!==undefined&&year!==undefined),
+    var hasData=(firstName!==undefined&&firstName!==''&&lastName!==undefined&&lastName!==''&&classPeriod!==undefined&&year!==undefined),
         dataGood=(/[1-7]/.test(classPeriod)&&/[1-2]/.test(year)&&parseInt(classPeriod)===parseFloat(classPeriod)&&parseInt(year)===parseFloat(year))
     if(hasData&&dataGood){
         userRef.push({
@@ -152,7 +152,6 @@ function addStudent(firstName,lastName,classPeriod,year,curHours=0,curMins=0){
         addCompletedWindow(firstName,lastName);
         return true;
     }else{
-        //console.log('fn',firstName!==undefined,'\nln',lastName!==undefined,'\nclassPer',classPeriod!==undefined,/[1-7]/.test(classPeriod),'\nyear',year!==undefined,)
         alert("Please enter all the requested data");
         return false;
     }

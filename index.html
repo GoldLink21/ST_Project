@@ -65,11 +65,24 @@
         eleInit();
 
         function temp() {
-            var first = document.getElementById('firstName');
-            var last = document.getElementById('lastName');
-            var classNum = document.getElementById('classPeriod');
-            var year = document.getElementById('year');
-            if (addStudent(first.value, last.value,classNum.value, year.value)) {
+            var first = document.getElementById('firstName'),
+                last = document.getElementById('lastName'),
+                classNum = document.getElementById('classPeriod'),
+                year = document.getElementsByName('year'),
+                yearVal,
+                min,
+                hour
+            
+            Array.from(year).forEach(ele=>{
+                if(ele.checked)
+                    yearVal=ele.value
+            })
+
+            if(document.getElementById('checked').checked){
+                min=document.getElementById('preMin').value
+                hour=document.getElementById('preHour').value
+            }
+            if (addStudent(first.value, last.value,classNum.value, yearVal,min,hour)) {
                 first.value = "";
                 last.value = "";
                 classNum.value = null;

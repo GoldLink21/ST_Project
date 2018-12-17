@@ -170,11 +170,11 @@ function addCompletedWindow(first,last){
 function eleInit(){
     document.getElementById('newStudent').style.visibility='hidden';
     document.getElementById('RemoveStu').style.visibility='visible'
-    
+    document.getElementById('preTime').style.display='none'
 }
 
 function showExtraDataInput(){
-    document.getElementById('preTime').style.visibility=(document.getElementById('checked').checked)?'visible':'hidden'
+    document.getElementById('preTime').style.display=(document.getElementById('checked').checked)?'block':'none'
 }
 
 function toggleNewStudentWindow(){

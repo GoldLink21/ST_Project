@@ -30,14 +30,14 @@
 
     <div class="newStudent"><button id="studentBtn" onclick="toggleNewStudentWindow()">Add Student</button></div>
     <div id="newStudent" class='newStudent'>
-        <p>First Name:</p><input type="text" id="firstName"><br>
-        <p>Last Name:</p><input type="text" id="lastName"><br>
+        <p>First Name:</p><input type="text" id="firstName1"><br>
+        <p>Last Name:</p><input type="text" id="lastName1"><br>
         <p>Class Period(1-7)</p><input type="number" value=1 min=1 max=7 id="classPeriod"><br>
         <p>Year:</p>
         <input type=radio name=year value=1 class="radio" checked>1 &emsp;
         <input type=radio name=year value=2 class='radio'>2
         <br>
-        <p><button id="submit1" onclick="temp()">Submit</button></p>
+        <p><button id="submit1" onclick="newStuFunc();document.getElementById('firstName1').focus()">Submit</button></p>
         <p><button id='close1' onclick="toggleNewStudentWindow()">Close</button></p>
         <p>Does the Student have previous time?</p>
         <input type='checkbox' id="checked" onchange="showExtraDataInput()">
@@ -51,10 +51,10 @@
 
     <div id="RemoveStu"><button onclick=toggleRemoveStudentWindow()>Remove Student</button></div>
     <div id="RemoveMenu">
-        <p>Student First Name:<input type="text" id="FirstName"></p>
-        <p>Student Last Name:<input type="text" id="LastName"></p>
-        <button id="submit2" onclick=>Submit</button><br>
-        <button id="close2" onclick=toggleRemoveStudentWindow()>Close</button>
+        <p>Student First Name:<input type="text" id="firstName2"></p>
+        <p>Student Last Name:<input type="text" id="lastName2"></p>
+        <button id="submit2" onclick='remStuFunc();document.getElementById("firstName2").focus()'>Submit</button><br>
+        <button id="close2" onclick='toggleRemoveStudentWindow()'>Close</button>
     </div>
 
     <div id="listView">
@@ -73,9 +73,9 @@
     <script>
         eleInit();
 
-        function temp() {
-            var first = document.getElementById('firstName'),
-                last = document.getElementById('lastName'),
+        function newStuFunc() {
+            var first = document.getElementById('firstName1'),
+                last = document.getElementById('lastName1'),
                 classNum = document.getElementById('classPeriod'),
                 year = document.getElementsByName('year'),
                 yearVal,
@@ -97,6 +97,14 @@
                 classNum.value = null;
                 year.value = null;
             }
+        }
+ 
+        function remStuFunc(){
+            var first=document.getElementById('firstName2'),
+                last=document.getElementById('lastName2')
+            removeStu(first.value,last.value)
+            first.value=''
+            last.value=''
         }
     </script>
 

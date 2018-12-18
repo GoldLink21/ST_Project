@@ -50,7 +50,9 @@ function setStuData(fn,ln,{min,hours,firstName,lastName,period,year}={}){
     })//.then(()=>updateTable())
 }
 
-function removeStu(fn,ln){  
+function removeStu(fn,ln){
+    console.log('Trying to remove',fn,ln)
+    var hasRemoved=false
     ref.once('value',(snapshot)=>{
         var val=snapshot.val()
         for(p1 in val){
@@ -60,10 +62,13 @@ function removeStu(fn,ln){
                     var updateObj={}
                     updateObj[refrence]=null
                     ref.update(updateObj)
+                    hasRemoved=true
                 }
             }
         }
     })
+    if(!hasRemoved)
+        alert('Could not find student '+fn+' '+ln)
 }
 
 /**Moves the minutes that are greater than 60 to the hours */

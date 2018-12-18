@@ -12,7 +12,7 @@
             projectId:"st-project-36358",
             storageBucket: "st-project-36358.appspot.com",
             messagingSenderId: "236006288802", 
-            serviceAccount:"node-client-app/service-account.json",
+            //serviceAccount:"node-client-app/service-account.json",
             databaseURL:"https://st-project-36358.firebaseio.com"
         })
     </script>
@@ -91,10 +91,10 @@
                 min=document.getElementById('preMin').value
                 hour=document.getElementById('preHour').value
             }
-            if (addStudent(first.value, last.value,classNum.value, yearVal,min,hour)) {
+            if (addStudent(first.value, last.value,classNum.value, yearVal,hour,min)) {
                 first.value = "";
                 last.value = "";
-                classNum.value = null;
+                classNum.value = 1;
                 year.value = null;
             }
         }

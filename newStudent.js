@@ -11,7 +11,7 @@ async function getStudent(fn,ln,isCaseSensitive=false){
             var val=snapshot.val()
             for(p1 in val){
                 for(p2 in val[p1]){
-                    if(!isCaseSensitive){
+                    if(isCaseSensitive){
                         if(val[p1][p2]['firstName']===fn&&val[p1][p2]['lastName']===ln){
                             resolve(val[p1][p2])
                         }
@@ -56,19 +56,29 @@ function setStuData(fn,ln,{min,hours,firstName,lastName,period,year}={}){
     })//.then(()=>updateTable())
 }
 
-function removeStu(fn,ln){
+function removeStu(fn,ln,isCaseSensitive){
     console.log('Trying to remove',fn,ln)
     var hasRemoved=false
     ref.once('value',(snapshot)=>{
         var val=snapshot.val()
         for(p1 in val){
             for(p2 in val[p1]){
-                if(val[p1][p2]['firstName']===fn&&val[p1][p2]['lastName']===ln){
-                    var refrence=p1+'/'+p2 //This is the student
-                    var updateObj={}
-                    updateObj[refrence]=null
-                    ref.update(updateObj)
-                    hasRemoved=true
+                if(isCaseSensitive){
+                    if(val[p1][p2]['firstName']===fn&&val[p1][p2]['lastName']===ln){
+                        var refrence=p1+'/'+p2 //This is the student
+                        var updateObj={}
+                        updateObj[refrence]=null
+                        ref.update(updateObj)
+                        hasRemoved=true
+                    }
+                }else{
+                    if(val[p1][p2]['firstName'].toLowerCase()===fn.toLowerCase()&&val[p1][p2]['lastName'].toLowerCase()===ln.toLowerCase()){
+                        var refrence=p1+'/'+p2 //This is the student
+                        var updateObj={}
+                        updateObj[refrence]=null
+                        ref.update(updateObj)
+                        hasRemoved=true
+                    }
                 }
             }
         }

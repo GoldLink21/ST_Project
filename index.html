@@ -53,7 +53,7 @@
     <div id="RemoveMenu">
         <p>Student First Name:<input type="text" id="firstName2"></p>
         <p>Student Last Name:<input type="text" id="lastName2"></p>
-        <p>Case Senstive Search?<input type='checkbox' id="checked2" onchange="isCaseSensitive()"></p>
+        <p>Case Senstive Search?<input type='checkbox' id="checked2"></p>
         <button id="submit2" onclick='remStuFunc();document.getElementById("firstName2").focus()'>Submit</button><br>
         <button id="close2" onclick='toggleRemoveStudentWindow()'>Close</button>
     </div>
@@ -102,8 +102,9 @@
  
         function remStuFunc(){
             var first=document.getElementById('firstName2'),
-                last=document.getElementById('lastName2')
-            removeStu(first.value,last.value)
+                last=document.getElementById('lastName2'),
+                insens=document.getElementById('checked2')
+            removeStu(first.value,last.value,insens.checked)
             first.value=''
             last.value=''
         }

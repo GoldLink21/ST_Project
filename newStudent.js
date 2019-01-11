@@ -5,14 +5,20 @@ var userRef=ref.child('users')
 var students=[];
 
 /**@returns {Promise} a promise with the student data in it */
-async function getStudent(fn,ln){
+async function getStudent(fn,ln,isCaseSensitive=false){
     return new Promise((resolve,reject)=>{
         ref.once('value',(snapshot)=>{
             var val=snapshot.val()
             for(p1 in val){
                 for(p2 in val[p1]){
-                    if(val[p1][p2]['firstName']===fn&&val[p1][p2]['lastName']===ln){
-                        resolve(val[p1][p2])
+                    if(!isCaseSensitive){
+                        if(val[p1][p2]['firstName']===fn&&val[p1][p2]['lastName']===ln){
+                            resolve(val[p1][p2])
+                        }
+                    }else{
+                        if(val[p1][p2]['firstName'].toLowerCase()===fn.toLowerCase()&&val[p1][p2]['lastName'].toLowerCase()===ln.toLowerCase()){
+                            resolve(val[p1][p2])
+                        }
                     }
                 }
             }
@@ -143,7 +149,7 @@ function listStudentsInConsole(){
  */
 function addStudent(firstName,lastName,classPeriod,year,curHours=0,curMins=0){
     var hasData=(firstName!==undefined&&firstName!==''&&lastName!==undefined&&lastName!==''&&classPeriod!==undefined&&year!==undefined),
-        dataGood=(/[1-7]/.test(classPeriod)&&/[1-2]/.test(year)&&parseInt(classPeriod)===parseFloat(classPeriod)&&parseInt(year)===parseFloat(year))
+        dataGood=(/^[1-7]{1}$/.test(classPeriod)&&/[1-2]/.test(year)&&parseInt(classPeriod)===parseFloat(classPeriod)&&parseInt(year)===parseFloat(year))
     if(hasData&&dataGood){
         userRef.push({
             firstName:firstName,

@@ -111,27 +111,6 @@ function removeStu(fn,ln,isCaseSensitive){
         alert('Could not find student '+fn+' '+ln)
 }
 
-/**Moves the minutes that are greater than 60 to the hours */
-function updateStuHours(){
-    ref.once('child_added',(snapshot)=>{
-        var val=snapshot.val()
-        for(p1 in val){
-            for(p2 in val[p1]){
-                
-                
-                if(parseInt(val[p1][p2].hours)>0){
-                    console.log(val[p1][p2])
-                    var m=Time.toMin(parseInt(val[p1][p2].hours),parseInt(val[p1][p2].min))
-                    console.log(m)
-                    //setStuData(val[p1][p2].firstName,val[p1][p2].lastName,{min:m,hours:0})
-                }
-                
-            }
-        }
-    })
-}
-ref.on('value',updateStuHours)
-
 function addToTable(stu){
     var row=document.createElement('tr')
     function addToRow(s){
@@ -142,7 +121,7 @@ function addToTable(stu){
     }
     var table=document.getElementById('stuView')
     
-    addToRow(stu.lastName+", "+stu.firstName).classList.add('dropDownContent')
+    addToRow(stu.lastName+", "+stu.firstName)//.classList.add('dropDownContent')
     addToRow(stu.hours+' hours, '+stu.min+' minutes').classList.add('dropDown')
     addToRow(stu.period)
     addToRow(stu.year)

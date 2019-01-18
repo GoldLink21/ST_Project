@@ -140,23 +140,19 @@ tr:nth-child(even){
     visibility: hidden;
 }
 
-.dropDown{
-    display: inline-block;
-}
+
 
 .dropDownContent{
-display: none;
 position: relative;
 background-color: #dddddd;
 min-width: 160px;
-box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 padding: 12px 16px;
 z-index: 1;    
 }
 
 .dropDown:hover .dropDownContent{
     display: block;
-}
+}*/
 
 h1 {
     text-align: center;

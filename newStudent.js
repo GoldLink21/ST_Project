@@ -26,9 +26,14 @@ async function getStudent(fn,ln,isCaseSensitive=false){
     })
 }
 
+function getStu(fn='',ln='',isCaseSensitive=false){
+    return students.filter(stu=>(isCaseSensitive)?stu.stu.firstName===fn&&stu.stu.lastName===ln:stu.stu.firstName.toLowerCase()===fn.toLowerCase()&&stu.stu.lastName.toLowerCase()===ln.toLowerCase())[0]
+}
+
 ref.orderByChild("lastName").on('child_added',()=>{})
 
-function setStuData(fn,ln,{min,hours,firstName,lastName,period,year}={}){  
+function setStuData(fn,ln,{firstName,lastName,period,year,min,hours}={}){
+    /*
     ref.once('value',(snapshot)=>{
         var val=snapshot.val()
         for(p1 in val){
@@ -36,10 +41,6 @@ function setStuData(fn,ln,{min,hours,firstName,lastName,period,year}={}){
                 if(val[p1][p2]['firstName']===fn&&val[p1][p2]['lastName']===ln){
                     var refrence=p1+'/'+p2+'/' //This is the student
                     var updateObj={}
-                    if(min)
-                        updateObj[refrence+'min']=min
-                    if(hours)
-                        updateObj[refrence+'hours']=hours
                     if(firstName)
                         updateObj[refrence+'firstName']=firstName
                     if(lastName)
@@ -48,12 +49,35 @@ function setStuData(fn,ln,{min,hours,firstName,lastName,period,year}={}){
                         updateObj[refrence+'period']=period
                     if(year)
                         updateObj[refrence+'year']=year
+                    if(min)
+                        updateObj[refrence+'min']=min
+                    if(hours)
+                        updateObj[refrence+'hours']=hours
 
                     ref.update(updateObj)
                 }
             }
         }
     })//.then(()=>updateTable())
+    */
+    var stuAndRef=students.filter(stu=>{
+        return stu.stu.firstName===fn&&stu.stu.lastName===ln
+    })[0]
+    console.log(stuAndRef)
+    var updateObj={}
+    if(firstName)
+        updateObj[stu.ref+'firstName']=firstName
+    if(lastName)
+        updateObj[stu.ref+'lastName']=lastName
+    if(period)
+        updateObj[stu.ref+'period']=period
+    if(year)
+        updateObj[stu.ref+'year']=year
+    if(min)
+        updateObj[stu.ref+'min']=min
+    if(hours)
+        updateObj[stu.ref+'hours']=ho
+    ref.update(updateObj)
 }
 
 function removeStu(fn,ln,isCaseSensitive){
@@ -89,23 +113,24 @@ function removeStu(fn,ln,isCaseSensitive){
 
 /**Moves the minutes that are greater than 60 to the hours */
 function updateStuHours(){
-    ref.once('value',(snapshot)=>{
+    ref.once('child_added',(snapshot)=>{
         var val=snapshot.val()
         for(p1 in val){
             for(p2 in val[p1]){
-                if(val[p1][p2].min>=60){
-                    var newMin=parseInt(val[p1][p2].min),
-                        newHours=parseInt(val[p1][p2].hours)
-                    while(newMin>=60){
-                        newMin-=60
-                        newHours++
-                    }
-                    setStuData(val[p1][p2].firstName,val[p1][p2].lastName,{min:newMin,hours:newHours})
+                
+                
+                if(parseInt(val[p1][p2].hours)>0){
+                    console.log(val[p1][p2])
+                    var m=Time.toMin(parseInt(val[p1][p2].hours),parseInt(val[p1][p2].min))
+                    console.log(m)
+                    //setStuData(val[p1][p2].firstName,val[p1][p2].lastName,{min:m,hours:0})
                 }
+                
             }
         }
     })
 }
+ref.on('value',updateStuHours)
 
 function addToTable(stu){
     var row=document.createElement('tr')
@@ -117,8 +142,8 @@ function addToTable(stu){
     }
     var table=document.getElementById('stuView')
     
-    addToRow(stu.lastName+", "+stu.firstName)
-    addToRow(stu.hours+' hours, '+stu.min+' minutes')
+    addToRow(stu.lastName+", "+stu.firstName).classList.add('dropDownContent')
+    addToRow(stu.hours+' hours, '+stu.min+' minutes').classList.add('dropDown')
     addToRow(stu.period)
     addToRow(stu.year)
 
@@ -126,12 +151,14 @@ function addToTable(stu){
 }
 
 function studentInit(){
+    students=[]
     ref.once('value',(snapshot)=>{
         var val=snapshot.val();
         for(p1 in val){
             for(p2 in val[p1]){
                 //Adds all the students to the table
                 addToTable(val[p1][p2])
+                students.push({ref:p1+'/'+p2+'/',stu:val[p1][p2]})
             }
         }
     })
@@ -165,17 +192,40 @@ function addStudent(firstName,lastName,classPeriod,year,curHours=0,curMins=0){
             firstName:firstName,
             lastName:lastName,
             year:year,
-            hours:curHours,
-            min:curMins,
+            /**This is the total minutes the student has. Gets converted to hours and min */
+            min:Time.toMin(curHours,curMins),
+            /**This will hold all the dates along with the time for that date. Adding to them will be with the date() func */
+            calendar:[today(Time.toMin(curHours,curMins))],
             period:classPeriod
         })
 
         addCompletedWindow(firstName,lastName);
         return true;
     }else{
-        alert("Please enter all the requested data");
+        if(!hasData)
+            alert("Please enter all the requested data");
+        else
+            alert("Make sure all inputs are within range")
         return false;
     }
+}
+
+const Time={
+    /**Returns the time in minutes from hours and minutes */
+    toMin(hour=0,min=0){
+        return (parseInt(hour)*60)+parseInt(min)
+    },
+    /**Returns an object with hour and min holding the times from the minutes passed in*/
+    toHours(min){
+        return {hour:Math.floor(min/60),min:min%60}
+    }
+}
+
+function date(dateString,min){
+    return {date:new Date(dateString).toDateString(),min:min}
+}
+function today(min){
+    return date(new Date(),min)
 }
 
 var completedWindowTimeout=0,newWindow=false;
@@ -256,11 +306,19 @@ ref.on('child_changed',updateAll)
 ref.on('child_moved',updateAll)
 
 function updateAll(){
-    updateStuHours()
+    //updateStuHours()
     updateTable()
 }
 
 function updateTable(){
     clearTable()
     studentInit()
+}
+
+function removeYear2(){
+    students.filter(stu=>stu.stu.year==2).forEach(stu=>{
+        var o={}
+        o[stu.ref.substr(0,stu.ref.length-2)]=null
+        ref.set(o)
+    })
 }

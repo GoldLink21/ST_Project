@@ -4,6 +4,10 @@ var userRef=ref.child('users')
 
 var students=[];
 
+function strEqual(s1,s2,isCaseSensitive=false){
+    return (isCaseSensitive)?s1===s2:s1.toLowerCase()===s2.toLowerCase()
+}
+
 /**@returns {Promise} a promise with the student data in it */
 async function getStudent(fn,ln,isCaseSensitive=false){
     return new Promise((resolve,reject)=>{
@@ -11,99 +15,47 @@ async function getStudent(fn,ln,isCaseSensitive=false){
             var val=snapshot.val()
             for(p1 in val){
                 for(p2 in val[p1]){
-                    if(isCaseSensitive){
-                        if(val[p1][p2]['firstName']===fn&&val[p1][p2]['lastName']===ln){
-                            resolve(val[p1][p2])
-                        }
-                    }else{
-                        if(val[p1][p2]['firstName'].toLowerCase()===fn.toLowerCase()&&val[p1][p2]['lastName'].toLowerCase()===ln.toLowerCase()){
-                            resolve(val[p1][p2])
-                        }
-                    }
+                    if(strEqual(val[p1][p2].firstName,fn,isCaseSensitive)&&strEqual(val[p1][p2].lastName,ln,isCaseSensitive))
+                        resolve(val[p1][p2])
                 }
             }
         })
+        reject('Student not found')
     })
 }
 
 function getStu(fn='',ln='',isCaseSensitive=false){
-    return students.filter(stu=>(isCaseSensitive)?stu.stu.firstName===fn&&stu.stu.lastName===ln:stu.stu.firstName.toLowerCase()===fn.toLowerCase()&&stu.stu.lastName.toLowerCase()===ln.toLowerCase())[0]
+    return students.filter(stu=>strEqual(stu.stu.firstName,fn,isCaseSensitive)&&strEqual(stu.stu.lastName,ln,isCaseSensitive))[0]
 }
 
-ref.orderByChild("lastName").on('child_added',()=>{})
-
-function setStuData(fn,ln,{firstName,lastName,period,year,min,hours}={}){
-    /*
-    ref.once('value',(snapshot)=>{
-        var val=snapshot.val()
-        for(p1 in val){
-            for(p2 in val[p1]){
-                if(val[p1][p2]['firstName']===fn&&val[p1][p2]['lastName']===ln){
-                    var refrence=p1+'/'+p2+'/' //This is the student
-                    var updateObj={}
-                    if(firstName)
-                        updateObj[refrence+'firstName']=firstName
-                    if(lastName)
-                        updateObj[refrence+'lastName']=lastName
-                    if(period)
-                        updateObj[refrence+'period']=period
-                    if(year)
-                        updateObj[refrence+'year']=year
-                    if(min)
-                        updateObj[refrence+'min']=min
-                    if(hours)
-                        updateObj[refrence+'hours']=hours
-
-                    ref.update(updateObj)
-                }
-            }
-        }
-    })//.then(()=>updateTable())
-    */
-    var stuAndRef=students.filter(stu=>{
-        return stu.stu.firstName===fn&&stu.stu.lastName===ln
-    })[0]
-    console.log(stuAndRef)
+function setStuData(fn,ln,{firstName,lastName,period,year,min}={}){
+    var stuAndRef=getStu(fn,ln)
     var updateObj={}
     if(firstName)
-        updateObj[stu.ref+'firstName']=firstName
+        updateObj[stuAndRef.ref+'firstName']=firstName
     if(lastName)
-        updateObj[stu.ref+'lastName']=lastName
+        updateObj[stuAndRef.ref+'lastName']=lastName
     if(period)
-        updateObj[stu.ref+'period']=period
+        updateObj[stuAndRef.ref+'period']=period
     if(year)
-        updateObj[stu.ref+'year']=year
+        updateObj[stuAndRef.ref+'year']=year
     if(min)
-        updateObj[stu.ref+'min']=min
-    if(hours)
-        updateObj[stu.ref+'hours']=ho
+        updateObj[stuAndRef.ref+'min']=min
     ref.update(updateObj)
 }
 
 function removeStu(fn,ln,isCaseSensitive){
     console.log('Trying to remove',fn,ln)
     var hasRemoved=false
-    ref.once('value',(snapshot)=>{
+
+    userRef.once('value',(snapshot)=>{
         var val=snapshot.val()
         for(p1 in val){
-            for(p2 in val[p1]){
-                if(isCaseSensitive){
-                    if(val[p1][p2]['firstName']===fn&&val[p1][p2]['lastName']===ln){
-                        var refrence=p1+'/'+p2 //This is the student
-                        var updateObj={}
-                        updateObj[refrence]=null
-                        ref.update(updateObj)
-                        hasRemoved=true
-                    }
-                }else{
-                    if(val[p1][p2]['firstName'].toLowerCase()===fn.toLowerCase()&&val[p1][p2]['lastName'].toLowerCase()===ln.toLowerCase()){
-                        var refrence=p1+'/'+p2 //This is the student
-                        var updateObj={}
-                        updateObj[refrence]=null
-                        ref.update(updateObj)
-                        hasRemoved=true
-                    }
-                }
+            if(strEqual(val[p1].firstName,fn,isCaseSensitive)&&strEqual(val[p1].lastName,ln,isCaseSensitive)){
+                var updateObj={}
+                updateObj[p1]=null
+                userRef.update(updateObj)
+                hasRemoved=true
             }
         }
     })
@@ -122,7 +74,8 @@ function addToTable(stu){
     var table=document.getElementById('stuView')
     
     addToRow(stu.lastName+", "+stu.firstName)//.classList.add('dropDownContent')
-    addToRow(stu.hours+' hours, '+stu.min+' minutes').classList.add('dropDown')
+    var t=Time.toHours(stu.min)
+    addToRow(t.hour+' hours, '+t.min+' minutes').classList.add('dropDown')
     addToRow(stu.period)
     addToRow(stu.year)
 
@@ -144,11 +97,10 @@ function studentInit(){
 }
 
 function listStudentsInConsole(){
-    ref.once('value',function(snapshot){
+    userRef.orderByChild('lastName').once('value',function(snapshot){
         var val = snapshot.val();
         for(part in val)
-            for(prop in val[part])
-                console.log(val[part][prop])
+            console.log(val[part])
     },(errorObject)=>{
         console.log('Read Failed: '+errorObject.code)
     })
@@ -204,7 +156,7 @@ function date(dateString,min){
     return {date:new Date(dateString).toDateString(),min:min}
 }
 function today(min){
-    return date(new Date(),min)
+    return date(new Date().toDateString(),min)
 }
 
 var completedWindowTimeout=0,newWindow=false;

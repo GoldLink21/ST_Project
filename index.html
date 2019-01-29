@@ -16,20 +16,21 @@
             databaseURL:"https://st-project-36358.firebaseio.com"
         })
     </script>
-    <script src='newStudent.js'></script>
-    <link rel="stylesheet" href="index.css" type="text/css">
+    <script src='test.js'></script>
+    <link rel="stylesheet" href="test.css" type="text/css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>PROJECTS</title>
+    <title>Test</title>
 </head>
 
 <body>
 
-    <!--<div class="tab">
-        <button class="tab1" onclick="openTab()">StuView</button>
-        <button class="tab2" onclick="openTab()">Calender</button>
-    </div>-->
+    <div class="tab">
+        <button class="tab1" id="tab1" onclick="openTab1()">StuView</button>
+        <button class="tab2" id="tab2" onclick="openTab2()">Calender</button>
+    </div>
+    <div id="Tab1">
     <div id="addedStudent"></div>
 
     <h1>Warren Central High School Cosmetology</h1>
@@ -75,16 +76,12 @@
             </tr>
         </table>
     </div>
-
-     <div class="dropdown" style="float:left;">
-        <div class="dropbtn">Left</div>
-        <div class="dropdown-content" style="left:0;">
-        <a href="#">Link 1</a>
-        <a href="#">Link 2</a>
-        <a href="#">Link 3</a>
     </div>
-    
-    
+    <div id="Tab2">
+
+        <p>lol the calendar is suppoust to be here</p>
+
+    </div>
 
     <script>
         eleInit();
@@ -123,9 +120,6 @@
             first.value=''
             last.value=''
         }
-    </script>
-    <script>
-        
     </script>
 
 </body>

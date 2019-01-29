@@ -41,6 +41,7 @@ function setStuData(fn,ln,{firstName,lastName,period,year,min}={}){
         updateObj[stuAndRef.ref+'year']=year
     if(min)
         updateObj[stuAndRef.ref+'min']=min
+    console.log(updateObj)
     ref.update(updateObj)
 }
 
@@ -80,6 +81,20 @@ function addToTable(stu){
     addToRow(stu.year)
 
     table.appendChild(row)
+}
+
+/**Goes through every student and tallies up their calendar's minutes to update the running total minutes */
+function tallyStudentHours(){
+    students.forEach(stuAndRef=>{
+        var stu=stuAndRef.stu
+        var min=0
+        stu.calendar.forEach(dateAndMin=>{
+            min+=parseInt(dateAndMin.min)
+        })
+        var o={}
+        o[stuAndRef.ref+'min']=min
+        ref.update(o)
+    })
 }
 
 function studentInit(){
@@ -138,6 +153,19 @@ function addStudent(firstName,lastName,classPeriod,year,curHours=0,curMins=0){
         else
             alert("Make sure all inputs are within range")
         return false;
+    }
+}
+
+function addDateToStudent(fn,ln,dateAndMin){
+    var stuAndRef=getStu(fn,ln)
+    if(stuAndRef){
+        var cal=stuAndRef.stu.calendar
+        cal.push(dateAndMin)
+        var o={}
+        o[stuAndRef.ref+'calendar/']=cal
+        ref.update(o)
+    }else{
+        console.log(0)
     }
 }
 
@@ -247,9 +275,27 @@ function updateTable(){
 }
 
 function removeYear2(){
-    students.filter(stu=>stu.stu.year==2).forEach(stu=>{
-        var o={}
-        o[stu.ref.substr(0,stu.ref.length-2)]=null
-        ref.set(o)
-    })
+    if(confirm('Are you sure you want to remove all year 2 students?')){
+        students.filter(stu=>stu.stu.year==2).forEach(stu=>{
+            removeStu(stu.stu.firstName,stu.stu.lastName)
+        })
+        students.forEach(stuAndRef=>{
+            var o={}
+            o[stuAndRef.ref+'year']=parseInt(stuAndRef.stu.year)+1
+            ref.update(o)
+        })
+    }
+}
+
+function sampleStudents(n=1){
+    var fns=['Joe','Hannah','Gary','Sue','John','Jenny','Bob','Tim','Mary','Neo','Devin','Linda','Brenda','Paula','Marie','Lucy',
+            'Alice','Shane','Sam','Anne','Aliyah','Jean','Ellen','Max','Alan','Erik','Charles','Omar','Robbie','Oliver','Jimmy']
+    var lns=['Smith','Johnson','Holtsclaw','Phelps','Brito','Mayorga','Smith','Law','Jones','Davis','Miller','Brown','Williams',
+            'Hill','Lopez','Young','Allen','Morris','Price','Long','Nelson','Jackson','White','Phillips','Clark','Lee','Lewis']
+    function rnd(arr){
+        return arr[parseInt(Math.random()*arr.length)]
+    }
+    for(let i=0;i<n;i++){
+        addStudent(rnd(fns),rnd(lns),parseInt(Math.random()*7)+1,parseInt(Math.random()*2)+1)
+    }
 }

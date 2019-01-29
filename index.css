@@ -155,3 +155,11 @@ display: block;
 #Tab2{
 display: none;
 }
+
+h2 {
+    font-size: 100px;
+    border: 25px dashed rgb(0, 255, 255);
+    background-color: rgb(32, 32, 32);
+    color: white;
+    text-align: center;
+}

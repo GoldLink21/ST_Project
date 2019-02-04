@@ -163,3 +163,12 @@ h2 {
     color: white;
     text-align: center;
 }
+
+.calender{
+    margin: auto;
+    margin-top: 25px;
+    width: 700px;
+    border: 1px solid black;
+    text-align: center;
+    height: 700px;
+}

@@ -72,6 +72,35 @@ function addToTable(stu){
         row.appendChild(ele)
         return ele;
     }
+    function addToRowInput(){
+        var date = document.createElement("input");
+        var hrs = document.createElement("input");
+        var min = document.createElement("input");
+        var but = document.createElement("button");
+        var br = document.createElement("br");
+        var y = document.createElement('td');
+        date.classList.add("addingTimeDate");
+        hrs.classList.add("addingTime");
+        min.classList.add("addingTime");
+        but.classList.add("SubmitHrs");
+        date.id = "addingTimeDate";
+        hrs.id = "addingHrs";
+        min.id = "addingMin";
+        but.id = "SubmitHrs";
+        date.setAttribute("type", "text");
+        hrs.setAttribute("type", "number");
+        hrs.setAttribute('value', '0');
+        min.setAttribute("type", "number");
+        min.setAttribute('value', '0');
+        but.innerHTML = "Submit";
+        but.onclick=submit;
+        y.appendChild(date);
+        y.appendChild(br);
+        y.appendChild(hrs);
+        y.appendChild(min);
+        y.appendChild(but);
+        row.appendChild(y);
+    }
     var table=document.getElementById('stuView')
     
     addToRow(stu.lastName+", "+stu.firstName)//.classList.add('dropDownContent')
@@ -79,6 +108,7 @@ function addToTable(stu){
     addToRow(t.hour+' hours, '+t.min+' minutes').classList.add('dropDown')
     addToRow(stu.period)
     addToRow(stu.year)
+    addToRowInput();
 
     table.appendChild(row)
 }
@@ -298,4 +328,7 @@ function sampleStudents(n=1){
     for(let i=0;i<n;i++){
         addStudent(rnd(fns),rnd(lns),parseInt(Math.random()*7)+1,parseInt(Math.random()*2)+1)
     }
+}
+function submit(){
+    document.body.style.backgroundColor = 'black';
 }

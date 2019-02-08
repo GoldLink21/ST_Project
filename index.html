@@ -37,9 +37,9 @@
 
     <div class="newStudent"><button id="studentBtn" onclick="toggleNewStudentWindow()">Add Student</button></div>
     <div id="newStudent" class='newStudent'>
-        <p>First Name:</p><input type="text" id="firstName1"><br>
-        <p>Last Name:</p><input type="text" id="lastName1"><br>
-        <p>Class Period(1-7)</p><input type="number" value=1 min=1 max=7 id="classPeriod"><br>
+        <p>First Name:</p><input type="text" class="input1" id="firstName1"><br>
+        <p>Last Name:</p><input type="text" class="input1" id="lastName1"><br>
+        <p>Class Period(1-7)</p><input class="input1" type="number" value=1 min=1 max=7 id="classPeriod"><br>
         <p>Year:</p>
         <input type=radio name=year value=1 class="radio" checked>1 &emsp;
         <input type=radio name=year value=2 class='radio'>2
@@ -47,20 +47,20 @@
         <p><button id="submit1" onclick="newStuFunc();document.getElementById('firstName1').focus()">Submit</button></p>
         <p><button id='close1' onclick="toggleNewStudentWindow()">Close</button></p>
         <p>Does the Student have previous time?</p>
-        <input type='checkbox' id="checked" onchange="showExtraDataInput()">
+        <input type='checkbox' class="input1" id="checked" onchange="showExtraDataInput()">
         <div id="preTime">
             <p>Hours:</p>
-            <input type="number" value=0 id="preHour">
+            <input type="number" value=0 class="input1" id="preHour">
             <p>Minutes:</p>
-            <input type="number" value=0 id="preMin">
+            <input type="number" value=0 class="input1" id="preMin">
         </div>
     </div>
 
     <div id="RemoveStu"><button onclick=toggleRemoveStudentWindow()>Remove Student</button></div>
     <div id="RemoveMenu">
-        <p>Student First Name:<input type="text" id="firstName2"></p>
-        <p>Student Last Name:<input type="text" id="lastName2"></p>
-        <p>Case Senstive Search?<input type='checkbox' id="checked2"></p>
+        <p>Student First Name:<input type="text" class="input1" id="firstName2"></p>
+        <p>Student Last Name:<input type="text" class="input1" id="lastName2"></p>
+        <p>Case Senstive Search?<input type='checkbox' class="input1" id="checked2"></p>
         <button id="submit2" onclick='remStuFunc();document.getElementById("firstName2").focus()'>Submit</button><br>
         <button id="close2" onclick='toggleRemoveStudentWindow()'>Close</button>
     </div>
@@ -72,6 +72,7 @@
                     <th>Student Time</th>
                     <th>Period</th>
                     <th>Year</th>
+                    <th>Adding Time</th>
                 </div>
             </tr>
         </table>

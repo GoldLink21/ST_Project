@@ -2,10 +2,11 @@ p {
     font-size:15px;
 }
    
-input {
+.input1 {
        width: 150px;
        height: 25px;
        font-size: 15px;
+       text-align: center;
 }
    
 button {
@@ -158,17 +159,27 @@ display: none;
 
 h2 {
     font-size: 100px;
-    border: 25px dashed rgb(0, 255, 255);
-    background-color: rgb(32, 32, 32);
-    color: white;
     text-align: center;
+    padding: auto;
 }
 
 .calender{
     margin: auto;
-    margin-top: 25px;
-    width: 700px;
+    width: 900px;
     border: 1px solid black;
     text-align: center;
     height: 700px;
+}
+
+.addingTime{
+    width: 75px;
+    margin: 1px;
+}
+
+.SubmitHrs{
+    width: 50px;
+    height: 18px;
+    margin: 3px;
+    padding: auto;
+    font-size: 11px;
 }

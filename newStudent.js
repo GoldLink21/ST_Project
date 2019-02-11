@@ -8,6 +8,8 @@ function strEqual(s1,s2,isCaseSensitive=false){
     return (isCaseSensitive)?s1===s2:s1.toLowerCase()===s2.toLowerCase()
 }
 
+var cal;
+
 /**@returns {Promise} a promise with the student data in it */
 async function getStudent(fn,ln,isCaseSensitive=false){
     return new Promise((resolve,reject)=>{

@@ -7,8 +7,14 @@ var students=[];
 function strEqual(s1,s2,isCaseSensitive=false){
     return (isCaseSensitive)?s1===s2:s1.toLowerCase()===s2.toLowerCase()
 }
-
 var cal;
+
+function calOnLoad(){
+    cal=new dhtmlXCalendarObject('date')
+    cal.hideTime()
+    cal.setDateFormat('%l %M %j %Y')
+    cal.setPosition('right')
+}
 
 /**@returns {Promise} a promise with the student data in it */
 async function getStudent(fn,ln,isCaseSensitive=false){
@@ -65,7 +71,7 @@ function removeStu(fn,ln,isCaseSensitive){
     if(!hasRemoved)
         alert('Could not find student '+fn+' '+ln)
 }
-
+var addingId=0
 function addToTable(stu){
     var row=document.createElement('tr')
     function addToRow(s){
@@ -74,7 +80,9 @@ function addToTable(stu){
         row.appendChild(ele)
         return ele;
     }
+    
     function addToRowInput(){
+        console.log(addingId)
         var date = document.createElement("input");
         var hrs = document.createElement("input");
         var min = document.createElement("input");
@@ -85,10 +93,11 @@ function addToTable(stu){
         hrs.classList.add("addingTime");
         min.classList.add("addingTime");
         but.classList.add("SubmitHrs");
-        date.id = "addingTimeDate";
-        hrs.id = "addingHrs";
-        min.id = "addingMin";
-        but.id = "SubmitHrs";
+        date.id = "addingTimeDate"+addingId;
+        hrs.id = "addingHrs"+addingId;
+        min.id = "addingMin"+addingId;
+        but.id = "SubmitHrs"+addingId;
+        addingId++
         date.setAttribute("type", "text");
         hrs.setAttribute("type", "number");
         hrs.setAttribute('value', '0');
@@ -102,6 +111,9 @@ function addToTable(stu){
         y.appendChild(min);
         y.appendChild(but);
         row.appendChild(y);
+        cal.attachObj(date);
+        date.onfocus=function(){cal.show(date.id)}
+        date.onblur=function(){cal.hide()}
     }
     var table=document.getElementById('stuView')
     

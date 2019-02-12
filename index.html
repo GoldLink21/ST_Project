@@ -16,6 +16,8 @@
             databaseURL:"https://st-project-36358.firebaseio.com"
         })
     </script>
+    <script src='src/cal/codebase/dhtmlxcalendar.js'></script>
+    <link rel='stylesheet' href="src/cal/codebase/dhtmlxcalendar.css">
     <script src='newstudent.js'></script>
     <link rel="stylesheet" href="index.css" type="text/css">
     <meta charset="UTF-8">
@@ -24,7 +26,7 @@
     <title>ST Project</title>
 </head>
 
-<body>
+<body onload="calOnLoad()">
     
     <div id="Tab1">
             <button class="tab2" id="tab2" onclick="openTab2()">Calender</button>

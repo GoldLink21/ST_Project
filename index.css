@@ -6,7 +6,13 @@ p {
        width: 150px;
        height: 25px;
        font-size: 15px;
-       text-align: center;
+}
+
+.input2 {
+    width: 40px;
+    height: 20px;
+    text-align: center;
+    font-size: 17px;
 }
    
 button {
@@ -172,8 +178,9 @@ h2 {
 }
 
 .addingTime{
-    width: 75px;
-    margin: 1px;
+    width: 82px;
+    margin-top: 1px;
+    margin-right: 1px;
 }
 
 .SubmitHrs{

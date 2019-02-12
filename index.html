@@ -25,12 +25,9 @@
 </head>
 
 <body>
-
-    <div class="tab">
-        <button class="tab1" id="tab1" onclick="openTab1()">StuView</button>
-        <button class="tab2" id="tab2" onclick="openTab2()">Calender</button>
-    </div>
+    
     <div id="Tab1">
+            <button class="tab2" id="tab2" onclick="openTab2()">Calender</button>
     <div id="addedStudent"></div>
 
     <h1>Warren Central High School Cosmetology</h1>
@@ -39,7 +36,7 @@
     <div id="newStudent" class='newStudent'>
         <p>First Name:</p><input type="text" class="input1" id="firstName1"><br>
         <p>Last Name:</p><input type="text" class="input1" id="lastName1"><br>
-        <p>Class Period(1-7)</p><input class="input1" type="number" value=1 min=1 max=7 id="classPeriod"><br>
+        <p>Class Period(1-7)</p><input class="input2" type="number" value=1 min=1 max=7 id="classPeriod"><br>
         <p>Year:</p>
         <input type=radio name=year value=1 class="radio" checked>1 &emsp;
         <input type=radio name=year value=2 class='radio'>2
@@ -79,6 +76,7 @@
     </div>
     </div>
     <div id="Tab2">
+        <button class="tab1" id="tab1" onclick="openTab1()">StuView</button>
 
         <div class="calender" id="listView"><h2>Im saving the calenders spot</h2></div>
 

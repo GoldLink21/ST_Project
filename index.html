@@ -69,8 +69,16 @@
                 <div class="header">
                     <th>Student Name</th>
                     <th>Student Time</th>
-                    <th>Period</th>
-                    <th>Year</th>
+                    <th>Period<select class="dropDown">
+                            <option value=""></option>
+                            <option value="1">3-4</option>
+                            <option value="2">6-7</option>
+                        </select></th>
+                        <th>Year<select class="drowDown">
+                                <option value=""></option>
+                                <option value="4">1st</option>
+                                <option value="8">2nd</option>
+                            </select></th>
                     <th>Adding Time</th>
                 </div>
             </tr>
@@ -135,6 +143,7 @@
             document.getElementById("Tab2").style.display='block';
 
         }
+        studentInit();
     </script>
 
 </body>

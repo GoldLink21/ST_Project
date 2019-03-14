@@ -64,6 +64,20 @@
  */
 
 
+const Time={
+    /**Returns the time in minutes from hours and minutes */
+    toMin(hour=0,min=0){
+        return (parseInt(hour)*60)+parseInt(min)
+    },
+    /**Returns an object with hour and min holding the times from the minutes passed in*/
+    toHours(min=0){
+        return {hour:Math.floor(min/60),min:min%60}
+    }
+}
+
+/**Time needed until they have all time */
+const MinutesNeeded=Time.toMin(1500)
+
 var ref=firebase.app().database().ref()
 /**Allows referencing the users quicker */
 var userRef=ref.child('users')
@@ -128,16 +142,19 @@ function setStuData(fn,ln,{firstName,lastName,period,year,min}={}){
     ref.update(updateObj)
 }
 
-function findStusWith({firstName,lastName,minMin,minMax,year}={}){
+function findStusWith({firstName,lastName,period,minMin,minMax,year}={}){
     return students.filter(stuAndRef=>{
         var stu=stuAndRef.stu
+        
         var fn=firstName===undefined||stu.firstName.includes(firstName),
             ln=lastName===undefined||stu.lastName.includes(lastName),
             sMin=parseInt(stu.min),
             minLess=minMin===undefined||sMin>=minMin,
             minMore=minMax===undefined||sMin<=minMax,
-            years=year===undefined||stu.year==parseInt(year)
-        return fn&&ln&&minLess&&minMore&&years
+            years=year===undefined||parseInt(stu.year)==parseInt(year)
+            periods=period===undefined||parseInt(stu.period)==parseInt(period)
+
+        return fn&&ln&&minLess&&minMore&&years&&periods
     })
 }
 
@@ -166,7 +183,9 @@ function removeStu(fn,ln,isCaseSensitive){
 }
 var addingId=1
 function addToTable(stu){
+    
     var row=document.createElement('tr')
+
     function addToRow(s){
         var ele=document.createElement('td')
         ele.innerHTML=s
@@ -175,49 +194,64 @@ function addToTable(stu){
     }
     
     function addToRowInput(){
-        var dateE = document.createElement("input");
-        var hrs = document.createElement("input");
-        var min = document.createElement("input");
-        var but = document.createElement("button");
-        var br = document.createElement("br");
         var y = document.createElement('td');
-        dateE.classList.add("addingTimeDate");
-        hrs.classList.add("addingTime");
-        min.classList.add("addingTime");
-        but.classList.add("SubmitHrs");
-        dateE.id = "addingTimeDate"+addingId;
-        hrs.id = "addingHrs"+addingId;
-        min.id = "addingMin"+addingId;
-        but.id = "SubmitHrs"+addingId;
+        y.classList.add('all')
+        function appendToY(...eles){
+            eles.forEach(ele=>y.appendChild(ele));
+        }
+        function e(elementType,id,type,...classes){
+            var ele=document.createElement(elementType)
+            ele.id=id;
+            classes.forEach(clas=>ele.classList.add(clas));
+            if(elementType==='input'){
+                ele.setAttribute('type',type);
+                if(type==='number')
+                    ele.setAttribute('value','0');
+            }
+            return ele;
+        }
+        var dateE = e('input',"addingTimeDate"+addingId,'text',"addingTimeDate");
+        var hrs = e('input',"addingHrs"+addingId,'number',"addingTime");
+        var min = e('input',"addingMin"+addingId,'number',"addingTime");
+        var but = e("button","SubmitHrs"+addingId,undefined,"SubmitHrs");
+        var back = e('div',undefined,undefined,'back');
+
+        //Since you didn't want to create them I did lol. You get to add the classes and all that but I did what I wanted to do.
+        var pTag1 = e('p',undefined,undefined,'addingTime');
+        var pTag2 = e('p',undefined,undefined,'addingTime');
+        pTag1.innerHTML='Hours'
+        pTag2.innerHTML='Minutes'
+        pTag1.appendChild(hrs)
+        pTag2.appendChild(min)
+
+        var br = document.createElement("br");
+
         addingId++
-        dateE.setAttribute("type", "text");
-        hrs.setAttribute("type", "number");
-        hrs.setAttribute('value', '0');
-        min.setAttribute("type", "number");
-        min.setAttribute('value', '0');
         but.innerHTML = "Submit";
         but.onclick=function(){
             /**@type {String} */
-            var id=but.id
-            var table=getTableNum(id.replace('SubmitHrs',''))
-            var student=students[Number(id.replace('SubmitHrs',''))-1]
-            var d=table.children[4].children[0],
-                h=table.children[4].children[2],
-                m=table.children[4].children[3]
+            var id=Number(this.id.replace('SubmitHrs',''))
+            console.log(id)
+            //var table=getTableNum(id.replace('SubmitHrs',''))
+            var student=students[id-1]
+            //console.log(student,id)
+
+            var d=document.getElementById('addingTimeDate'+id),
+                h=document.getElementById('addingHrs'+id),
+                m=document.getElementById('addingMin'+id)
             var nDate=new Date(d.value).toDateString()
 
             var dat=date(nDate,Time.toMin(Number(h.value),Number(m.value)))
             if(dat.date!=='Invalid Date'&&dat.min!==0){
                 addDateToStu(student,dat)
             }
-            console.log(dat,)
-            //addDateToStu(student,)
+            tallyStudentHours()
+            updateAll()
+            //////////////////////////////////window.scrollTo('SubmitHrs'+id)
+            
         };
-        y.appendChild(dateE);
-        y.appendChild(br);
-        y.appendChild(hrs);
-        y.appendChild(min);
-        y.appendChild(but);
+        back.appendChild(but)
+        appendToY(dateE,br,pTag1,pTag2,back)
         row.appendChild(y);
         cal.attachObj(dateE);
         dateE.onfocus=function(){if(cal.isVisible())cal.show(date.id)}
@@ -228,9 +262,40 @@ function addToTable(stu){
     
     addToRow(stu.lastName+", "+stu.firstName)//.classList.add('dropDownContent')
     var t=Time.toHours(stu.min)
-    addToRow(t.hour+' hours, '+t.min+' minutes').classList.add('dropDown')
-    addToRow(stu.period)
-    addToRow(stu.year)
+
+    function parsePeriod(prd){
+        if(prd==1)
+            return '1-4'
+        else if(prd==2)
+            return '5-7'
+        else return 'Unknown periods'
+    }
+    function parseYear(year=0){
+        if(year==1)
+            return '1st'
+        else if(year==2)
+            return '2nd'
+        //Just in case for debugging
+        else if(year==3)
+            return '3rd'
+        else
+            return year+'th'
+    }
+    function getTime(){
+        var minNeed=Time.toHours(MinutesNeeded-stu.min)
+        var str=t.hour+' hours, '+t.min+' minutes <br> <div>To go: '+minNeed.hour+':'
+        if(minNeed.min.toString().length===1)
+            str+='0'+minNeed.min
+        else
+            str+=minNeed.min
+
+        str+='</div>'
+        return str
+    }
+
+    addToRow(getTime()).classList.add('dropDown')
+    addToRow(parsePeriod(stu.period))
+    addToRow(parseYear(stu.year))
     addToRowInput();
 
     table.appendChild(row)
@@ -239,17 +304,6 @@ function addToTable(stu){
 function getTableNum(n){
     var table=document.getElementById('listView').children[1]
     return table.children[n]
-}
-
-function sortByLastFirst(){
-    return students.sort((a,b)=>{
-        var lastA = a.stu.lastName;
-        var lastB = b.stu.lastName;
-    
-        if (lastA < lastB) return -1;
-        if (lastA > lastB) return 1;
-        return 0;
-    })
 }
 
 function sortStus(){
@@ -277,33 +331,33 @@ function sortStus(){
 
 /**Goes through every student and tallies up their calendar's minutes to update the running total minutes */
 function tallyStudentHours(){
+    /////////////////////////////////Fix joining of same day minutes
     students.forEach(stuAndRef=>{
         var stu=stuAndRef.stu
         if(stu.hasUpdatedTime){
             console.log('tallied ',stu.firstName,stu.lastName)
             var min=0
             //Joins together dates of the same day
-            /**@type {Array} */
+            /**@type {{min,date}[]} */
             var c=stu.calendar
             for(let i=0;i<c.length;i++){
-                for(let j=i+1;j<c.length;j++){
-                    if(c[i].date===c[j].date){
-                        console.log('Same Date')
+                for(let j=0;j<c.length;j++){
+                    if(i!==j&&c[i].date===c[j].date){
                         var m=Number(c[i].min)+Number(c[j].min)
                         c.splice(j--,1)
-                        i--
-                        c[i].min=m
+                        i
+                        c[i].min=m///////////////////////////////////////////////////////////////////////////////// 
                     }
                 }
             }
             for(let i=0;i<c.length;i++)
                 if(Number(c[i].min)===0)
                     c.splice(i--,1)
-            console.log(c)
             stu.calendar.forEach(dateAndMin=>{
                 min+=parseInt(dateAndMin.min)
             })
             var o={}
+            o[stuAndRef.ref+'calendar']=c
             o[stuAndRef.ref+'min']=min
             o[stuAndRef.ref+'hasUpdatedTime']=false
             ref.update(o)
@@ -314,6 +368,7 @@ function tallyStudentHours(){
 /**Adds all students from the database to the local students array */
 function studentInit(){
     students=[]
+    addingId=1
     ref.once('value',(snapshot)=>{
         var val=snapshot.val();
         for(p1 in val){
@@ -330,6 +385,10 @@ function studentInit(){
 
 function showStudentsInTable(arr){
     clearTable()
+    console.log(arr)
+    if(arr.length===0)
+        return
+    console.log(arr)
     if(arr[0].stu){
         arr.map(ele=>ele.stu).forEach(stu=>{
             addToTable(stu)
@@ -358,12 +417,12 @@ function listStudentsInConsole(){
  * @param {string} lastName The student's last name
  * @param {number} curHours The current ammount of hours the student has
  * @param {number} curMins The current ammount of minutes out of an hour the student has
- * @param {1|2|3|4|5|6|7} classPeriod The 1st period that the student has the class
+ * @param {1|2} classPeriod The 1st period that the student has the class
  * @param {1|2} year The year the student is enrolled in. 1 || 2
  */
 function addStudent(firstName,lastName,classPeriod,year,curHours=0,curMins=0){
     var hasData=(firstName!==undefined&&firstName!==''&&lastName!==undefined&&lastName!==''&&classPeriod!==undefined&&year!==undefined),
-        dataGood=(/^[1-7]{1}$/.test(classPeriod)&&/[1-2]/.test(year)&&parseInt(classPeriod)===parseFloat(classPeriod)&&parseInt(year)===parseFloat(year))
+        dataGood=(/^[1-2]{1}$/.test(classPeriod)&&/[1-2]/.test(year)&&parseInt(classPeriod)===parseFloat(classPeriod)&&parseInt(year)===parseFloat(year))
     if(hasData&&dataGood){
         var stu={
             firstName:firstName,
@@ -416,16 +475,7 @@ function addDateToStu(stuAndRef,dateAndMin){
     console.log(stuAndRef.stu)
 }
 
-const Time={
-    /**Returns the time in minutes from hours and minutes */
-    toMin(hour=0,min=0){
-        return (parseInt(hour)*60)+parseInt(min)
-    },
-    /**Returns an object with hour and min holding the times from the minutes passed in*/
-    toHours(min=0){
-        return {hour:Math.floor(min/60),min:min%60}
-    }
-}
+
 
 
 function today(min){
@@ -511,9 +561,9 @@ function clearTable(){
 
 //These update the table on any value changing in the database
 //ref.on('child_added',updateAll)
-ref.on('child_removed',updateAll)
-ref.on('child_changed',updateAll)
-ref.on('child_moved',updateAll)
+//ref.on('child_removed',updateAll)
+//ref.on('child_changed',updateAll)
+//ref.on('child_moved',updateAll)
 
 /**I keep this here in case I need to update more than just the table when the database changes */
 function updateAll(){
@@ -550,7 +600,7 @@ function sampleStudents(n=1){
     }
     var i=0;
     var func=function(){
-        addStudent(rnd(fns),rnd(lns),parseInt(Math.random()*7)+1,parseInt(Math.random()*2)+1)
+        addStudent(rnd(fns),rnd(lns),parseInt(Math.random()*2)+1,parseInt(Math.random()*2)+1)
         if(++i<n)
             setTimeout(func,75)
     }
@@ -568,3 +618,9 @@ function submit(){
     document.body.style.backgroundColor = 'black';
 }
 
+
+
+var o
+ref.on('value',function(snap){
+    o=snap.val()
+})

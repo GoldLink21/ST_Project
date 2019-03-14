@@ -39,11 +39,11 @@
         <p>First Name:</p><input type="text" class="input1" id="firstName1"><br>
         <p>Last Name:</p><input type="text" class="input1" id="lastName1"><br>
         <p>Class Period</p>
-        <input class="input2" type="radio" value=3 id="classPeriod">(1-4)
-        <input class="input2" type="radio" value=4 id="classPeriod">(5-8)
+        <input class="input2" type="radio" value=1 id="classPeriod" name='period' checked>(1-4)
+        <input class="input2" type="radio" value=2 id="classPeriod" name='period'>(5-7)
         <p>Year:</p>
-        <input type=radio name=year value=1 class="radio" checked>1 &emsp;
-        <input type=radio name=year value=2 class='radio'>2
+        <input type=radio name="year" value=1 class="radio" checked>1 &emsp;
+        <input type=radio name="year" value=2 class='radio'>2
         <br>
         <p><button id="submit1" onclick="newStuFunc();document.getElementById('firstName1').focus()">Submit</button></p>
         <p><button id='close1' onclick="toggleNewStudentWindow()">Close</button></p>
@@ -71,16 +71,16 @@
                 <div class="header">
                     <th>Student Name</th>
                     <th>Student Time</th>
-                    <th>Period<select class="dropDown">
-                            <option value=""></option>
-                            <option value="1">1-4</option>
-                            <option value="2">5-8</option>
-                        </select></th>
-                        <th>Year<select class="drowDown">
-                                <option value=""></option>
-                                <option value="4">1st</option>
-                                <option value="8">2nd</option>
-                            </select></th>
+                    <th>Period <select id='periodFilter' class="dropDown" onchange="alert(document.getElementById('periodFilter').value)">
+                        <option value="all">All</option>
+                        <option value="1-4">1-4</option>
+                        <option value="5-7">5-7</option>
+                    </select></th>
+                    <th>Year <select id='yearFilter' class="drowDown" onchange="alert(document.getElementById('yearFilter').value)">
+                        <option value="all">All</option>
+                        <option value="1">1st</option>
+                        <option value="2">2nd</option>
+                    </select></th>
                     <th>Adding Time</th>
                 </div>
             </tr>
@@ -100,9 +100,10 @@
         function newStuFunc() {
             var first = document.getElementById('firstName1'),
                 last = document.getElementById('lastName1'),
-                classNum = document.getElementById('classPeriod'),
+                classNum = document.getElementsByName('period'),
                 year = document.getElementsByName('year'),
                 yearVal,
+                classVal,
                 min,
                 hour
             
@@ -110,16 +111,22 @@
                 if(ele.checked)
                     yearVal=ele.value
             })
+            Array.from(classNum).forEach(ele=>{
+                console.log(ele)
+                if(ele.checked)
+                    classVal=ele.value
+            })
 
             if(document.getElementById('checked').checked){
                 min=document.getElementById('preMin').value
                 hour=document.getElementById('preHour').value
             }
-            if (addStudent(first.value, last.value,classNum.value, yearVal,hour,min)) {
+            if (addStudent(first.value, last.value,classVal, yearVal,hour,min)) {
                 first.value = "";
                 last.value = "";
                 classNum.value = 1;
                 year.value = null;
+
             }
         }
  

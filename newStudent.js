@@ -64,6 +64,7 @@
  */
 
 
+
 const Time={
     /**Returns the time in minutes from hours and minutes */
     toMin(hour=0,min=0){
@@ -77,6 +78,8 @@ const Time={
 
 /**Time needed until they have all time */
 const MinutesNeeded=Time.toMin(1500)
+/**This is the max amount of extra time they can get */
+const MaxExtra=Time.toMin(150)
 
 var ref=firebase.app().database().ref()
 /**Allows referencing the users quicker */
@@ -99,8 +102,8 @@ function calOnLoad(){
 }
 
 /**Takes a date string and uses it to make an object with minutes */
-function date(dateString,min){
-    return {date:new Date(dateString).toDateString(),min:min}
+function date(dateString,min,isExtra=false){
+    return {date:new Date(dateString).toDateString(),min:min,isExtra:isExtra}
 }
 
 /**@returns {Promise} a promise with the student data in it. Use getStu instead because it returns from the student array */
@@ -170,6 +173,7 @@ function removeStu(fn,ln,isCaseSensitive){
                 if(confirm('Are you sure you want to remove '+fn+' '+ln+'?')){
                     var updateObj={}
                     updateObj[p1]=null
+                    console.log(updateObj)
                     userRef.update(updateObj)
                     hasRemoved=true
                 }else{
@@ -181,6 +185,13 @@ function removeStu(fn,ln,isCaseSensitive){
     if(!hasRemoved)
         alert('Could not find student '+fn+' '+ln)
 }
+
+function removeByRef(reference){
+    //If you pass in stu and ref
+    ref.child(reference).remove((error)=>console.log(error))
+
+}
+
 var addingId=1
 function addToTable(stu){
     
@@ -251,7 +262,7 @@ function addToTable(stu){
             
         };
         back.appendChild(but)
-        appendToY(dateE,br,pTag1,pTag2,back)
+        appendToY(dateE,pTag1,pTag2,back)
         row.appendChild(y);
         cal.attachObj(dateE);
         dateE.onfocus=function(){if(cal.isVisible())cal.show(date.id)}
@@ -299,6 +310,27 @@ function addToTable(stu){
     addToRowInput();
 
     table.appendChild(row)
+}
+
+var filters={}
+
+function filterChangePeriod(){
+    var val=document.getElementById('periodFilter').value;
+    if(val!=='all')
+        filters.period=val    
+    else
+        delete filters.period
+    
+    showStudentsInTable(findStusWith(filters))
+}
+function filterChangeYear(){
+    var val=document.getElementById('yearFilter').value;
+    if(val!=='all')
+        filters.year=val    
+    else
+        delete filters.year
+
+    showStudentsInTable(findStusWith(filters))
 }
 
 function getTableNum(n){
@@ -367,6 +399,7 @@ function tallyStudentHours(){
 
 /**Adds all students from the database to the local students array */
 function studentInit(){
+    openLoadTab()
     students=[]
     addingId=1
     ref.once('value',(snapshot)=>{
@@ -375,29 +408,34 @@ function studentInit(){
             for(p2 in val[p1]){
                 //Adds all the students to the table
                 students.push({ref:p1+'/'+p2+'/',stu:val[p1][p2]})
-                //addToTable(val[p1][p2])
             }
         }
     }).then(()=>{
         sortStus().forEach(stu=>addToTable(stu.stu))
+        openTab1()
     })
 }
 
-function showStudentsInTable(arr){
-    clearTable()
-    console.log(arr)
-    if(arr.length===0)
-        return
-    console.log(arr)
-    if(arr[0].stu){
-        arr.map(ele=>ele.stu).forEach(stu=>{
-            addToTable(stu)
-        })
-    }else{
-        arr.forEach(stu=>{
-            addToTable(stu)
-        })
-    }
+async function showStudentsInTable(arr){
+    openLoadTab()
+    new Promise(()=>{
+        
+        clearTable()
+        addingId=0
+        //console.log(arr)
+        if(arr.length===0)
+            return
+        //console.log(arr)
+        if(arr[0].stu){
+            arr.map(ele=>ele.stu).forEach(stu=>{
+                addToTable(stu)
+            })
+        }else{
+            arr.forEach(stu=>{
+                addToTable(stu)
+            })
+        }
+    }).then(openTab1())
 }
 
 /**Just a debugging function to confirm access to the database */
@@ -447,6 +485,12 @@ function addStudent(firstName,lastName,classPeriod,year,curHours=0,curMins=0){
             alert("Make sure all inputs are within range")
         return false;
     }
+}
+
+function addRefsToStus(){
+    userRef.once('value',(snapshot)=>{
+        var val=snapshot.val()
+    })
 }
 
 //Adds a data and minutes to the student with fn, ln
@@ -575,10 +619,13 @@ function updateTable(){
     studentInit()
 }
 
+var overrideAskRemove=false
+
 /**Removes all students that are year 2 and moves all year 1 students to 2 */
 function removeYear2(){
     if(confirm('Are you sure you want to remove all year 2 students?')&&confirm('Are you really sure?')){
-        students.filter(stu=>stu.stu.year==2).forEach(stu=>{
+        overrideAskRemove=true
+        students.filter(stu=>stu.stu.year>=2).forEach(stu=>{
             removeStu(stu.stu.firstName,stu.stu.lastName)
         })
         students.forEach(stuAndRef=>{
@@ -586,6 +633,7 @@ function removeYear2(){
             o[stuAndRef.ref+'year']=parseInt(stuAndRef.stu.year)+1
             ref.update(o)
         })
+        overrideAskRemove=false
     }
 }
 

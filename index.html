@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
+<!--Screen resolution of chromebook is 1366x768 -->
 <head>
     <script src="https://www.gstatic.com/firebasejs/5.5.6/firebase.js"></script>
     <script>
@@ -36,9 +36,9 @@
 
     <div class="newStudent"><button id="studentBtn" onclick="toggleNewStudentWindow()">Add Student</button></div>
     <div id="newStudent" class='newStudent'>
-        <p>First Name:</p><input type="text" class="input1" id="firstName1"><br>
-        <p>Last Name:</p><input type="text" class="input1" id="lastName1"><br>
-        <p>Class Period</p>
+        <p>First Name:</p><input type="text" class="input1" id="firstName1">
+        <p>Last Name:</p><input type="text" class="input1" id="lastName1">
+        <p class="input2">Period:</p>
         <input class="input2" type="radio" value=1 id="classPeriod" name='period' checked>(1-4)
         <input class="input2" type="radio" value=2 id="classPeriod" name='period'>(5-7)
         <p>Year:</p>
@@ -71,12 +71,12 @@
                 <div class="header">
                     <th>Student Name</th>
                     <th>Student Time</th>
-                    <th>Period <select id='periodFilter' class="dropDown" onchange="alert(document.getElementById('periodFilter').value)">
+                    <th>Period <select id='periodFilter' class="dropDown" onchange="filterChangePeriod()">
                         <option value="all">All</option>
-                        <option value="1-4">1-4</option>
-                        <option value="5-7">5-7</option>
+                        <option value="1">1-4</option>
+                        <option value="2">5-7</option>
                     </select></th>
-                    <th>Year <select id='yearFilter' class="drowDown" onchange="alert(document.getElementById('yearFilter').value)">
+                    <th>Year <select id='yearFilter' class="drowDown" onchange="filterChangeYear()">
                         <option value="all">All</option>
                         <option value="1">1st</option>
                         <option value="2">2nd</option>
@@ -92,6 +92,9 @@
 
         <div class="calender" id="listView"><h2>Im saving the calenders spot</h2></div>
 
+    </div>
+    <div id="TabLoad">
+        <h2>Currently loading in students</h2>
     </div>
 
     <script>
@@ -143,15 +146,22 @@
     
             document.getElementById("Tab1").style.display='block';
             document.getElementById("Tab2").style.display='none';
-    
+            document.getElementById("TabLoad").style.display='none'
         }
 
         function openTab2() {
 
             document.getElementById("Tab1").style.display='none';
             document.getElementById("Tab2").style.display='block';
-
+            document.getElementById("TabLoad").style.display='none'
         }
+
+        function openLoadTab(){
+            document.getElementById("TabLoad").style.display='block'
+            document.getElementById("Tab1").style.display="none"
+            document.getElementById("Tab2").style.display="none"
+        }
+        openTab2()
         studentInit();
     </script>
 

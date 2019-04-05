@@ -339,8 +339,21 @@ function getTableNum(n){
 }
 
 function sortStus(){
-    return students.sort((a,b)=>{
-        
+    var stus=findStusWith(filters)
+
+    var y1=stus.filter(stu=>stu.stu.year==1),
+        y2=stus.filter(stu=>stu.stu.year==2)
+
+    
+
+    var y1p1=y1.filter(stu=>stu.stu.period=='1').sort(byName),
+        y1p2=y1.filter(stu=>stu.stu.period=="2").sort(byName),
+        y2p1=y2.filter(stu=>stu.stu.period=="1").sort(byName),
+        y2p2=y2.filter(stu=>stu.stu.period=="2").sort(byName)
+
+    console.log(y1,y2)
+
+    function byName(a,b){   
         
         a=a.stu
         b=b.stu
@@ -358,7 +371,9 @@ function sortStus(){
             return 1//+ret;
         else 
             return 0//+ret
-    })
+    }
+
+    return y1p1.concat(y1p2).concat(y2p1).concat(y2p2)
 }
 
 /**Goes through every student and tallies up their calendar's minutes to update the running total minutes */
@@ -490,6 +505,14 @@ function addStudent(firstName,lastName,classPeriod,year,curHours=0,curMins=0){
 function addRefsToStus(){
     userRef.once('value',(snapshot)=>{
         var val=snapshot.val()
+        var o={}
+        for(ref in val){
+            if(val[ref].ref===undefined){
+                o[ref+'/ref']="users/"+ref
+            }
+        }
+        if(Object.keys(o).length!==0)
+            userRef.update(o)
     })
 }
 
@@ -519,9 +542,6 @@ function addDateToStu(stuAndRef,dateAndMin){
     console.log(stuAndRef.stu)
 }
 
-
-
-
 function today(min){
     return date(new Date().toDateString(),min)
 }
@@ -540,11 +560,6 @@ function addCompletedWindow(first,last){
 function eleInit(){
     document.getElementById('newStudent').style.visibility='hidden';
     document.getElementById('RemoveStu').style.visibility='visible'
-    document.getElementById('preTime').style.display='none'
-}
-
-function showExtraDataInput(){
-    document.getElementById('preTime').style.display=(document.getElementById('checked').checked)?'block':'none'
 }
 
 /**Opens and closes the new student window */
@@ -553,9 +568,6 @@ function toggleNewStudentWindow(){
     var stuBtn=document.getElementById('studentBtn')
     switch(newStu.style.visibility){
         case 'visible':
-            var checked=document.getElementById('checked')
-            if(checked.checked)
-                checked.click()
             newStu.style.visibility='hidden'
             stuBtn.style.visibility='visible'
             break

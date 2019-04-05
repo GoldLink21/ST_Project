@@ -38,23 +38,14 @@
     <div id="newStudent" class='newStudent'>
         <p>First Name:</p><input type="text" class="input1" id="firstName1">
         <p>Last Name:</p><input type="text" class="input1" id="lastName1">
-        <p class="input2">Period:</p>
-        <input class="input2" type="radio" value=1 id="classPeriod" name='period' checked>(1-4)
-        <input class="input2" type="radio" value=2 id="classPeriod" name='period'>(5-7)
-        <p>Year:</p>
-        <input type=radio name="year" value=1 class="radio" checked>1 &emsp;
-        <input type=radio name="year" value=2 class='radio'>2
-        <br>
+        <div class="pack1"><p class="input2">Period:</p>
+        <div class="subpack"><input class="input2" type="radio" value=1 id="classPeriod" name='period' checked>(1-4)</div>
+        <div class="subpack"><input class="input2" type="radio" value=2 id="classPeriod" name='period'>(5-7)</div></div>
+        <div class="pack2"><p>Year:</p>
+        <div class="subpack"><input type=radio name="year" value=1 class="radio" checked>1 &emsp;</div>
+        <div class="subpack"><input type=radio name="year" value=2 class='radio'>2</div></div>
         <p><button id="submit1" onclick="newStuFunc();document.getElementById('firstName1').focus()">Submit</button></p>
         <p><button id='close1' onclick="toggleNewStudentWindow()">Close</button></p>
-        <p>Does the Student have previous time?</p>
-        <input type='checkbox' class="input1" id="checked" onchange="showExtraDataInput()">
-        <div id="preTime">
-            <p>Hours:</p>
-            <input type="number" value=0 class="input1" id="preHour">
-            <p>Minutes:</p>
-            <input type="number" value=0 class="input1" id="preMin">
-        </div>
     </div>
 
     <div id="RemoveStu"><button onclick=toggleRemoveStudentWindow()>Remove Student</button></div>

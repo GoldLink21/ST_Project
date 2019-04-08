@@ -205,8 +205,11 @@ function addToTable(stu){
     }
     
     function addToRowInput(){
-        var y = document.createElement('td');
-        y.classList.add('all')
+        var td = document.createElement('td');
+        td.classList.add('all')
+        var y=document.createElement("div")
+        y.classList.add("dateAndTime")
+        td.appendChild(y)
         function appendToY(...eles){
             eles.forEach(ele=>y.appendChild(ele));
         }
@@ -262,8 +265,9 @@ function addToTable(stu){
             
         };
         back.appendChild(but)
-        appendToY(dateE,pTag1,pTag2,back)
-        row.appendChild(y);
+        appendToY(dateE,pTag1,pTag2)
+        row.appendChild(td);
+        td.appendChild(back)
         cal.attachObj(dateE);
         dateE.onfocus=function(){if(cal.isVisible())cal.show(date.id)}
         dateE.onblur=function(){if(!cal.isVisible())cal.hide()}
@@ -321,7 +325,9 @@ function filterChangePeriod(){
     else
         delete filters.period
     
-    showStudentsInTable(findStusWith(filters))
+    //showStudentsInTable(findStusWith(filters))
+    clearTable()
+    studentInit()
 }
 function filterChangeYear(){
     var val=document.getElementById('yearFilter').value;
@@ -330,7 +336,9 @@ function filterChangeYear(){
     else
         delete filters.year
 
-    showStudentsInTable(findStusWith(filters))
+    //showStudentsInTable(findStusWith(filters))
+    clearTable()
+    studentInit()
 }
 
 function getTableNum(n){
@@ -341,17 +349,12 @@ function getTableNum(n){
 function sortStus(){
     var stus=findStusWith(filters)
 
+    return stus.sort(byName)
+
     var y1=stus.filter(stu=>stu.stu.year==1),
         y2=stus.filter(stu=>stu.stu.year==2)
 
-    
-
-    var y1p1=y1.filter(stu=>stu.stu.period=='1').sort(byName),
-        y1p2=y1.filter(stu=>stu.stu.period=="2").sort(byName),
-        y2p1=y2.filter(stu=>stu.stu.period=="1").sort(byName),
-        y2p2=y2.filter(stu=>stu.stu.period=="2").sort(byName)
-
-    console.log(y1,y2)
+    return y1.sort(byName).concat(y2.sort(byName))
 
     function byName(a,b){   
         
@@ -372,8 +375,6 @@ function sortStus(){
         else 
             return 0//+ret
     }
-
-    return y1p1.concat(y1p2).concat(y2p1).concat(y2p2)
 }
 
 /**Goes through every student and tallies up their calendar's minutes to update the running total minutes */
@@ -473,9 +474,9 @@ function listStudentsInConsole(){
  * @param {1|2} classPeriod The 1st period that the student has the class
  * @param {1|2} year The year the student is enrolled in. 1 || 2
  */
-function addStudent(firstName,lastName,classPeriod,year,curHours=0,curMins=0){
+async function addStudent(firstName,lastName,classPeriod,year,curHours=0,curMins=0){
     var hasData=(firstName!==undefined&&firstName!==''&&lastName!==undefined&&lastName!==''&&classPeriod!==undefined&&year!==undefined),
-        dataGood=(/^[1-2]{1}$/.test(classPeriod)&&/[1-2]/.test(year)&&parseInt(classPeriod)===parseFloat(classPeriod)&&parseInt(year)===parseFloat(year))
+        dataGood=(/^[1-2]{1}$/.test(classPeriod)&&/[1-2]{1}$/.test(year)&&parseInt(classPeriod)===parseFloat(classPeriod)&&parseInt(year)===parseFloat(year))
     if(hasData&&dataGood){
         var stu={
             firstName:firstName,
@@ -655,12 +656,22 @@ function sampleStudents(n=1){
             'Alice','Shane','Sam','Anne','Aliyah','Jean','Ellen','Max','Alan','Erik','Charles','Omar','Robbie','Oliver','Jimmy']
     var lns=['Smith','Johnson','Holtsclaw','Phelps','Brito','Mayorga','Smith','Law','Jones','Davis','Miller','Brown','Williams',
             'Hill','Lopez','Young','Allen','Morris','Price','Long','Nelson','Jackson','White','Phillips','Clark','Lee','Lewis']
+
+    var yrs=[1,2],
+        pds=[1,2]
     function rnd(arr){
         return arr[parseInt(Math.random()*arr.length)]
     }
     var i=0;
     var func=function(){
-        addStudent(rnd(fns),rnd(lns),parseInt(Math.random()*2)+1,parseInt(Math.random()*2)+1)
+        //////////////////////////////////////////////////////////////////////////
+        var fn=rnd(fns),ln=rnd(lns)
+        while(students.some(stu=>stu.stu.firstName===fn)&&students.some(stu=>stu.stu.lastName===ln)){
+            fn=rnd(fns)
+            ln=rnd(lns)
+            console.log(fn,ln)
+        }
+        addStudent(fn,ln,rnd(pds),rnd(yrs))
         if(++i<n)
             setTimeout(func,75)
     }
@@ -678,9 +689,16 @@ function submit(){
     document.body.style.backgroundColor = 'black';
 }
 
-
-
 var o
-ref.on('value',function(snap){
+userRef.on('value',function(snap){
     o=snap.val()
 })
+
+function clearAllStudents(){
+    if(confirm("Are you sure you want to delete all students?")&&confirm("This is irreversable and cannot be recovered after."+
+    " Are you really sure?")){
+        userRef.remove()
+        clearTable()
+        studentInit()
+    }
+}

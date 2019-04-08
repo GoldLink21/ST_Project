@@ -39,13 +39,13 @@
         <p>First Name:</p><input type="text" class="input1" id="firstName1">
         <p>Last Name:</p><input type="text" class="input1" id="lastName1">
         <div class="pack1"><p class="input2">Period:</p>
-        <div class="subpack"><input class="input2" type="radio" value=1 id="classPeriod" name='period' checked>(1-4)</div>
-        <div class="subpack"><input class="input2" type="radio" value=2 id="classPeriod" name='period'>(5-7)</div></div>
+        <div class="subpack" onclick="document.getElementsByName('period')[0].click()"><input class="input2" type="radio" value=1 id="classPeriod" name='period' checked>(1-4)</div>
+        <div class="subpack" onclick="document.getElementsByName('period')[1].click()"><input class="input2" type="radio" value=2 id="classPeriod" name='period'>(5-7)</div></div>
         <div class="pack2"><p>Year:</p>
-        <div class="subpack"><input type=radio name="year" value=1 class="radio" checked>1 &emsp;</div>
-        <div class="subpack"><input type=radio name="year" value=2 class='radio'>2</div></div>
+        <div class="subpack"  onclick="document.getElementsByName('year')[0].click()"><input type=radio name="year" value=1 class="radio" checked>1 &emsp;</div>
+        <div class="subpack" onclick="document.getElementsByName('year')[1].click()"><input type=radio name="year" value=2 class='radio'>2</div></div>
         <p><button id="submit1" onclick="newStuFunc();document.getElementById('firstName1').focus()">Submit</button></p>
-        <p><button id='close1' onclick="toggleNewStudentWindow()">Close</button></p>
+        <button id='close1' onclick="toggleNewStudentWindow()">Close</button>
     </div>
 
     <div id="RemoveStu"><button onclick=toggleRemoveStudentWindow()>Remove Student</button></div>

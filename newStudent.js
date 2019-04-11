@@ -307,10 +307,10 @@ function addToTable(stu){
         str+='</div>'
         return str
     }
-
-    addToRow(getTime()).classList.add('dropDown')
-    addToRow(parsePeriod(stu.period))
+    /////////////////////////////////////////////////////////Maybe swap positions
     addToRow(parseYear(stu.year))
+    addToRow(parsePeriod(stu.period))
+    addToRow(getTime()).classList.add('dropDown')
     addToRowInput();
 
     table.appendChild(row)
@@ -349,7 +349,7 @@ function getTableNum(n){
 function sortStus(){
     var stus=findStusWith(filters)
 
-    return stus.sort(byName)
+    //return stus.sort(byName)
 
     var y1=stus.filter(stu=>stu.stu.year==1),
         y2=stus.filter(stu=>stu.stu.year==2)

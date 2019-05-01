@@ -102,8 +102,11 @@ function calOnLoad(){
 }
 
 /**Takes a date string and uses it to make an object with minutes */
-function date(dateString,min,isExtra=false){
-    return {date:new Date(dateString).toDateString(),min:min,isExtra:isExtra}
+function date(dateString,min,extra=0){
+    return {
+        date:new Date(dateString).toDateString(),
+        min:min,
+        extra:extra}
 }
 
 /**@returns {Promise} a promise with the student data in it. Use getStu instead because it returns from the student array */
@@ -213,14 +216,18 @@ function addToTable(stu){
         function appendToY(...eles){
             eles.forEach(ele=>y.appendChild(ele));
         }
+        /**@returns {HTMLElement} */
         function e(elementType,id,type,...classes){
             var ele=document.createElement(elementType)
-            ele.id=id;
+            if(id!==undefined)
+                ele.id=id;
             classes.forEach(clas=>ele.classList.add(clas));
             if(elementType==='input'){
                 ele.setAttribute('type',type);
-                if(type==='number')
+                if(type==='number'){
                     ele.setAttribute('value','0');
+                    ele.setAttribute('min',0)
+                }
             }
             return ele;
         }
@@ -229,6 +236,9 @@ function addToTable(stu){
         var min = e('input',"addingMin"+addingId,'number',"addingTime");
         var but = e("button","SubmitHrs"+addingId,undefined,"SubmitHrs");
         var back = e('div',undefined,undefined,'back');
+
+        hrs.setAttribute('max',23)
+        min.setAttribute('max',59)
 
         //Since you didn't want to create them I did lol. You get to add the classes and all that but I did what I wanted to do.
         var pTag1 = e('p',undefined,undefined,'addingTime');
@@ -242,22 +252,36 @@ function addToTable(stu){
 
         addingId++
         but.innerHTML = "Submit";
-        but.onclick=function(){
-            /**@type {String} */
-            var id=Number(this.id.replace('SubmitHrs',''))
-            console.log(id)
+        but.setAttribute("data-ref",stu.ref)
+        //console.log(stu)
+        //but.setAttribute("data-ref",)
+        but.onclick=async function(){
+            /*@type {String} */
+            //var id=Number(this.id.replace('SubmitHrs',''))
+            //console.log(id)
             //var table=getTableNum(id.replace('SubmitHrs',''))
-            var student=students[id-1]
-            //console.log(student,id)
 
+            //var ref=
+
+            //console.log(stu)
+
+            var student=await getStuByRef(but.dataset['ref'])//students[id-1]
+            //console.log(student,id)
+            /*
             var d=document.getElementById('addingTimeDate'+id),
                 h=document.getElementById('addingHrs'+id),
                 m=document.getElementById('addingMin'+id)
-            var nDate=new Date(d.value).toDateString()
+                */
+            //var nDate=new Date(d.value).toDateString()
+            var nDate=new Date(dateE.value).toDateString()
 
-            var dat=date(nDate,Time.toMin(Number(h.value),Number(m.value)))
+            var dat=date(nDate,Time.toMin(Number(hrs.value),Number(min.value)))
+
+            //console.log(dat)
+
             if(dat.date!=='Invalid Date'&&dat.min!==0){
-                addDateToStu(student,dat)
+                //addDateToStu(student,dat)
+                addDateWithRef(student,dat)
             }
             tallyStudentHours()
             updateAll()
@@ -275,7 +299,8 @@ function addToTable(stu){
     }
     var table=document.getElementById('stuView')
     
-    addToRow(stu.lastName+", "+stu.firstName)//.classList.add('dropDownContent')
+    var e1=addToRow(stu.lastName+",<br>&nbsp;&nbsp; "+stu.firstName).classList.add('stuName')
+
     var t=Time.toHours(stu.min)
 
     function parsePeriod(prd){
@@ -308,9 +333,9 @@ function addToTable(stu){
         return str
     }
     /////////////////////////////////////////////////////////Maybe swap positions
-    addToRow(parseYear(stu.year))
-    addToRow(parsePeriod(stu.period))
-    addToRow(getTime()).classList.add('dropDown')
+    addToRow(parseYear(stu.year)).classList.add('stuYear')
+    addToRow(parsePeriod(stu.period)).classList.add('stuPeriod')
+    addToRow(getTime()).classList.add('dropDown','stuTime')
     addToRowInput();
 
     table.appendChild(row)
@@ -478,21 +503,28 @@ async function addStudent(firstName,lastName,classPeriod,year,curHours=0,curMins
     var hasData=(firstName!==undefined&&firstName!==''&&lastName!==undefined&&lastName!==''&&classPeriod!==undefined&&year!==undefined),
         dataGood=(/^[1-2]{1}$/.test(classPeriod)&&/[1-2]{1}$/.test(year)&&parseInt(classPeriod)===parseFloat(classPeriod)&&parseInt(year)===parseFloat(year))
     if(hasData&&dataGood){
+        var date=today(Time.toMin(curHours,curMins))
         var stu={
             firstName:firstName,
             lastName:lastName,
             year:year,
             /**This is the total minutes the student has. Gets converted to hours and min */
             min:Time.toMin(curHours,curMins),
+            extra:0,
             /**This will hold all the dates along with the time for that date. Adding to them will be with the date() func */
-            calendar:[today(Time.toMin(curHours,curMins))],
+            calendar:{},
             period:classPeriod,
             hasUpdatedTime:false
+        }
+        stu.calendar[date.date]={
+            min:date.min,
+            extra:date.extra
         }
         userRef.push(stu)
 
         addCompletedWindow(firstName,lastName);
         addToTable(stu)
+        addRefsToStus()
         return true;
     }else{
         if(!hasData)
@@ -517,34 +549,70 @@ function addRefsToStus(){
     })
 }
 
-//Adds a data and minutes to the student with fn, ln
-function addDateToStudent(fn,ln,dateAndMin){
-    var stuAndRef=getStu(fn,ln)
-    if(stuAndRef){
-        var cal=stuAndRef.stu.calendar
-        cal.push(dateAndMin)
-        var o={}
-        o[stuAndRef.ref+'calendar/']=cal
-        ref.update(o)
-    }else{
-        console.log(0)
+function makeUpdateObj(...pairs){
+    var o={}
+    pairs.forEach(pair=>{
+        o[pair[0]]=pair[1]
+    })
+    return o
+}
+////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////
+function addDateWithRef(stu,dateAndMin){
+    var calendar=ref.child(stu.ref).child('calendar')
+    calendar.once('value',snap=>{
+        var val=snap.val()
+        if(val[dateAndMin.date]){
+            var m=Number(val[dateAndMin.date].min)+Number(dateAndMin.min),
+                minExtra=Number(val[dateAndMin.date].extra)+Number(dateAndMin.extra)
+            val[dateAndMin.date].min=m
+            val[dateAndMin.date].extra=minExtra
+            calendar.set(val)
+        }else{
+            val[dateAndMin.date]={
+                min:dateAndMin.min,
+                extra:dateAndMin.extra
+            }
+            calendar.set(val)
+        }
+    })
+}
+
+function getStuByRef(reference){
+    if(reference.startsWith('users')){
+        reference=reference.substr('users/'.length)   
     }
+    if(reference.endsWith('/'))
+        reference=reference.substr(0,reference.length-1)
+    //console.log(reference)
+    return new Promise((resolve,reject)=>{
+        userRef.once('value',(snapshot)=>{
+            var val=snapshot.val()
+            resolve(val[reference])
+        })
+    })
 }
 
 /**Uses the actual student object to update the date */
 function addDateToStu(stuAndRef,dateAndMin){
     var o={}
     var cal=stuAndRef.stu.calendar
+    cal[dateAndMin.date]={
+        min:dateAndMin.min,
+        extra:dateAndMin.extra
+    }
     cal.push(dateAndMin)
     o[stuAndRef.ref+'calendar/']=cal
     o[stuAndRef.ref+'hasUpdatedTime']=true
     ref.update(o)
     stuAndRef.stu.hasUpdatedTime=true
-    console.log(stuAndRef.stu)
+    //console.log(stuAndRef.stu)
 }
 
-function today(min){
-    return date(new Date().toDateString(),min)
+function today(min,extra=0){
+    return date(new Date().toDateString(),min,extra)
 }
 
 var completedWindowTimeout=0,newWindow=false;
@@ -669,7 +737,7 @@ function sampleStudents(n=1){
         while(students.some(stu=>stu.stu.firstName===fn)&&students.some(stu=>stu.stu.lastName===ln)){
             fn=rnd(fns)
             ln=rnd(lns)
-            console.log(fn,ln)
+            //console.log(fn,ln)
         }
         addStudent(fn,ln,rnd(pds),rnd(yrs))
         if(++i<n)
@@ -689,6 +757,7 @@ function submit(){
     document.body.style.backgroundColor = 'black';
 }
 
+/**This is an offline copy of the database updated every time the database changes */
 var o
 userRef.on('value',function(snap){
     o=snap.val()

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<!--Screen resolution of chromebook is 1366x768 -->
+<!--Screen resolution of chromebook is 1366x768 ---- Wdith is 1567px ---  #ffedba  ---  setTimeout(()=>{console.log(document.body.getBoundingClientRect())}, 3000) -->
 <head>
     <script src="https://www.gstatic.com/firebasejs/5.5.6/firebase.js"></script>
     <script>
@@ -25,21 +25,20 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>ST Project</title>
 </head>
-
-<body onload="calOnLoad()">
+<body id="body" onload="calOnLoad()">
     
     <div id="Tab1">
             <button class="tab2" id="tab2" onclick="openTab2()">Calender</button>
     <div id="addedStudent"></div>
 
-    <h1>Warren Central High School Cosmetology</h1>
+    <h1 class="goodHead">Warren Central High School Cosmetology</h1>
 
     <div class="newStudent"><button id="studentBtn" onclick="toggleNewStudentWindow()">Add Student</button></div>
     <div id="newStudent" class='newStudent'>
         <p>First Name:</p><input type="text" class="input1" id="firstName1">
         <p>Last Name:</p><input type="text" class="input1" id="lastName1">
         <div class="pack1"><p class="input2">Period:</p>
-        <div class="subpack" onclick="document.getElementsByName('period')[0].click()"><input class="input2" type="radio" value=1 id="classPeriod" name='period' checked>(1-4)</div>
+        <div class="subpack" onclick="document.getElementsByName('period')[0].click()"><input class="input2" type="radio" value=1 id="classPeriod" name='period' checked>(1-4)</div><br>
         <div class="subpack" onclick="document.getElementsByName('period')[1].click()"><input class="input2" type="radio" value=2 id="classPeriod" name='period'>(5-7)</div></div>
         <div class="pack2"><p>Year:</p>
         <div class="subpack"  onclick="document.getElementsByName('year')[0].click()"><input type=radio name="year" value=1 class="radio" checked>1 &emsp;</div>
@@ -47,7 +46,6 @@
         <p><button id="submit1" onclick="newStuFunc();document.getElementById('firstName1').focus()">Submit</button></p>
         <button id='close1' onclick="toggleNewStudentWindow()">Close</button>
     </div>
-
     <div id="RemoveStu"><button onclick=toggleRemoveStudentWindow()>Remove Student</button></div>
     <div id="RemoveMenu">
         <p>Student First Name:<input type="text" class="input1" id="firstName2"></p>
@@ -60,7 +58,7 @@
         <table id="stuView" class="stuView">
             <tr>
                 <div class="header">
-                    <th>Student Name</th>
+                    <th>Student</th>
                     <th>Year <select id='yearFilter' class="drowDown" onchange="filterChangeYear()">
                         <option value="all">All</option>
                         <option value="1">1st</option>
@@ -106,15 +104,9 @@
                     yearVal=ele.value
             })
             Array.from(classNum).forEach(ele=>{
-                console.log(ele)
                 if(ele.checked)
                     classVal=ele.value
             })
-
-            if(document.getElementById('checked').checked){
-                min=document.getElementById('preMin').value
-                hour=document.getElementById('preHour').value
-            }
             if (addStudent(first.value, last.value,classVal, yearVal,hour,min)) {
                 first.value = "";
                 last.value = "";

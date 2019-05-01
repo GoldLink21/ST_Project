@@ -1,41 +1,42 @@
 p {
-    font-size:16px;
+    font-size:1.1vw;
 }
    
 .input1 {
-       width: 150px;
+       width: 70%;
        height: 25px;
-       font-size: 15px;
+       font-size: 1vw;
 }
 
 .input2 {
-    display: flex;
-    flex-flow: column wrap;
-    justify-content: center;
-    align-self: flex-end;
+    display: block;
     width: 40px;
     height: 20px;
     text-align: center;
-    font-size: 17px;
+    font-size: 1vw;
 }
 
 .subpack{
     margin: auto;
-    display: flex;
     height: 20px;
+    width: 45%;
 }
    
 button {
     width: 150px;
     height: 30px;
-    font-size: 15px;
+    font-size: 1vw;
 }
 
 #close1, #close2 {
     height: 25px;
-    width: 75px;
+    width: 50%;
     padding-bottom: 5px;
-    font-size: 15px;
+    font-size: 1vw;
+}
+
+#close2{
+    margin: 5px;
 }
 
 #addedStudent{
@@ -53,7 +54,9 @@ button {
 }
 
 body{
-    background-color: #ffedba
+    background-image: url("warren.png");
+    background-size: 50%;
+    background-repeat: repeat;
 }
 
 .newStudent{
@@ -62,7 +65,7 @@ body{
     align-content: space-between;
     justify-content: center;
     height: auto;
-    width: 210px;
+    width: 13%;
     padding: 10px;
     text-align: center;
     margin: 5px;
@@ -76,7 +79,7 @@ body{
 
 .newStudentMenue{
     height: auto;
-    width: 210px;
+    width: 13%;
     padding: 10px;
     text-align: center;
     margin: 5px;
@@ -138,7 +141,7 @@ tr:nth-child(even){
 
 #RemoveStu{
     height:auto;
-    width: 210px;
+    width: 13%;
     padding: 10px;
     text-align: center;
     margin: 5px;
@@ -152,8 +155,8 @@ tr:nth-child(even){
 
 #RemoveMenu{
     height:auto;
-    width: 210px;
-    padding: 10px;
+    width: 13%;
+    padding: 15px;
     text-align: center;
     margin: 5px;
     margin-left: 84%;
@@ -169,7 +172,7 @@ h1 {
     text-align: center;
     border: 3px solid rgb(95, 95, 95);
     background-color: rgb(199, 199, 199);
-    width: 750px;
+    width: 55%;
     padding: auto;
     margin: auto;
 }
@@ -197,24 +200,21 @@ h2 {
 }
 
 .addingTime{
-    width: 75px;
+    width: 50%;
     margin-left: 5px;
     margin-right: 5px;
     float: left;
+    font-size: 1vw;
     margin-bottom: -4px;
+    min-width: 35px;
 }
 
 .SubmitHrs{
-    width: 75px;
+    width: 75%;
     height: 24px;
-    font-size: 11px;
+    font-size: .9vw;
     margin-top: 13px;
     margin-left: 0px;
-}
-
-.PandY {
-    text-align: center;
-    font-size: 20px;
 }
 
 .addedTime{
@@ -225,7 +225,7 @@ h2 {
 .back{
     position: absolute;
     border: 1px black solid;
-    width: 110px;
+    width: 7%;
     Height: 50px;
     margin-left: 180px;
     margin-top: -5px;
@@ -252,9 +252,32 @@ h2 {
 .addingTimeDate{
     display: flex;
     position: absolute;
-    margin-top: -5px;
-    width: 100%;
-    max-width: 160px;
+    margin-top: -7px;
+    width: 10%;
     box-sizing: border-box;
+    margin-left: 10px;
 }
 
+.stuYear{
+    width:10%;
+}
+
+.stuPeriod{
+    width:10%;
+}
+
+.stuTime{
+    width:25%;
+}
+
+.stuName{
+    width:10%;
+}
+
+.all{
+    width:35%;
+}
+
+.goodHead{
+    width: 55%;
+}

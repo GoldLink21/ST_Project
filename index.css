@@ -189,6 +189,7 @@ h2 {
     font-size: 100px;
     text-align: center;
     padding: auto;
+    color: white;
 }
 
 .calender{
@@ -199,16 +200,6 @@ h2 {
     height: 700px;
 }
 
-.addingTime{
-    width: 50%;
-    margin-left: 5px;
-    margin-right: 5px;
-    float: left;
-    font-size: 1vw;
-    margin-bottom: -4px;
-    min-width: 35px;
-}
-
 .SubmitHrs{
     width: 75%;
     height: 24px;
@@ -217,18 +208,10 @@ h2 {
     margin-left: 0px;
 }
 
-.addedTime{
-    text-align: center;
-    padding: 12px;
-}
-
 .back{
-    position: absolute;
     border: 1px black solid;
-    width: 7%;
+    width: 30%;
     Height: 50px;
-    margin-left: 180px;
-    margin-top: -5px;
     background-color: #ffedba;
 }
 
@@ -247,15 +230,6 @@ h2 {
     display: flex;
     flex-direction: row;
     justify-content: center;
-}
-
-.addingTimeDate{
-    display: flex;
-    position: absolute;
-    margin-top: -7px;
-    width: 10%;
-    box-sizing: border-box;
-    margin-left: 10px;
 }
 
 .stuYear{

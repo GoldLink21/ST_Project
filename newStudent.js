@@ -57,10 +57,7 @@
  //You would call this as such
  findStuWith({firstName:'Bob',lastName:'Smith'})
  //You can leave out some parameters then and include specific ones. I could skip first and last name too
- findStusWith({min:10})
-
-
- 
+ findStusWith({min:10}) 
  */
 
 
@@ -85,12 +82,16 @@ var ref=firebase.app().database().ref()
 /**Allows referencing the users quicker */
 var userRef=ref.child('users')
 
+/**
+ * @type {{calendar:{Date:{min:number,extra:number}},year:number,period:number,firstName:string,
+ * lastName:string,min:number,ref:string,hasUpdatedTime:boolean,extra:number}[]} */
 var students=[];
 
 /**Allows case sensitive and case insensitive equlity checking */
 function strEqual(s1,s2,isCaseSensitive=false){
     return (isCaseSensitive)?s1===s2:s1.toLowerCase()===s2.toLowerCase()
 }
+
 var cal;
 
 /**Used to setup the calendar on the date inputs */
@@ -190,8 +191,11 @@ function removeStu(fn,ln,isCaseSensitive){
 }
 
 function removeByRef(reference){
-    //If you pass in stu and ref
-    ref.child(reference).remove((error)=>console.log(error))
+    if(reference.startsWith("users/")){
+        ref.child(reference).remove(err=>console.log(err))
+    }else{
+        userRef.child(reference).remove((error)=>console.log(error))
+    }
 
 }
 
@@ -257,6 +261,7 @@ function addToTable(stu){
         //console.log(stu)
         //but.setAttribute("data-ref",)
         but.onclick=async function(){
+            openTab(2)
             //console.log(stu)
 
             /*
@@ -296,7 +301,7 @@ function addToTable(stu){
     }
     var table=document.getElementById('stuView')
     
-    var e1=addToRow(stu.lastName+",<br>&nbsp;&nbsp; "+stu.firstName).classList.add('stuName')
+    addToRow(stu.lastName+",<br>&nbsp;&nbsp; "+stu.firstName).classList.add('stuName')
 
     var t=Time.toHours(stu.min)
 
@@ -450,7 +455,7 @@ function studentInit(){
         }
     }).then(()=>{
         sortStus().forEach(stu=>addToTable(stu.stu))
-        openTab1()
+        openTab(1)
     })
 }
 
@@ -473,7 +478,7 @@ async function showStudentsInTable(arr){
                 addToTable(stu)
             })
         }
-    }).then(openTab1())
+    }).then(openTab(1))
 }
 
 /**Just a debugging function to confirm access to the database */

@@ -210,12 +210,13 @@ function addToTable(stu){
     function addToRowInput(){
         var td = document.createElement('td');
         td.classList.add('all')
+        /*
         var y=document.createElement("div")
         y.classList.add("dateAndTime")
         td.appendChild(y)
         function appendToY(...eles){
             eles.forEach(ele=>y.appendChild(ele));
-        }
+        }*/
         /**@returns {HTMLElement} */
         function e(elementType,id,type,...classes){
             var ele=document.createElement(elementType)
@@ -231,12 +232,14 @@ function addToTable(stu){
             }
             return ele;
         }
+        /*
         var dateE = e('input',"addingTimeDate"+addingId,'text',"addingTimeDate");
         var hrs = e('input',"addingHrs"+addingId,'number',"addingTime");
         var min = e('input',"addingMin"+addingId,'number',"addingTime");
+        */
         var but = e("button","SubmitHrs"+addingId,undefined,"SubmitHrs");
         var back = e('div',undefined,undefined,'back');
-
+        /*
         hrs.setAttribute('max',23)
         min.setAttribute('max',59)
 
@@ -247,31 +250,23 @@ function addToTable(stu){
         pTag2.innerHTML='Minutes'
         pTag1.appendChild(hrs)
         pTag2.appendChild(min)
-
-        var br = document.createElement("br");
-
+        */
         addingId++
-        but.innerHTML = "Submit";
+        but.innerHTML = "Add Time";
         but.setAttribute("data-ref",stu.ref)
         //console.log(stu)
         //but.setAttribute("data-ref",)
         but.onclick=async function(){
-            /*@type {String} */
-            //var id=Number(this.id.replace('SubmitHrs',''))
-            //console.log(id)
-            //var table=getTableNum(id.replace('SubmitHrs',''))
-
-            //var ref=
-
             //console.log(stu)
 
-            var student=await getStuByRef(but.dataset['ref'])//students[id-1]
-            //console.log(student,id)
+            /*
+
+            var student=await getStuByRef(but.dataset['ref'])
             /*
             var d=document.getElementById('addingTimeDate'+id),
                 h=document.getElementById('addingHrs'+id),
                 m=document.getElementById('addingMin'+id)
-                */
+               * 
             //var nDate=new Date(d.value).toDateString()
             var nDate=new Date(dateE.value).toDateString()
 
@@ -286,16 +281,18 @@ function addToTable(stu){
             tallyStudentHours()
             updateAll()
             //////////////////////////////////window.scrollTo('SubmitHrs'+id)
+
+            */
             
         };
         back.appendChild(but)
-        appendToY(dateE,pTag1,pTag2)
+        //appendToY(dateE,pTag1,pTag2)
         row.appendChild(td);
         td.appendChild(back)
-        cal.attachObj(dateE);
+        /*cal.attachObj(dateE);
         dateE.onfocus=function(){if(cal.isVisible())cal.show(date.id)}
         dateE.onblur=function(){if(!cal.isVisible())cal.hide()}
-        dateE.value=new Date().toDateString()
+        dateE.value=new Date().toDateString()*/
     }
     var table=document.getElementById('stuView')
     

@@ -28,11 +28,14 @@
 <body id="body" onload="calOnLoad()">
     
     <div id="Tab1">
+
+    <button class="tab2" id="tab2" onclick="openTab2()">calender</button>
+
     <div id="addedStudent"></div>
 
-    <h1 class="goodHead">Warren Central High School Cosmetology</h1>
+    <h1 class="Head">Warren Central High School Cosmetology</h1>
 
-    <div class="newStudent"><button id="studentBtn" onclick="toggleNewStudentWindow()">Add Student</button></div>
+    <div class="newStudent"><button class="altbutton" id="studentBtn" onclick="toggleNewStudentWindow()">Add Student</button></div>
     <div id="newStudent" class='newStudent'>
         <p>First Name:</p><input type="text" class="input1" id="firstName1">
         <p>Last Name:</p><input type="text" class="input1" id="lastName1">
@@ -41,16 +44,16 @@
         <div class="subpack" onclick="document.getElementsByName('period')[1].click()"><input class="input2" type="radio" value=2 id="classPeriod" name='period'>(5-7)</div></div>
         <div class="pack2"><p>Year:</p>
         <div class="subpack"  onclick="document.getElementsByName('year')[0].click()"><input type=radio name="year" value=1 class="radio" checked>1 &emsp;</div>
-        <div class="subpack" onclick="document.getElementsByName('year')[1].click()"><input type=radio name="year" value=2 class='radio'>2</div></div>
+        <div class="subpack" onclick="document.getElementsByName('year')[1].click()"><input type=radio name="year" value=2 class='radio'>2</div></div><br>
         <p><button id="submit1" onclick="newStuFunc();document.getElementById('firstName1').focus()">Submit</button></p>
         <button id='close1' onclick="toggleNewStudentWindow()">Close</button>
     </div>
-    <div id="RemoveStu"><button onclick=toggleRemoveStudentWindow()>Remove Student</button></div>
+    <div id="RemoveStu"><button class="altbutton" onclick=toggleRemoveStudentWindow()>Remove Student</button></div>
     <div id="RemoveMenu">
         <p>Student First Name:<input type="text" class="input1" id="firstName2"></p>
         <p>Student Last Name:<input type="text" class="input1" id="lastName2"></p>
         <p>Case Senstive Search?<input type='checkbox' class="input1" id="checked2"></p>
-        <button id="submit2" onclick='remStuFunc();document.getElementById("firstName2").focus()'>Submit</button><br>
+        <button class="submit" id="submit2" onclick='remStuFunc();document.getElementById("firstName2").focus()'>Submit</button><br>
         <button id="close2" onclick='toggleRemoveStudentWindow()'>Close</button>
     </div>
     <div id="listView">
@@ -78,7 +81,53 @@
     <div id="Tab2">
         <button class="tab1" id="tab1" onclick="openTab1()">StuView</button>
 
-        <div class="calender" id="listView"><h2>Im saving the calenders spot</h2></div>
+        <div class="calender"><table class="calendared" id="calendered">
+            <tr>
+                <td class="calday weekend sunday">Sunday</td>
+                <td class="calday weekday">Monday</td>
+                <td class="calday weekday">Tuesday</td>
+                <td class="calday weekday">Wednesday</td>
+                <td class="calday weekday">Thursday</td>
+                <td class="calday weekday">Friday</td>
+                <td class="calday weekend">Saturday</td>
+            </tr>
+            <tr>
+                <td class="sunday"></td>
+                <td class="Days"></td>
+                <td class="Days"></td>
+                <td class="Days"></td>
+                <td class="Days"></td>
+                <td class="Days"></td>
+                <td class="Days"></td>
+            </tr>
+            <tr>
+                <td class="sunday"></td>
+                <td class="Days"></td>
+                <td class="Days"></td>
+                <td class="Days"></td>
+                <td class="Days"></td>
+                <td class="Days"></td>
+                <td class="Days"></td>
+            </tr>
+            <tr>
+                <td class="sunday"></td>
+                <td class="Days"></td>
+                <td class="Days"></td>
+                <td class="Days"></td>
+                <td class="Days"></td>
+                <td class="Days"></td>
+                <td class="Days"></td>
+            </tr>
+            <tr>
+                <td class="sunday"></td>
+                <td class="Days"></td>
+                <td class="Days"></td>
+                <td class="Days"></td>
+                <td class="Days"></td>
+                <td class="Days"></td>
+                <td class="Days"></td>
+            </tr>
+        </table></div>
 
     </div>
     <div id="TabLoad">

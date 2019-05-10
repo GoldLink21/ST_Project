@@ -83,8 +83,8 @@ var ref=firebase.app().database().ref()
 var userRef=ref.child('users')
 
 /**
- * @type {{calendar:{Date:{min:number,extra:number}},year:number,period:number,firstName:string,
- * lastName:string,min:number,ref:string,hasUpdatedTime:boolean,extra:number}[]} */
+ * @type {{ref:string,stu:{calendar:{Date:{min:number,extra:number}},year:number,period:number,firstName:string,
+ * lastName:string,min:number,ref:string,hasUpdatedTime:boolean,extra:number}}[]} */
 var students=[];
 
 /**Allows case sensitive and case insensitive equlity checking */
@@ -262,33 +262,8 @@ function addToTable(stu){
         //but.setAttribute("data-ref",)
         but.onclick=async function(){
             openTab(2)
-            //console.log(stu)
-
-            /*
-
-            var student=await getStuByRef(but.dataset['ref'])
-            /*
-            var d=document.getElementById('addingTimeDate'+id),
-                h=document.getElementById('addingHrs'+id),
-                m=document.getElementById('addingMin'+id)
-               * 
-            //var nDate=new Date(d.value).toDateString()
-            var nDate=new Date(dateE.value).toDateString()
-
-            var dat=date(nDate,Time.toMin(Number(hrs.value),Number(min.value)))
-
-            //console.log(dat)
-
-            if(dat.date!=='Invalid Date'&&dat.min!==0){
-                //addDateToStu(student,dat)
-                addDateWithRef(student,dat)
-            }
-            tallyStudentHours()
-            updateAll()
-            //////////////////////////////////window.scrollTo('SubmitHrs'+id)
-
-            */
             
+            document.querySelector('#listView > h2')
         };
         back.appendChild(but)
         //appendToY(dateE,pTag1,pTag2)
@@ -334,7 +309,6 @@ function addToTable(stu){
         str+='</div>'
         return str
     }
-    /////////////////////////////////////////////////////////Maybe swap positions
     addToRow(parseYear(stu.year)).classList.add('stuYear')
     addToRow(parsePeriod(stu.period)).classList.add('stuPeriod')
     addToRow(getTime()).classList.add('dropDown','stuTime')
@@ -342,6 +316,8 @@ function addToTable(stu){
 
     table.appendChild(row)
 }
+
+
 
 var filters={}
 
@@ -406,38 +382,31 @@ function sortStus(){
 
 /**Goes through every student and tallies up their calendar's minutes to update the running total minutes */
 function tallyStudentHours(){
-    /////////////////////////////////Fix joining of same day minutes
-    students.forEach(stuAndRef=>{
-        var stu=stuAndRef.stu
-        if(stu.hasUpdatedTime){
-            console.log('tallied ',stu.firstName,stu.lastName)
-            var min=0
-            //Joins together dates of the same day
-            /**@type {{min,date}[]} */
-            var c=stu.calendar
-            for(let i=0;i<c.length;i++){
-                for(let j=0;j<c.length;j++){
-                    if(i!==j&&c[i].date===c[j].date){
-                        var m=Number(c[i].min)+Number(c[j].min)
-                        c.splice(j--,1)
-                        i
-                        c[i].min=m///////////////////////////////////////////////////////////////////////////////// 
+    userRef.once('value',async snap=>{
+        var val=snap.val()
+        for(let stu in val){
+            var stuRef=userRef.child(stu)
+            var doCalc=false
+            await stuRef.child('hasUpdatedTime').once('value',hut=>doCalc=Boolean(hut.val()))
+            if(doCalc){
+                var calRef=stuRef.child('calendar')
+                var totals={min:0,extra:0}
+                calRef.once('value',snap2=>{
+                    var val2=snap2.val()
+                    //console.log(val2)
+                    for(key in val2){
+                        totals.min+=Number(val2[key].min)
+                        totals.extra+=Number(val2[key].extra)
                     }
-                }
+                }).then(()=>{
+                    console.log(totals)
+                    stuRef.child('min').set(totals.min)
+                    stuRef.child('extra').set(totals.extra)
+                    stuRef.child('hasUpdatedTime').set(false)
+                })
             }
-            for(let i=0;i<c.length;i++)
-                if(Number(c[i].min)===0)
-                    c.splice(i--,1)
-            stu.calendar.forEach(dateAndMin=>{
-                min+=parseInt(dateAndMin.min)
-            })
-            var o={}
-            o[stuAndRef.ref+'calendar']=c
-            o[stuAndRef.ref+'min']=min
-            o[stuAndRef.ref+'hasUpdatedTime']=false
-            ref.update(o)
         }
-    })
+    }).then(updateAll())
 }
 
 /**Adds all students from the database to the local students array */
@@ -580,6 +549,7 @@ function addDateWithRef(stu,dateAndMin){
             calendar.set(val)
         }
     })
+    calendar.parent.child("hasUpdatedTime").set(true)
 }
 
 function getStuByRef(reference){
@@ -595,22 +565,6 @@ function getStuByRef(reference){
             resolve(val[reference])
         })
     })
-}
-
-/**Uses the actual student object to update the date */
-function addDateToStu(stuAndRef,dateAndMin){
-    var o={}
-    var cal=stuAndRef.stu.calendar
-    cal[dateAndMin.date]={
-        min:dateAndMin.min,
-        extra:dateAndMin.extra
-    }
-    cal.push(dateAndMin)
-    o[stuAndRef.ref+'calendar/']=cal
-    o[stuAndRef.ref+'hasUpdatedTime']=true
-    ref.update(o)
-    stuAndRef.stu.hasUpdatedTime=true
-    //console.log(stuAndRef.stu)
 }
 
 function today(min,extra=0){
@@ -686,12 +640,6 @@ function clearTable(){
     }
 }
 
-//These update the table on any value changing in the database
-//ref.on('child_added',updateAll)
-//ref.on('child_removed',updateAll)
-//ref.on('child_changed',updateAll)
-//ref.on('child_moved',updateAll)
-
 /**I keep this here in case I need to update more than just the table when the database changes */
 function updateAll(){
     updateTable()
@@ -734,7 +682,6 @@ function sampleStudents(n=1){
     }
     var i=0;
     var func=function(){
-        //////////////////////////////////////////////////////////////////////////
         var fn=rnd(fns),ln=rnd(lns)
         while(students.some(stu=>stu.stu.firstName===fn)&&students.some(stu=>stu.stu.lastName===ln)){
             fn=rnd(fns)
@@ -751,7 +698,8 @@ function sampleStudents(n=1){
 function addRangedTimeToStus(rnd=500){
     students.forEach(stuAndRef=>{
         var stu=stuAndRef.stu
-        addDateToStudent(stu.firstName,stu.lastName,today(parseInt(Math.random()*rnd)))
+        addDateWithRef(stu,today(parseInt(Math.random()*rnd)))
+        //addDateToStudent(stu.firstName,stu.lastName)
     })  
 }
 

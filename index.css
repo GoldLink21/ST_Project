@@ -18,6 +18,7 @@ p {
 
 .subpack{
     margin: auto;
+    padding: auto;
     height: 20px;
     width: 45%;
 }
@@ -84,7 +85,7 @@ body{
 .newStudentMenue{
     height: auto;
     width: 13%;
-    padding: 10px;
+    padding: 15px;
     text-align: center;
     margin: 5px;
     margin-left: 1%;
@@ -218,12 +219,12 @@ h2 {
 }
 
 .submit1{
-    
+    margin: auto;
+    width: 100%;
 }
 
 .extraSpace{
-    margin: 5px;
-    border: 1px solid black;
+    width: 100%;
 }
 
 .SubmitHrs{
@@ -317,6 +318,14 @@ h2 {
 
 .NameOnCal{
     font-size: 1.2em;
+}
+
+.block1{
+    font-size: 1vw;
+}
+
+.resize{
+    width: 80%;
 }
 
 .month{

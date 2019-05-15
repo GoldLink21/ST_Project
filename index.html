@@ -45,8 +45,8 @@
         <div class="pack2"><p>Year:</p>
         <div class="subpack"  onclick="document.getElementsByName('year')[0].click()"><input type=radio name="year" value=1 class="radio" checked>1 &emsp;</div>
         <div class="subpack" onclick="document.getElementsByName('year')[1].click()"><input type=radio name="year" value=2 class='radio'>2</div></div><br>
-        <p><button id="submit1" onclick="newStuFunc();document.getElementById('firstName1').focus()">Submit</button></p>
-        <button id='close1' onclick="toggleNewStudentWindow()">Close</button>
+        <p class="extraSpace"><button class="submit1" id="submit1" onclick="newStuFunc();document.getElementById('firstName1').focus()">Submit</button></p>
+        <br><button id='close1' onclick="toggleNewStudentWindow()">Close</button>
     </div>
     <div id="RemoveStu"><button class="altbutton" onclick=toggleRemoveStudentWindow()>Remove Student</button></div>
     <div id="RemoveMenu">
@@ -79,9 +79,11 @@
     </div>
     </div>
     <div id="Tab2">
-        <button class="tab1" id="tab1" onclick="openTab1()">StuView</button>
+        <button class="tab1" id="tab1" onclick="openTab1()">Go Back</button>
 
         <div class="calender"><table class="calendared" id="calendered">
+            <tr><td class="NameOnCal" colspan='7'>Student Name</td></tr>
+            <tr><th class="month" id="month" colspan="7">May</th></tr>
             <tr>
                 <td class="calday weekend sunday">Sunday</td>
                 <td class="calday weekday">Monday</td>
@@ -93,7 +95,22 @@
             </tr>
             <tr>
                 <td class="sunday"></td>
+                <td class="Days">
+                    <span class="gacha">1</span><br><div class="block1"><div>Hours:<input min="0" max='24' type="number"></div><div>Minutes:<input min='0' max='59' type="number"></div><div>IsExtra:<input type="checkbox">&nbsp;<button>Submit</button></div></div>
+                </td>
+                <td class="Days">
+                        <span class="gacha">1</span><br><div class="">Hours:<input min="0" max='24' type="number"></div><div>Minutes:<input min='0' max='59' type="number"></div><div>IsExtra:<input type="checkbox">&nbsp;<button>Submit</button></div>
+                </td>
                 <td class="Days"></td>
+                <td class="Days"></td>
+                <td class="Days"></td>
+                <td class="Days"></td>
+            </tr>
+            <tr>
+                <td class="sunday"></td>
+                <td class="Days">
+                        <span class="gacha">1</span><br><div class="">Hours:<input min="0" max='24' type="number"></div><div>Minutes:<input min='0' max='59' type="number"></div><div>IsExtra:<input type="checkbox">&nbsp;<button>Submit</button></div>
+                </td>
                 <td class="Days"></td>
                 <td class="Days"></td>
                 <td class="Days"></td>
@@ -102,16 +119,9 @@
             </tr>
             <tr>
                 <td class="sunday"></td>
-                <td class="Days"></td>
-                <td class="Days"></td>
-                <td class="Days"></td>
-                <td class="Days"></td>
-                <td class="Days"></td>
-                <td class="Days"></td>
-            </tr>
-            <tr>
-                <td class="sunday"></td>
-                <td class="Days"></td>
+                <td class="Days">
+                        <span class="gacha">1</span><br><div class="">Hours:<input min="0" max='24' type="number"></div><div>Minutes:<input min='0' max='59' type="number"></div><div>IsExtra:<input type="checkbox">&nbsp;<button>Submit</button></div>
+                </td>
                 <td class="Days"></td>
                 <td class="Days"></td>
                 <td class="Days"></td>
@@ -120,7 +130,9 @@
             </tr>
             <tr>
                 <td class="sunday"></td>
-                <td class="Days"></td>
+                <td class="Days">
+                        <span class="gacha">1</span><br><div class="">Hours:<input min="0" max='24' type="number"></div><div>Minutes:<input min='0' max='59' type="number"></div><div>IsExtra:<input type="checkbox">&nbsp;<button>Submit</button></div>
+                </td>
                 <td class="Days"></td>
                 <td class="Days"></td>
                 <td class="Days"></td>

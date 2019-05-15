@@ -217,6 +217,15 @@ h2 {
     width: 100%;
 }
 
+.submit1{
+    
+}
+
+.extraSpace{
+    margin: 5px;
+    border: 1px solid black;
+}
+
 .SubmitHrs{
     width: 75%;
     height: 50%;
@@ -294,7 +303,7 @@ h2 {
 }
 
 .weekend{
-    background-color: cornsilk;
+    background-color: slategray
 }
 
 .weekday{
@@ -302,5 +311,25 @@ h2 {
 }
 
 .Days{
-    font-size: 1.2vw;
+    font-size: 1.2em;
+    height: 50px;
+}
+
+.NameOnCal{
+    font-size: 1.2em;
+}
+
+.month{
+    background-color: cornsilk;
+    font-size: 2em;
+}
+
+.otherMonth{
+    background-color: darkgrey;
+}
+
+.gacha{
+    float: left;
+    font-size: 1em;
+    border: 1px black solid;
 }

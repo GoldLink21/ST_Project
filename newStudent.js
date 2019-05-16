@@ -283,7 +283,9 @@ function addToTable(stu){
             //////////////////////////////////window.scrollTo('SubmitHrs'+id)
 
             */
-            
+            openLoadTab()
+            await loadAllCalendar(new Date().getMonth())
+            openTab2()
         };
         back.appendChild(but)
         //appendToY(dateE,pTag1,pTag2)
@@ -336,6 +338,37 @@ function addToTable(stu){
     addToRowInput();
 
     table.appendChild(row)
+}
+/**Loads in all dates on the calendar */
+function loadAllCalendar(month){
+    var months=["January","February","March","April","May","June","July","August","September","October","November","December"],
+        days=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
+    
+    document.getElementById("month").innerHTML=months[month]
+    var first=new Date()
+    first.setDate(1)
+    var firstDayOfMonth=first.getDay()
+    //console.log(first,firstDayOfMonth)
+
+    var allEle=Array.from(document.getElementsByClassName('allDays'))
+
+    allEle.forEach(e=>e.innerHTML='')
+    var lastDayOfMonth=new Date()
+    lastDayOfMonth.setMonth(month+1)
+    lastDayOfMonth.setDate(0)
+    console.log(lastDayOfMonth)
+    for(let i=firstDayOfMonth;i<lastDayOfMonth.getDate()+firstDayOfMonth;i++){
+        var span=document.createElement('span')
+        span.classList.add("gacha")
+        var curDay=i-firstDayOfMonth+1
+        span.innerHTML=curDay
+
+
+        allEle[i].appendChild(span)
+        allEle[i].appendChild(document.createElement('br'))
+        var d1=document.createElement('div')
+        d1.classList.add()
+    }
 }
 
 var filters={}
@@ -402,13 +435,14 @@ function sortStus(){
 /**Goes through every student and tallies up their calendar's minutes to update the running total minutes */
 function tallyStudentHours(){
     /////////////////////////////////Fix joining of same day minutes
+
+    /*
     students.forEach(stuAndRef=>{
         var stu=stuAndRef.stu
         if(stu.hasUpdatedTime){
             console.log('tallied ',stu.firstName,stu.lastName)
             var min=0
             //Joins together dates of the same day
-            /**@type {{min,date}[]} */
             var c=stu.calendar
             for(let i=0;i<c.length;i++){
                 for(let j=0;j<c.length;j++){
@@ -431,6 +465,29 @@ function tallyStudentHours(){
             o[stuAndRef.ref+'min']=min
             o[stuAndRef.ref+'hasUpdatedTime']=false
             ref.update(o)
+        }
+    })
+    */
+
+
+
+    userRef.once('value',async snap=>{
+        var val=snap.val()
+        for(let uRef in val){
+            var stuRef=userRef.child(uRef)
+            var b,totalM=0,totalE=0
+            await stuRef.child('hasUpdatedTime').once('value',snp=>b=snp.val())
+            if(Boolean(b)){
+                var calRef=stuRef.child('calendar').once('value',snapCal=>{
+                    var calVal=snapCal.val()
+                    for(cRef in calVal){
+                        totalM+=Number(calVal[cRef].min)
+                        totalE+=Number(calVal[cRef].extra)
+                    }
+                })
+                stuRef.child('min').set(totalM)
+                stuRef.child('extra').set(totalE)
+            }
         }
     })
 }
@@ -557,8 +614,18 @@ function makeUpdateObj(...pairs){
 ////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////
+/**@param {string} stu */
 function addDateWithRef(stu,dateAndMin){
-    var calendar=ref.child(stu.ref).child('calendar')
+    var newRef
+    if(stu.endsWith('/'))
+        stu=stu.substr(0,stu.length-1)
+    
+    if(stu.startsWith("users/"))
+        newRef=ref.child(stu)
+    else
+        newRef=userRef.child(stu)
+
+    var calendar=newRef.child('calendar')
     calendar.once('value',snap=>{
         var val=snap.val()
         if(val[dateAndMin.date]){

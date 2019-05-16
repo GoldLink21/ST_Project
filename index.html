@@ -27,9 +27,20 @@
 </head>
 <body id="body" onload="calOnLoad()">
     
+<div class="logIn" id="logIn"> asdlknsadlkasnd 
+
+<div class="signIn" id="signIn">
+    <div class="signInMenu">Please Enter<div class="email">Email: <input></div><div class="password"></div>
+</div>
+
+</div>
+
+</div>
+
     <div id="Tab1">
 
     <button class="tab2" id="tab2" onclick="openTab2()">calender</button>
+    <button class="tabLogin" id="tablogin" onclick="openLogin()">Login</button>
 
     <div id="addedStudent"></div>
 
@@ -169,6 +180,13 @@
     </div>
 
     <script>
+
+        function openLogin(){
+            document.getElementById("Tab1").style.display='none';
+            document.getElementById("logIn").style.display='block';
+        }
+
+
         eleInit();
 
         function newStuFunc() {

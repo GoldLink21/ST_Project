@@ -342,3 +342,19 @@ h2 {
     font-size: 1em;
     border: 1px black solid;
 }
+
+.signIn{
+    background-color: gray;
+    opacity: 0.8;
+}
+
+.logIn{
+    display: none;
+    width: 100%;
+    font-size: 1.7vw;
+}
+
+.signInMenu{
+    opacity: 1;
+    background-color: darkgray;
+}

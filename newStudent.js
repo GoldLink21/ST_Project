@@ -284,7 +284,7 @@ function addToTable(stu){
 
             */
             openLoadTab()
-            await loadAllCalendar(new Date().getMonth())
+            await loadAllCalendar(new Date().getMonth(),new Date().getFullYear())
             openTab2()
         };
         back.appendChild(but)
@@ -340,15 +340,18 @@ function addToTable(stu){
     table.appendChild(row)
 }
 /**Loads in all dates on the calendar */
-function loadAllCalendar(month){
-    var months=["January","February","March","April","May","June","July","August","September","October","November","December"],
-        days=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
+function loadAllCalendar(month,year){
+    var months=["January","February","March","April","May","June","July","August","September","October","November","December"]    
     
-    document.getElementById("month").innerHTML=months[month]
     var first=new Date()
+    first.setMonth(month)
     first.setDate(1)
+    if(year)
+        first.setFullYear(year)
     var firstDayOfMonth=first.getDay()
     //console.log(first,firstDayOfMonth)
+
+    document.getElementById("month").innerHTML=months[first.getMonth()]+' '+first.getFullYear()
 
     var allEle=Array.from(document.getElementsByClassName('allDays'))
 
@@ -362,12 +365,56 @@ function loadAllCalendar(month){
         span.classList.add("gacha")
         var curDay=i-firstDayOfMonth+1
         span.innerHTML=curDay
-
-
         allEle[i].appendChild(span)
         allEle[i].appendChild(document.createElement('br'))
-        var d1=document.createElement('div')
-        d1.classList.add()
+        if(allEle[i].classList.contains('Days')){
+            var b1=document.createElement('div')
+            b1.classList.add('block1')
+
+            allEle[i].appendChild(b1)
+
+            var d1=document.createElement('div')
+            d1.innerHTML='Hours:'
+
+            b1.appendChild(d1)
+
+            var i1=document.createElement('input')
+            i1.type='number'
+            i1.max='23'
+            i1.min='0'
+            i1.classList.add('resize')
+            d1.appendChild(i1)
+
+            var d2=document.createElement('div')
+            d2.innerHTML='Minutes:'
+
+            b1.appendChild(d2)
+
+            var i2=document.createElement('input')
+            i2.type='number'
+            i2.max='59'
+            i2.min='0'
+            i2.classList.add('resize')
+            d2.appendChild(i2)
+
+            var d3=document.createElement('div')
+            d3.innerHTML='Is Extra Time:'
+
+            b1.appendChild(d3)
+
+            var i3=document.createElement('input')
+            i3.type='checkbox'
+            
+            d3.appendChild(i3)
+            d3.innerHTML+='&nbsp;'
+
+            var btn1=document.createElement('button')
+            btn1.innerHTML='Submit'
+            d3.appendChild(btn1)
+        }
+
+
+
     }
 }
 

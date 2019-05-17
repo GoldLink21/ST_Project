@@ -195,6 +195,8 @@ function removeByRef(reference){
 
 }
 
+var calendarStudent
+
 var addingId=1
 function addToTable(stu){
     
@@ -283,6 +285,7 @@ function addToTable(stu){
             //////////////////////////////////window.scrollTo('SubmitHrs'+id)
 
             */
+            calendarStudent=stu.ref
             openLoadTab()
             await loadAllCalendar(new Date().getMonth(),new Date().getFullYear())
             openTab2()
@@ -382,6 +385,7 @@ function loadAllCalendar(month,year){
             i1.type='number'
             i1.max='23'
             i1.min='0'
+            i1.value=0
             i1.classList.add('resize')
             d1.appendChild(i1)
 
@@ -394,6 +398,7 @@ function loadAllCalendar(month,year){
             i2.type='number'
             i2.max='59'
             i2.min='0'
+            i2.value=0
             i2.classList.add('resize')
             d2.appendChild(i2)
 
@@ -410,6 +415,18 @@ function loadAllCalendar(month,year){
 
             var btn1=document.createElement('button')
             btn1.innerHTML='Submit'
+
+            function addEvent(button,in1,in2,in3){
+                button.addEventListener('click',event=>{
+                    console.log(button)
+                    console.log(in1,in2,in3)
+                    in3.style.color='red'
+                    in3.checked=true
+                })
+            }
+
+            addEvent(btn1,i1,i2,i3)
+
             d3.appendChild(btn1)
         }
 

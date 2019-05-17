@@ -343,18 +343,34 @@ h2 {
     border: 1px black solid;
 }
 
-.signIn{
-    background-color: gray;
-    opacity: 0.8;
-}
-
 .logIn{
     display: none;
-    width: 100%;
-    font-size: 1.7vw;
+    position: absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
 }
 
 .signInMenu{
+    font-size: 1.7vw;
+    margin: auto;
+    margin-top: 5%;
+    height: 35%;
+    width: 50%;
     opacity: 1;
-    background-color: darkgray;
+    background-color: white;
+    border: 1px solid black;
+    float: center;
+}
+
+.transparent{
+    background-color: gray;
+    opacity: 0.8;
+    position: absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    z-index: -1;
 }

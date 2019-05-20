@@ -58,12 +58,18 @@
  findStuWith({firstName:'Bob',lastName:'Smith'})
  //You can leave out some parameters then and include specific ones. I could skip first and last name too
  findStusWith({min:10})
-
-
- 
  */
 
+const USERS={'holtschr000':'123'}
 
+function verifyUserAndPass(user,pass){
+    for(let u in USERS){
+        if(user===u&&USERS[u]===pass){
+            return true
+        }
+    }
+    return false
+}
 
 const Time={
     /**Returns the time in minutes from hours and minutes */
@@ -899,3 +905,16 @@ function clearAllStudents(){
         studentInit()
     }
 }
+
+//User and Password
+document.getElementById('signInBut').addEventListener('click',event=>{
+    var inUser=document.getElementById('userLogin').value.toString()
+    var inPass=document.getElementById('passLogin').value.toString()
+    var errEle=document.getElementById('loginError')
+    if(verifyUserAndPass(inUser,inPass)){
+        console.log('Good')
+    }else{
+        console.error("nope")
+        errEle.innerHTML='<div style="color:red">Invalid username or password</div>'
+    }
+})

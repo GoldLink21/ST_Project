@@ -353,7 +353,8 @@ h2 {
 }
 
 .signInMenu{
-    font-size: 1.7vw;
+    font-size: 2.7vw;
+    text-align: center;
     margin: auto;
     margin-top: 5%;
     height: 35%;
@@ -362,6 +363,20 @@ h2 {
     background-color: white;
     border: 1px solid black;
     float: center;
+}
+
+.user{
+    height: 25px;
+    font-size: 18px;
+}
+
+.pass{
+    height: 25px;
+    font-size: 18px;
+}
+
+.signinBut{
+    width: 50%;
 }
 
 .transparent{

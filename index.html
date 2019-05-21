@@ -29,9 +29,9 @@
     
 <div class="logIn" id="logIn">
 
-<div class="transparent" onload="document.getElementsByClassName('transparent').style.width=window.innerWidth;document.getElementsByClassName('transparent').style.height=window.innerHeight;"></div>
+<div id='transparent' class="transparent" onload="document.getElementsByClassName('transparent').style.width=window.innerWidth;document.getElementsByClassName('transparent').style.height=window.innerHeight;"></div>
 
-<div class="signInMenu">Please Enter <div id='loginError'></div><div class="email">Username: <input class="user" id="userLogin"></div><div class="password">Password: &nbsp;<input class="pass" id="passwordLogin">  <div class="signIn" id="signin"><button class="signinbutton" id="signinBut">Sign In</button></div></div>
+<div class="signInMenu" id='signInMenu'>Please Enter <div id='loginError'></div><div class="email">Username: <input class="user" id="userLogin"></div><div class="password">Password: &nbsp;<input type='password' class="pass" id="passwordLogin">  <div class="signIn" id="signin"><button class="signinbutton" onclick="testSignIn()" id="signinBut">Sign In</button></div></div>
 
 </div>
 
@@ -90,7 +90,7 @@
     </div>
     </div>
     <div id="Tab2">
-        <button class="tab1" id="tab1" onclick="openTab1()">Go Back</button>
+        <button class="tab1" id="tab1" onclick="openTab1();updateAll()">Go Back</button>
 
         <div class="calender"><table class="calendared" id="calendered">
             <tr><td class="NameOnCal" colspan='7'>Student Name</td></tr>

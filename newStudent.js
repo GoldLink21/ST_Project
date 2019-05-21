@@ -60,7 +60,10 @@
  findStusWith({min:10})
  */
 
-const USERS={'holtschr000':'123'}
+const USERS={
+    'holtschr000':'123',
+    'phelpgar000':'123'
+}
 
 function verifyUserAndPass(user,pass){
     for(let u in USERS){
@@ -201,7 +204,7 @@ function removeByRef(reference){
 
 }
 
-var calendarStudent
+var calendarStudent=''
 
 var addingId=1
 function addToTable(stu){
@@ -309,7 +312,7 @@ function addToTable(stu){
     
     var e1=addToRow(stu.lastName+",<br>&nbsp;&nbsp; "+stu.firstName).classList.add('stuName')
 
-    var t=Time.toHours(stu.min)
+    var t=Time.toHours(stu.min+stu.extra)
 
     function parsePeriod(prd){
         if(prd==1)
@@ -333,7 +336,7 @@ function addToTable(stu){
         var minNeed=Time.toHours(MinutesNeeded-stu.min)
         var str=t.hour+' hours, '+t.min+' minutes <br> <div>To go: '+minNeed.hour+':'
         if(minNeed.min.toString().length===1)
-            str+='0'+minNeed.min
+            str+=('0'+minNeed.min)
         else
             str+=minNeed.min
 
@@ -349,7 +352,7 @@ function addToTable(stu){
     table.appendChild(row)
 }
 /**Loads in all dates on the calendar */
-function loadAllCalendar(month,year){
+async function loadAllCalendar(month,year){
     var months=["January","February","March","April","May","June","July","August","September","October","November","December"]    
     
     var first=new Date()
@@ -358,9 +361,20 @@ function loadAllCalendar(month,year){
     if(year)
         first.setFullYear(year)
     var firstDayOfMonth=first.getDay()
-    //console.log(first,firstDayOfMonth)
+    console.log(calendarStudent)
 
     document.getElementById("month").innerHTML=months[first.getMonth()]+' '+first.getFullYear()
+    var stu=ref.child(calendarStudent)
+    console.log(stu)
+    var fn,ln
+    
+    await stu.once('value',snap=>{
+        var val=snap.val()
+        console.log(val)
+        fn=val['firstName']
+        ln=val['lastName']
+    })
+    document.getElementsByClassName("NameOnCal")[0].innerHTML=fn+' '+ln
 
     var allEle=Array.from(document.getElementsByClassName('allDays'))
 
@@ -422,16 +436,29 @@ function loadAllCalendar(month,year){
             var btn1=document.createElement('button')
             btn1.innerHTML='Submit'
 
-            function addEvent(button,in1,in2,in3){
-                button.addEventListener('click',event=>{
-                    console.log(button)
-                    console.log(in1,in2,in3)
-                    in3.style.color='red'
-                    in3.checked=true
+            function addEvent(button,in1,in2,in3,thisDate){
+                button.addEventListener('click',async event=>{
+                    var hr=in1.value,
+                        min=in2.value,
+                        isExtra=in3.checked
+                    var dateToAdd=(isExtra)?date(thisDate,0,Time.toMin(hr,min)):date(thisDate,Time.toMin(hr,min),0)
+                    //Get current extra
+                    var curExtra
+                    await ref.child(calendarStudent).child('extra').once('value',snap=>curExtra=snap.val())
+                    
+                    if(curExtra+dateToAdd.extra>MaxExtra){
+                        dateToAdd.extra=MaxExtra-curExtra
+                        alert("Student has achieved the maximum extra time available.")
+                    }
+
+                    addDateWithRef(calendarStudent,dateToAdd)
+                    //console.log(dateToAdd)
                 })
             }
+            var thisDate=new Date(first)
+            thisDate.setDate(Number(curDay))
 
-            addEvent(btn1,i1,i2,i3)
+            addEvent(btn1,i1,i2,d3.querySelector('input'),thisDate.toDateString())
 
             d3.appendChild(btn1)
         }
@@ -504,61 +531,45 @@ function sortStus(){
 
 /**Goes through every student and tallies up their calendar's minutes to update the running total minutes */
 function tallyStudentHours(){
-    /////////////////////////////////Fix joining of same day minutes
-
-    /*
-    students.forEach(stuAndRef=>{
-        var stu=stuAndRef.stu
-        if(stu.hasUpdatedTime){
-            console.log('tallied ',stu.firstName,stu.lastName)
-            var min=0
-            //Joins together dates of the same day
-            var c=stu.calendar
-            for(let i=0;i<c.length;i++){
-                for(let j=0;j<c.length;j++){
-                    if(i!==j&&c[i].date===c[j].date){
-                        var m=Number(c[i].min)+Number(c[j].min)
-                        c.splice(j--,1)
-                        i
-                        c[i].min=m///////////////////////////////////////////////////////////////////////////////// 
-                    }
-                }
-            }
-            for(let i=0;i<c.length;i++)
-                if(Number(c[i].min)===0)
-                    c.splice(i--,1)
-            stu.calendar.forEach(dateAndMin=>{
-                min+=parseInt(dateAndMin.min)
-            })
-            var o={}
-            o[stuAndRef.ref+'calendar']=c
-            o[stuAndRef.ref+'min']=min
-            o[stuAndRef.ref+'hasUpdatedTime']=false
-            ref.update(o)
-        }
-    })
-    */
-
-
-
     userRef.once('value',async snap=>{
         var val=snap.val()
         for(let uRef in val){
             var stuRef=userRef.child(uRef)
             var b,totalM=0,totalE=0
-            await stuRef.child('hasUpdatedTime').once('value',snp=>b=snp.val())
+            await stuRef.child('hasUpdatedTime').once('value',snp=>{b=snp.val()}).then(console.log(uRef))
+            console.log(uRef)
             if(Boolean(b)){
-                var calRef=stuRef.child('calendar').once('value',snapCal=>{
+                stuRef.child('calendar').once('value',snapCal=>{
                     var calVal=snapCal.val()
                     for(cRef in calVal){
                         totalM+=Number(calVal[cRef].min)
                         totalE+=Number(calVal[cRef].extra)
                     }
                 })
-                stuRef.child('min').set(totalM)
-                stuRef.child('extra').set(totalE)
+                stuRef.update({
+                    min:totalM,
+                    extra:totalE,
+                    hasUpdatedTime:false
+                })
             }
         }
+    })
+}
+
+function tallySingleStu(studentRef){
+    var stuRef=ref.child(studentRef)
+    var totalM=0,totalE=0
+    stuRef.child('calendar').once('value',snapCal=>{
+        var calVal=snapCal.val()
+        for(cRef in calVal){
+            totalM+=Number(calVal[cRef].min)
+            totalE+=Number(calVal[cRef].extra)
+        }
+    })
+    stuRef.update({
+        min:totalM,
+        extra:totalE,
+        hasUpdatedTime:false
     })
 }
 
@@ -579,6 +590,10 @@ function studentInit(){
         sortStus().forEach(stu=>addToTable(stu.stu))
         openTab1()
     })
+}
+
+function logRefVal(ref){
+    ref.once('value',snap=>console.log(snap.val()))
 }
 
 async function showStudentsInTable(arr){
@@ -663,9 +678,9 @@ function addRefsToStus(){
     userRef.once('value',(snapshot)=>{
         var val=snapshot.val()
         var o={}
-        for(ref in val){
-            if(val[ref].ref===undefined){
-                o[ref+'/ref']="users/"+ref
+        for(let nRef in val){
+            if(val[nRef].ref===undefined){
+                o[nRef+'/ref']="users/"+nRef
             }
         }
         if(Object.keys(o).length!==0)
@@ -686,14 +701,14 @@ function makeUpdateObj(...pairs){
 ////////////////////////////////////////////////////////////////////////////////////////////
 /**@param {string} stu */
 function addDateWithRef(stu,dateAndMin){
-    var newRef
-    if(stu.endsWith('/'))
+    if(stu.endsWith('/')){
         stu=stu.substr(0,stu.length-1)
+    }
     
-    if(stu.startsWith("users/"))
-        newRef=ref.child(stu)
-    else
-        newRef=userRef.child(stu)
+    if(!stu.startsWith("users/"))
+        stu='users/'+stu
+
+    var newRef=ref.child(stu)
 
     var calendar=newRef.child('calendar')
     calendar.once('value',snap=>{
@@ -712,6 +727,9 @@ function addDateWithRef(stu,dateAndMin){
             calendar.set(val)
         }
     })
+    newRef.child('hasUpdatedTime').set(true)
+
+    tallySingleStu(stu)
 }
 
 function getStuByRef(reference){
@@ -882,8 +900,7 @@ function sampleStudents(n=1){
 
 function addRangedTimeToStus(rnd=500){
     students.forEach(stuAndRef=>{
-        var stu=stuAndRef.stu
-        addDateToStudent(stu.firstName,stu.lastName,today(parseInt(Math.random()*rnd)))
+        addDateWithRef(stuAndRef.ref,today(parseInt(Math.random()*rnd)))
     })  
 }
 
@@ -906,15 +923,18 @@ function clearAllStudents(){
     }
 }
 
-//User and Password
-document.getElementById('signInBut').addEventListener('click',event=>{
+function testSignIn(){
     var inUser=document.getElementById('userLogin').value.toString()
-    var inPass=document.getElementById('passLogin').value.toString()
+    var inPass=document.getElementById('passwordLogin').value.toString()
     var errEle=document.getElementById('loginError')
     if(verifyUserAndPass(inUser,inPass)){
         console.log('Good')
+        errEle.innerHTML=''
+        openTab1()
+        document.getElementById('transparent').style.display='none'
+        document.getElementById('signInMenu').style.display='none'
     }else{
         console.error("nope")
         errEle.innerHTML='<div style="color:red">Invalid username or password</div>'
     }
-})
+}

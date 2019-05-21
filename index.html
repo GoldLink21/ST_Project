@@ -2,7 +2,9 @@
 <html lang="en">
 <!--Screen resolution of chromebook is 1366x768 ---- Wdith is 1567px ---  #ffedba  ---  setTimeout(()=>{console.log(document.body.getBoundingClientRect())}, 3000) -->
 <head>
-    <script src="https://www.gstatic.com/firebasejs/5.5.6/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.6/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.6/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.6/firebase-auth.js"></script>
     <script>
         // Initialize Firebase
         firebase.initializeApp({
@@ -38,9 +40,6 @@
 </div>
 
     <div id="Tab1">
-
-    <button class="tab2" id="tab2" onclick="openTab2()">calender</button>
-    <button class="tabLogin" id="tablogin" onclick="openLogin()">Login</button>
 
     <div id="addedStudent"></div>
 
@@ -244,8 +243,8 @@
             document.getElementById("Tab1").style.display="none"
             document.getElementById("Tab2").style.display="none"
         }
-        openTab2()
-        studentInit();
+        document.getElementById("TabLoad").style.display='none'
+        openLogin()
     </script>
 
 </body>

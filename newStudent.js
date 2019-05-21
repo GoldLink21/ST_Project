@@ -62,7 +62,8 @@
 
 const USERS={
     'holtschr000':'123',
-    'phelpgar000':'123'
+    'phelpgar000':'123',
+    '':''
 }
 
 function verifyUserAndPass(user,pass){
@@ -153,7 +154,6 @@ function setStuData(fn,ln,{firstName,lastName,period,year,min}={}){
         updateObj[stuAndRef.ref+'year']=year
     if(min)
         updateObj[stuAndRef.ref+'min']=min
-    console.log(updateObj)
     ref.update(updateObj)
 }
 
@@ -185,7 +185,6 @@ function removeStu(fn,ln,isCaseSensitive){
                 if(confirm('Are you sure you want to remove '+fn+' '+ln+'?')){
                     var updateObj={}
                     updateObj[p1]=null
-                    console.log(updateObj)
                     userRef.update(updateObj)
                     hasRemoved=true
                 }else{
@@ -200,7 +199,7 @@ function removeStu(fn,ln,isCaseSensitive){
 
 function removeByRef(reference){
     //If you pass in stu and ref
-    ref.child(reference).remove((error)=>console.log(error))
+    userRef.child(reference).remove((error)=>console.log(error))
 
 }
 
@@ -265,11 +264,8 @@ function addToTable(stu){
         addingId++
         but.innerHTML = "Add Time";
         but.setAttribute("data-ref",stu.ref)
-        //console.log(stu)
         //but.setAttribute("data-ref",)
         but.onclick=async function(){
-            //console.log(stu)
-
             /*
 
             var student=await getStuByRef(but.dataset['ref'])
@@ -282,8 +278,6 @@ function addToTable(stu){
             var nDate=new Date(dateE.value).toDateString()
 
             var dat=date(nDate,Time.toMin(Number(hrs.value),Number(min.value)))
-
-            //console.log(dat)
 
             if(dat.date!=='Invalid Date'&&dat.min!==0){
                 //addDateToStu(student,dat)
@@ -333,7 +327,7 @@ function addToTable(stu){
             return year+'th'
     }
     function getTime(){
-        var minNeed=Time.toHours(MinutesNeeded-stu.min)
+        var minNeed=Time.toHours(MinutesNeeded-stu.min-stu.extra)
         var str=t.hour+' hours, '+t.min+' minutes <br> <div>To go: '+minNeed.hour+':'
         if(minNeed.min.toString().length===1)
             str+=('0'+minNeed.min)
@@ -361,16 +355,13 @@ async function loadAllCalendar(month,year){
     if(year)
         first.setFullYear(year)
     var firstDayOfMonth=first.getDay()
-    console.log(calendarStudent)
 
     document.getElementById("month").innerHTML=months[first.getMonth()]+' '+first.getFullYear()
     var stu=ref.child(calendarStudent)
-    console.log(stu)
     var fn,ln
     
     await stu.once('value',snap=>{
         var val=snap.val()
-        console.log(val)
         fn=val['firstName']
         ln=val['lastName']
     })
@@ -382,7 +373,6 @@ async function loadAllCalendar(month,year){
     var lastDayOfMonth=new Date()
     lastDayOfMonth.setMonth(month+1)
     lastDayOfMonth.setDate(0)
-    console.log(lastDayOfMonth)
     for(let i=firstDayOfMonth;i<lastDayOfMonth.getDate()+firstDayOfMonth;i++){
         var span=document.createElement('span')
         span.classList.add("gacha")
@@ -452,7 +442,6 @@ async function loadAllCalendar(month,year){
                     }
 
                     addDateWithRef(calendarStudent,dateToAdd)
-                    //console.log(dateToAdd)
                 })
             }
             var thisDate=new Date(first)
@@ -466,6 +455,14 @@ async function loadAllCalendar(month,year){
 
 
     }
+}
+
+function getNextStudentOnCalendar(){
+    var arr=Array.from(document.getElementsByClassName('SubmitHrs'))
+    var i=arr.findIndex(e=>{
+        return e.dataset['ref']===calendarStudent
+    })
+    return arr[i+1].dataset['ref']
 }
 
 var filters={}
@@ -664,6 +661,7 @@ async function addStudent(firstName,lastName,classPeriod,year,curHours=0,curMins
         addCompletedWindow(firstName,lastName);
         addToTable(stu)
         addRefsToStus()
+        updateAll()
         return true;
     }else{
         if(!hasData)
@@ -738,7 +736,6 @@ function getStuByRef(reference){
     }
     if(reference.endsWith('/'))
         reference=reference.substr(0,reference.length-1)
-    //console.log(reference)
     return new Promise((resolve,reject)=>{
         userRef.once('value',(snapshot)=>{
             var val=snapshot.val()
@@ -760,7 +757,6 @@ function addDateToStu(stuAndRef,dateAndMin){
     o[stuAndRef.ref+'hasUpdatedTime']=true
     ref.update(o)
     stuAndRef.stu.hasUpdatedTime=true
-    //console.log(stuAndRef.stu)
 }
 
 function today(min,extra=0){
@@ -889,7 +885,6 @@ function sampleStudents(n=1){
         while(students.some(stu=>stu.stu.firstName===fn)&&students.some(stu=>stu.stu.lastName===ln)){
             fn=rnd(fns)
             ln=rnd(lns)
-            //console.log(fn,ln)
         }
         addStudent(fn,ln,rnd(pds),rnd(yrs))
         if(++i<n)
@@ -928,13 +923,11 @@ function testSignIn(){
     var inPass=document.getElementById('passwordLogin').value.toString()
     var errEle=document.getElementById('loginError')
     if(verifyUserAndPass(inUser,inPass)){
-        console.log('Good')
         errEle.innerHTML=''
         openTab1()
-        document.getElementById('transparent').style.display='none'
-        document.getElementById('signInMenu').style.display='none'
+        document.getElementById('logIn').style.display='none'
+        studentInit()
     }else{
-        console.error("nope")
         errEle.innerHTML='<div style="color:red">Invalid username or password</div>'
     }
 }

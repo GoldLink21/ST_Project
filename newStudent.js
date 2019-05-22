@@ -381,6 +381,17 @@ async function loadAllCalendar(month,year){
         allEle[i].appendChild(span)
         allEle[i].appendChild(document.createElement('br'))
         if(allEle[i].classList.contains('Days')){
+            var prevTime=undefined
+            await stu.child('calendar').once('value',snap=>{
+                let val = snap.val()
+                var currentDate=new Date()
+                currentDate.setDate(i-firstDayOfMonth+1)
+                currentDate=currentDate.toDateString()
+                if(val[currentDate]){
+                    prevTime=val[currentDate]
+                }
+            })
+
             var b1=document.createElement('div')
             b1.classList.add('block1')
 
@@ -388,6 +399,13 @@ async function loadAllCalendar(month,year){
 
             var d1=document.createElement('div')
             d1.innerHTML='Hours:'
+
+            var curHourAndMin=undefined
+            if(prevTime&&prevTime.min){
+                curHourAndMin=Time.toHours(prevTime.min)
+                console.log(curHourAndMin)
+                d1.innerHTML+=` (<span style="color:red">${curHourAndMin.hour}</span>) `
+            }
 
             b1.appendChild(d1)
 
@@ -401,6 +419,10 @@ async function loadAllCalendar(month,year){
 
             var d2=document.createElement('div')
             d2.innerHTML='Minutes:'
+
+            if(curHourAndMin!==undefined){
+                d2.innerHTML+=` (<span style="color:red">${curHourAndMin.min}</span>)`
+            }
 
             b1.appendChild(d2)
 

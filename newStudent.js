@@ -347,6 +347,9 @@ function addToTable(stu){
 }
 /**Loads in all dates on the calendar */
 async function loadAllCalendar(month,year){
+    if(month===undefined){
+        month=new Date().getMonth()
+    }
     var months=["January","February","March","April","May","June","July","August","September","October","November","December"]    
     
     var first=new Date()
@@ -360,6 +363,37 @@ async function loadAllCalendar(month,year){
     var stu=ref.child(calendarStudent)
     var fn,ln
     
+    ///////////////////
+    var submitAll=document.createElement('button')
+    submitAll.innerHTML='Submit all'
+    submitAll.style.color='green'
+
+    document.getElementById("month").appendChild(submitAll)
+
+    submitAll.addEventListener('click',event=>{
+        let index=1;
+        //Grab all the ones with inputs
+        var eles=Array.from(document.getElementsByClassName('hasInputs'))
+            //And filter down to the inputs only
+            .map(e=>Array.from(e.children[2].querySelectorAll('input')))
+            .forEach(e=>{
+                var hr=e[0].value,
+                    min=e[1].value,
+                    extra=e[2].checked
+
+                console.log(hr,min,extra,index)
+                if(hr!==0||min!==0){
+
+                }
+                index++
+            })
+
+        first.setDate(1)
+        //console.log(eles)
+    })
+
+    ///////////////////
+
     await stu.once('value',snap=>{
         var val=snap.val()
         fn=val['firstName']
@@ -369,7 +403,10 @@ async function loadAllCalendar(month,year){
 
     var allEle=Array.from(document.getElementsByClassName('allDays'))
 
-    allEle.forEach(e=>e.innerHTML='')
+    allEle.forEach(e=>{
+        e.innerHTML=''
+        e.classList.remove('hasInputs')
+    })
     var lastDayOfMonth=new Date()
     lastDayOfMonth.setMonth(month+1)
     lastDayOfMonth.setDate(0)
@@ -380,7 +417,9 @@ async function loadAllCalendar(month,year){
         span.innerHTML=curDay
         allEle[i].appendChild(span)
         allEle[i].appendChild(document.createElement('br'))
+        
         if(allEle[i].classList.contains('Days')){
+            allEle[i].classList.add("hasInputs")
             var prevTime=undefined
             await stu.child('calendar').once('value',snap=>{
                 let val = snap.val()
@@ -446,7 +485,9 @@ async function loadAllCalendar(month,year){
             d3.innerHTML+='&nbsp;'
 
             var btn1=document.createElement('button')
-            btn1.innerHTML='Submit'
+            btn1.innerHTML='Remove'
+            btn1.style.color='red'
+            btn1.tabIndex=-1
 
             function addEvent(button,in1,in2,in3,thisDate){
                 button.addEventListener('click',async event=>{
@@ -464,6 +505,7 @@ async function loadAllCalendar(month,year){
                     }
 
                     addDateWithRef(calendarStudent,dateToAdd)
+                    loadAllCalendar()
                 })
             }
             var thisDate=new Date(first)

@@ -191,7 +191,21 @@ display: block;
 }
 
 .tab1{
-    width: 5%;
+    float: center;
+    height: auto;
+    width: 13%;
+    padding: 10px;
+    text-align: center;
+    margin: auto;
+    margin-left: 5px;
+    margin-top: 50px;
+    position: fixed;
+    background-color: cornsilk;
+    box-shadow: 0px 8px 16px 0px rgb(0, 0, 0, 0.2);
+}
+
+.wider{
+    width: 80%;
 }
 
 #Tab2{
@@ -208,7 +222,6 @@ h2 {
 .calender{
     margin: auto;
     width: 70%;
-    border: 1px solid black;
     text-align: center;
     height: 700px;
 }
@@ -388,4 +401,18 @@ h2 {
     left:0;
     right:0;
     z-index: -1;
+}
+
+.addAll{
+    height:auto;
+    width: 13%;
+    padding: 10px;
+    text-align: center;
+    margin-left: 84.4%;
+    margin-right: 1%;
+    margin-top: 50px;
+    position: fixed;
+    background-color: cornsilk;
+    border: 1px solid black;
+    box-shadow: 0px 8px 16px 0px rgb(0, 0, 0, 0.2);
 }

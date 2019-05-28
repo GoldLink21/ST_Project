@@ -366,30 +366,39 @@ async function loadAllCalendar(month,year){
     ///////////////////
     var submitAll=document.createElement('button')
     submitAll.innerHTML='Submit all'
+    submitAll.classList.add('addAll')
     submitAll.style.color='green'
 
     document.getElementById("month").appendChild(submitAll)
 
-    submitAll.addEventListener('click',event=>{
+    document.querySelector("#addAll").addEventListener('click',event=>{
         let index=1;
         //Grab all the ones with inputs
-        var eles=Array.from(document.getElementsByClassName('hasInputs'))
+        Array.from(document.getElementsByClassName('hasInputs'))
             //And filter down to the inputs only
             .map(e=>Array.from(e.children[2].querySelectorAll('input')))
             .forEach(e=>{
-                var hr=e[0].value,
-                    min=e[1].value,
+                var dateNum=Number(e[0].parentElement.parentElement.parentElement.firstElementChild.innerText),
+                    hr=Number(e[0].value),
+                    min=Number(e[1].value),
                     extra=e[2].checked
 
-                console.log(hr,min,extra,index)
+               
                 if(hr!==0||min!==0){
-
+                    console.log(dateNum,hr,min,extra,index)
+                    first.setDate(dateNum)
+                    var dateObj=date(first.toDateString(),Time.toMin(hr,min),extra)
+                    addDateWithRef(calendarStudent,dateObj)
+                    e[0].value=0
+                    e[1].value=0
+                    e[2].checked=false
                 }
                 index++
             })
 
         first.setDate(1)
         //console.log(eles)
+        loadAllCalendar()
     })
 
     ///////////////////
@@ -442,7 +451,7 @@ async function loadAllCalendar(month,year){
             var curHourAndMin=undefined
             if(prevTime&&prevTime.min){
                 curHourAndMin=Time.toHours(prevTime.min)
-                console.log(curHourAndMin)
+                //console.log(curHourAndMin)
                 d1.innerHTML+=` (<span style="color:red">${curHourAndMin.hour}</span>) `
             }
 
@@ -489,7 +498,7 @@ async function loadAllCalendar(month,year){
             btn1.style.color='red'
             btn1.tabIndex=-1
 
-            function addEvent(button,in1,in2,in3,thisDate){
+            function addEvent(button,in1,in2,in3,thisDate,prevTime){
                 button.addEventListener('click',async event=>{
                     var hr=in1.value,
                         min=in2.value,
@@ -506,12 +515,14 @@ async function loadAllCalendar(month,year){
 
                     addDateWithRef(calendarStudent,dateToAdd)
                     loadAllCalendar()
+
+                    console.log(prevTime)
                 })
             }
             var thisDate=new Date(first)
             thisDate.setDate(Number(curDay))
 
-            addEvent(btn1,i1,i2,d3.querySelector('input'),thisDate.toDateString())
+            addEvent(btn1,i1,i2,d3.querySelector('input'),thisDate.toDateString(),prevTime)
 
             d3.appendChild(btn1)
         }
@@ -775,18 +786,22 @@ function addDateWithRef(stu,dateAndMin){
     var calendar=newRef.child('calendar')
     calendar.once('value',snap=>{
         var val=snap.val()
+
         if(val[dateAndMin.date]){
+
             var m=Number(val[dateAndMin.date].min)+Number(dateAndMin.min),
                 minExtra=Number(val[dateAndMin.date].extra)+Number(dateAndMin.extra)
             val[dateAndMin.date].min=m
             val[dateAndMin.date].extra=minExtra
             calendar.set(val)
         }else{
+
             val[dateAndMin.date]={
                 min:dateAndMin.min,
                 extra:dateAndMin.extra
             }
             calendar.set(val)
+
         }
     })
     newRef.child('hasUpdatedTime').set(true)

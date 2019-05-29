@@ -90,11 +90,11 @@
     </div>
     <div id="Tab2">
         <div class="tab1"><button class="wider" id="tab1" onclick="openTab1();updateAll()">Go Back</button></div>
-        <div class="addAll"><button class="wider" id="addAll">Submit All</button></div>
+        <div class="addAll"><button class="wider" id="addAll">Set All</button></div>
 
         <div class="calender"><table class="calendared" id="calendered">
-            <tr><td class="NameOnCal" colspan='7'>Student Name</td></tr>
-            <tr><th class="month" id="month" colspan="7">May</th></tr>
+            <tr><div class="leftArrow1" onclick="preStu()">&larr;</div><td class="NameOnCal" colspan='7'>Student Name</td></tr><div class="rightArrow1" onclick="nextStu()">&rarr;</div>
+            <tr><div class="leftArrow2" onclick="preMonth()">&larr;</div><th class="month" id="month" colspan="7">May</th></tr><div class="rightArrow2" onclick="nextMonth()">&rarr;</div>
             <tr>
                 <td class="calday weekend sunday">Sunday</td>
                 <td class="calday weekday">Monday</td>
@@ -186,6 +186,18 @@
             document.getElementById("logIn").style.display='block';
         }
 
+        /*
+        function preMonth(month, year){
+            var months=["January","February","March","April","May","June","July","August","September","October","November","December"]
+            var first=new Date()
+            first.setMonth(month)
+            first.setDate(1)
+            if(year)
+                first.setFullYear(year)
+            var firstDayOfMonth=first.getDay()
+            document.getElementById("month").innerHTML=months[first.getMonth()-1]+' '+first.getFullYear();
+        }
+        */
 
         eleInit();
 

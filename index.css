@@ -201,6 +201,7 @@ display: block;
     margin-top: 50px;
     position: fixed;
     background-color: cornsilk;
+    border: 1px solid black;
     box-shadow: 0px 8px 16px 0px rgb(0, 0, 0, 0.2);
 }
 
@@ -415,4 +416,35 @@ h2 {
     background-color: cornsilk;
     border: 1px solid black;
     box-shadow: 0px 8px 16px 0px rgb(0, 0, 0, 0.2);
+}
+
+.leftArrow1{
+float: left;
+font-size: 2vw;
+border: 2px solid black;
+position: absolute;
+}
+
+.leftArrow2{
+float: left;
+font-size: 2.7vw;
+border: 2px solid black;
+position: absolute;
+margin-top: 40px;
+}    
+
+.rightArrow1{
+position: absolute;
+font-size: 2vw;
+border: 2px solid black;
+margin-left: 67%;
+}
+
+.rightArrow2{
+float: right;
+position: absolute;
+font-size: 2.7vw;
+border: 2px solid black;
+margin-top: 40px;
+margin-left: 66.3%;
 }

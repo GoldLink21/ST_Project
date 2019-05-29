@@ -388,7 +388,7 @@ async function loadAllCalendar(month,year){
                     console.log(dateNum,hr,min,extra,index)
                     first.setDate(dateNum)
                     var dateObj=date(first.toDateString(),Time.toMin(hr,min),extra)
-                    addDateWithRef(calendarStudent,dateObj)
+                    setDateWithRef(calendarStudent,dateObj)
                     e[0].value=0
                     e[1].value=0
                     e[2].checked=false
@@ -450,8 +450,8 @@ async function loadAllCalendar(month,year){
 
             var curHourAndMin=undefined
             if(prevTime&&prevTime.min){
-                curHourAndMin=Time.toHours(prevTime.min)
-                //console.log(curHourAndMin)
+                curHourAndMin=Time.toHours(Number(prevTime.min)+Number(prevTime.extra))
+                console.log(curHourAndMin)
                 d1.innerHTML+=` (<span style="color:red">${curHourAndMin.hour}</span>) `
             }
 
@@ -494,7 +494,7 @@ async function loadAllCalendar(month,year){
             d3.innerHTML+='&nbsp;'
 
             var btn1=document.createElement('button')
-            btn1.innerHTML='Remove'
+            btn1.innerHTML='Set Time'
             btn1.style.color='red'
             btn1.tabIndex=-1
 
@@ -513,9 +513,11 @@ async function loadAllCalendar(month,year){
                         alert("Student has achieved the maximum extra time available.")
                     }
 
-                    addDateWithRef(calendarStudent,dateToAdd)
+                    //addDateWithRef(calendarStudent,dateToAdd)
                     loadAllCalendar()
 
+                    //////////////////////////////////////////////////////////////////////////////////////////////
+                    setDateWithRef(calendarStudent,dateToAdd)
                     console.log(prevTime)
                 })
             }
@@ -537,6 +539,9 @@ function getNextStudentOnCalendar(){
     var i=arr.findIndex(e=>{
         return e.dataset['ref']===calendarStudent
     })
+    console.log(i,arr)
+    if(i===arr.length-1)
+        return arr[0]
     return arr[i+1].dataset['ref']
 }
 
@@ -786,24 +791,63 @@ function addDateWithRef(stu,dateAndMin){
     var calendar=newRef.child('calendar')
     calendar.once('value',snap=>{
         var val=snap.val()
-
         if(val[dateAndMin.date]){
-
             var m=Number(val[dateAndMin.date].min)+Number(dateAndMin.min),
                 minExtra=Number(val[dateAndMin.date].extra)+Number(dateAndMin.extra)
             val[dateAndMin.date].min=m
             val[dateAndMin.date].extra=minExtra
             calendar.set(val)
         }else{
-
             val[dateAndMin.date]={
                 min:dateAndMin.min,
                 extra:dateAndMin.extra
             }
             calendar.set(val)
-
         }
     })
+    newRef.child('hasUpdatedTime').set(true)
+
+    tallySingleStu(stu)
+}
+
+
+function setDateWithRef(stu,dateAndMin){
+    if(stu.endsWith('/')){
+        stu=stu.substr(0,stu.length-1)
+    }
+    
+    if(!stu.startsWith("users/"))
+        stu='users/'+stu
+
+    var newRef=ref.child(stu)
+
+    var calendar=newRef.child('calendar')
+    if(dateAndMin.min===0&&dateAndMin.extra===0){
+        calendar.child(dateAndMin.date).remove()
+    }else{
+        calendar.child(dateAndMin.date).update({
+            min:dateAndMin.min,
+            extra:dateAndMin.extra
+        })
+    }
+    /*
+    calendar.once('value',snap=>{
+        var val=snap.val()
+        if(val[dateAndMin.date]){
+            var m=Number(val[dateAndMin.date].min)+Number(dateAndMin.min),
+                minExtra=Number(val[dateAndMin.date].extra)+Number(dateAndMin.extra)
+            val[dateAndMin.date].min=m
+            val[dateAndMin.date].extra=minExtra
+            calendar.set(val)
+        }else{
+            val[dateAndMin.date]={
+                min:dateAndMin.min,
+                extra:dateAndMin.extra
+            }
+            calendar.set(val)
+        }
+    })
+    */
     newRef.child('hasUpdatedTime').set(true)
 
     tallySingleStu(stu)

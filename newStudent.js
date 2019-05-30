@@ -203,7 +203,8 @@ function removeByRef(reference){
 
 }
 
-var calendarStudent=''
+var calendarStudent='',
+    calendarDate=new Date()
 
 var addingId=1
 function addToTable(stu){
@@ -355,9 +356,12 @@ async function loadAllCalendar(month,year){
     var first=new Date()
     first.setMonth(month)
     first.setDate(1)
+
     if(year)
         first.setFullYear(year)
     var firstDayOfMonth=first.getDay()
+    
+    calendarDate=new Date(first)
 
     document.getElementById("month").innerHTML=months[first.getMonth()]+' '+first.getFullYear()
     var stu=ref.child(calendarStudent)
@@ -451,7 +455,7 @@ async function loadAllCalendar(month,year){
             var curHourAndMin=undefined
             if(prevTime&&prevTime.min){
                 curHourAndMin=Time.toHours(Number(prevTime.min)+Number(prevTime.extra))
-                console.log(curHourAndMin)
+                //console.log(curHourAndMin)
                 d1.innerHTML+=` (<span style="color:red">${curHourAndMin.hour}</span>) `
             }
 
@@ -534,15 +538,35 @@ async function loadAllCalendar(month,year){
     }
 }
 
+function loadNextMonth(){
+    calendarDate.setMonth(calendarDate.getMonth()+1);
+    loadAllCalendar(calendarDate.getMonth(),calendarDate.getFullYear())
+    //console.log(calendarDate)
+}
+
+function loadPrevMonth(){
+    calendarDate.setMonth(calendarDate.getMonth()-1);
+    loadAllCalendar(calendarDate.getMonth(),calendarDate.getFullYear())
+    //console.log(calendarDate)
+}
+
 function getNextStudentOnCalendar(){
     var arr=Array.from(document.getElementsByClassName('SubmitHrs'))
     var i=arr.findIndex(e=>{
         return e.dataset['ref']===calendarStudent
     })
-    console.log(i,arr)
     if(i===arr.length-1)
-        return arr[0]
+        return arr[0].dataset['ref']
     return arr[i+1].dataset['ref']
+}
+function getPrevStudentOnCalendar(){
+    var arr=Array.from(document.getElementsByClassName('SubmitHrs'))
+    var i=arr.findIndex(e=>{
+        return e.dataset['ref']===calendarStudent
+    })
+    if(i===0)
+        return arr[arr.length-1].dataset['ref']
+    return arr[i-1].dataset['ref']
 }
 
 var filters={}

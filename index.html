@@ -93,8 +93,8 @@
         <div class="addAll"><button class="wider" id="addAll">Set All</button></div>
 
         <div class="calender"><table class="calendared" id="calendered">
-            <tr><div class="leftArrow1" onclick="preStu()">&larr;</div><td class="NameOnCal" colspan='7'>Student Name</td></tr><div class="rightArrow1" onclick="nextStu()">&rarr;</div>
-            <tr><div class="leftArrow2" onclick="preMonth()">&larr;</div><th class="month" id="month" colspan="7">May</th></tr><div class="rightArrow2" onclick="nextMonth()">&rarr;</div>
+            <tr><div class="leftArrow1" onclick="calendarStudent=getPrevStudentOnCalendar();loadAllCalendar()">&larr;</div><td class="NameOnCal" colspan='7'>Student Name</td></tr><div class="rightArrow1" onclick="calendarStudent=getNextStudentOnCalendar();loadAllCalendar()">&rarr;</div>
+            <tr><div class="leftArrow2" onclick="loadPrevMonth()">&larr;</div><th class="month" id="month" colspan="7">May</th></tr><div class="rightArrow2" onclick="loadNextMonth()">&rarr;</div>
             <tr>
                 <td class="calday weekend sunday">Sunday</td>
                 <td class="calday weekday">Monday</td>

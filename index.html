@@ -58,12 +58,9 @@
         <p class="extraSpace"><button class="submit1" id="submit1" onclick="newStuFunc();document.getElementById('firstName1').focus()">Submit</button></p>
         <br><button id='close1' onclick="toggleNewStudentWindow()">Close</button>
     </div>
-    <div id="RemoveStu"><button class="altbutton" onclick=toggleRemoveStudentWindow()>Remove Student</button></div>
+    <div id="RemoveStu"><button class="altbutton" onclick=toggleRemoveStudentWindow()>Options</button></div>
     <div id="RemoveMenu">
-        <p>Student First Name:<input type="text" class="input1" id="firstName2"></p>
-        <p>Student Last Name:<input type="text" class="input1" id="lastName2"></p>
-        <p>Case Senstive Search?<input type='checkbox' class="input1" id="checked2"></p>
-        <button class="submit" id="submit2" onclick='remStuFunc();document.getElementById("firstName2").focus()'>Submit</button><br>
+        <button class="submit" onclick="removeYear2()">Move All Students Up</button>
         <button id="close2" onclick='toggleRemoveStudentWindow()'>Close</button>
     </div>
     <div id="listView">

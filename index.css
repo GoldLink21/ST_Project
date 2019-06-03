@@ -423,6 +423,7 @@ float: left;
 font-size: 2vw;
 border: 2px solid black;
 position: absolute;
+background-color: lightgrey;
 }
 
 .leftArrow2{
@@ -431,6 +432,7 @@ font-size: 2.7vw;
 border: 2px solid black;
 position: absolute;
 margin-top: 40px;
+background-color: lightgrey;
 }    
 
 .rightArrow1{
@@ -438,6 +440,7 @@ position: absolute;
 font-size: 2vw;
 border: 2px solid black;
 margin-left: 67%;
+background-color: lightgrey;
 }
 
 .rightArrow2{
@@ -447,4 +450,5 @@ font-size: 2.7vw;
 border: 2px solid black;
 margin-top: 40px;
 margin-left: 66.3%;
+background-color: lightgrey;
 }

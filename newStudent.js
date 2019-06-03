@@ -63,7 +63,6 @@
 const USERS={
     'holtschr000':'123',
     'phelpgar000':'123',
-    '':''
 }
 
 function verifyUserAndPass(user,pass){
@@ -197,9 +196,20 @@ function removeStu(fn,ln,isCaseSensitive){
         alert('Could not find student '+fn+' '+ln)
 }
 
-function removeByRef(reference){
+function removeByRef(stu){
+
+  
+
+    if(stu.endsWith('/')){
+        stu=stu.substr(0,stu.length-1)
+    }
+    
+    if(!stu.startsWith("users/"))
+        stu='users/'+stu
+  
+    console.log(stu)
     //If you pass in stu and ref
-    userRef.child(reference).remove((error)=>console.log(error))
+    ref.child(stu).remove((error)=>console.log(error))
 
 }
 
@@ -675,7 +685,7 @@ function tallySingleStu(studentRef){
 }
 
 /**Adds all students from the database to the local students array */
-function studentInit(){
+async function studentInit(){
     openLoadTab()
     students=[]
     addingId=1
@@ -998,17 +1008,34 @@ function updateTable(){
 var overrideAskRemove=false
 
 /**Removes all students that are year 2 and moves all year 1 students to 2 */
-function removeYear2(){
+async function removeYear2(){
     if(confirm('Are you sure you want to remove all year 2 students?')&&confirm('Are you really sure?')){
         overrideAskRemove=true
+        /*
         students.filter(stu=>stu.stu.year>=2).forEach(stu=>{
-            removeStu(stu.stu.firstName,stu.stu.lastName)
+            //removeByRef(stu.ref)
         })
+        
         students.forEach(stuAndRef=>{
-            var o={}
-            o[stuAndRef.ref+'year']=parseInt(stuAndRef.stu.year)+1
-            ref.update(o)
+            console.log(stuAndRef)
+            //userRef.child(stuAndRef.ref).child('year').set(2)
+        })*/
+
+        userRef.once('value',snap=>{
+            snap.forEach(val=>{
+                var key='users/'+val.key
+                var stu=val.val()
+                if(stu.year===2){
+                    removeByRef(key)
+                }else{
+                    ref.child(key).child('year').set(2)
+                }
+            })
         })
+        
+        updateAll()
+        
+        
         overrideAskRemove=false
     }
 }

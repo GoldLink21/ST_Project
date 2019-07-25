@@ -61,8 +61,8 @@
  */
 
 const USERS={
-    'holtschr000':'123',
-    'phelpgar000':'123',
+    'lsummei1':'w6tvmr',
+    'dhert':'7qr0zi11',
 }
 
 function verifyUserAndPass(user,pass){

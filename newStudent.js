@@ -449,7 +449,7 @@ async function loadAllCalendar(month,year){
     lastDayOfMonth.setMonth(month+1);
     lastDayOfMonth.setDate(0);
     for(let i=firstDayOfMonth;i<lastDayOfMonth.getDate()+firstDayOfMonth;i++){
-        var span=document.createElement('span');
+        var span=document.createElement('div');
         span.classList.add("gacha");
         var curDay=i-firstDayOfMonth+1;
         span.innerHTML=curDay;

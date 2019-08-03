@@ -1114,6 +1114,7 @@ function testSignIn(){
     var errEle=document.getElementById('loginError');
     if(verifyUserAndPass(inUser,inPass)){
         errEle.innerHTML='';
+        console.log("password verified");
         openTab1();
         document.getElementById('logIn').style.display='none';
         studentInit()

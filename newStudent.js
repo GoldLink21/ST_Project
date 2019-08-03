@@ -58,12 +58,16 @@
  findStuWith({firstName:'Bob',lastName:'Smith'})
  //You can leave out some parameters then and include specific ones. I could skip first and last name too
  findStusWith({min:10})
+
+
+ ADD VARIABLES FOR CALENDARDATE and CURRENT DATE
  */
 
 const USERS={
     'lsummei1':'w6tvmr',
     'dhert':'7qr0zi11',
-}
+    'admin':'admin'
+};
 
 function verifyUserAndPass(user,pass){
     for(let u in USERS){
@@ -83,16 +87,16 @@ const Time={
     toHours(min=0){
         return {hour:Math.floor(min/60),min:min%60}
     }
-}
+};
 
 /**Time needed until they have all time */
-const MinutesNeeded=Time.toMin(1500)
+const MinutesNeeded=Time.toMin(1500);
 /**This is the max amount of extra time they can get */
-const MaxExtra=Time.toMin(150)
+const MaxExtra=Time.toMin(150);
 
-var ref=firebase.app().database().ref()
+var ref=firebase.app().database().ref();
 /**Allows referencing the users quicker */
-var userRef=ref.child('users')
+var userRef=ref.child('users');
 
 var students=[];
 
@@ -104,9 +108,9 @@ var cal;
 
 /**Used to setup the calendar on the date inputs */
 function calOnLoad(){
-    cal=new dhtmlXCalendarObject('date')
-    cal.hideTime()
-    cal.setDateFormat('%l %M %j %Y')
+    cal=new dhtmlXCalendarObject('date');
+    cal.hideTime();
+    cal.setDateFormat('%l %M %j %Y');
     cal.setPosition('right')
 }
 
@@ -122,14 +126,14 @@ function date(dateString,min,extra=0){
 async function getStudent(fn,ln,isCaseSensitive=false){
     return new Promise((resolve,reject)=>{
         ref.once('value',(snapshot)=>{
-            var val=snapshot.val()
+            var val=snapshot.val();
             for(p1 in val){
                 for(p2 in val[p1]){
                     if(strEqual(val[p1][p2].firstName,fn,isCaseSensitive)&&strEqual(val[p1][p2].lastName,ln,isCaseSensitive))
                         resolve(val[p1][p2])
                 }
             }
-        })
+        });
         reject('Student not found')
     })
 }
@@ -141,62 +145,62 @@ function getStu(fn='',ln='',isCaseSensitive=false){
 
 /**Finds student fn,ln and sets their data to properties passed in */
 function setStuData(fn,ln,{firstName,lastName,period,year,min}={}){
-    var stuAndRef=getStu(fn,ln)
-    var updateObj={}
+    var stuAndRef=getStu(fn,ln);
+    var updateObj={};
     if(firstName)
-        updateObj[stuAndRef.ref+'firstName']=firstName
+        updateObj[stuAndRef.ref+'firstName']=firstName;
     if(lastName)
-        updateObj[stuAndRef.ref+'lastName']=lastName
+        updateObj[stuAndRef.ref+'lastName']=lastName;
     if(period)
-        updateObj[stuAndRef.ref+'period']=period
+        updateObj[stuAndRef.ref+'period']=period;
     if(year)
-        updateObj[stuAndRef.ref+'year']=year
+        updateObj[stuAndRef.ref+'year']=year;
     if(min)
-        updateObj[stuAndRef.ref+'min']=min
+        updateObj[stuAndRef.ref+'min']=min;
     ref.update(updateObj)
 }
 
 function findStusWith({firstName,lastName,period,minMin,minMax,year}={}){
     return students.filter(stuAndRef=>{
-        var stu=stuAndRef.stu
+        var stu=stuAndRef.stu;
         
         var fn=firstName===undefined||stu.firstName.includes(firstName),
             ln=lastName===undefined||stu.lastName.includes(lastName),
             sMin=parseInt(stu.min),
             minLess=minMin===undefined||sMin>=minMin,
             minMore=minMax===undefined||sMin<=minMax,
-            years=year===undefined||parseInt(stu.year)==parseInt(year)
-            periods=period===undefined||parseInt(stu.period)==parseInt(period)
+            years=year===undefined||parseInt(stu.year)==parseInt(year);
+            periods=period===undefined||parseInt(stu.period)==parseInt(period);
 
         return fn&&ln&&minLess&&minMore&&years&&periods
     })
 }
 
 function removeStu(fn,ln,isCaseSensitive){
-    console.log('Trying to remove',fn,ln)
-    var hasRemoved=false
+    console.log('Trying to remove',fn,ln);
+    var hasRemoved=false;
 
     userRef.once('value',(snapshot)=>{
-        var val=snapshot.val()
+        var val=snapshot.val();
         for(p1 in val){
             if(strEqual(val[p1].firstName,fn,isCaseSensitive)&&strEqual(val[p1].lastName,ln,isCaseSensitive)){
                 //Confirm pops up a yes or no option which returns true if yes and false if no
                 if(confirm('Are you sure you want to remove '+fn+' '+ln+'?')){
-                    var updateObj={}
-                    updateObj[p1]=null
-                    userRef.update(updateObj)
+                    var updateObj={};
+                    updateObj[p1]=null;
+                    userRef.update(updateObj);
                     hasRemoved=true
                 }else{
                     hasRemoved=true
                 }
             }
         }
-    })
+    });
     if(!hasRemoved)
         alert('Could not find student '+fn+' '+ln)
 }
 
-function removeByRef(stu){
+ async function removeByRef(stu){
 
   
 
@@ -205,32 +209,39 @@ function removeByRef(stu){
     }
     
     if(!stu.startsWith("users/"))
-        stu='users/'+stu
+        stu='users/'+stu;
   
-    console.log(stu)
+    console.log(stu);
     //If you pass in stu and ref
-    ref.child(stu).remove((error)=>console.log(error))
+    if(confirm("ARE YOU SURE YOU WANT TO DELETE THIS STUDENT?")){
+        await ref.child(stu).remove((error)=>console.log(error))
+        updateAll();
+        openTab1();
+    }
+    else{
+
+    }
 
 }
 
 var calendarStudent='',
-    calendarDate=new Date()
+    calendarDate=new Date();
 
-var addingId=1
+var addingId=1;
 function addToTable(stu){
     
-    var row=document.createElement('tr')
+    var row=document.createElement('tr');
 
     function addToRow(s){
-        var ele=document.createElement('td')
-        ele.innerHTML=s
-        row.appendChild(ele)
+        var ele=document.createElement('td');
+        ele.innerHTML=s;
+        row.appendChild(ele);
         return ele;
     }
     
     function addToRowInput(){
         var td = document.createElement('td');
-        td.classList.add('all')
+        td.classList.add('all');
         /*
         var y=document.createElement("div")
         y.classList.add("dateAndTime")
@@ -240,7 +251,7 @@ function addToTable(stu){
         }*/
         /**@returns {HTMLElement} */
         function e(elementType,id,type,...classes){
-            var ele=document.createElement(elementType)
+            var ele=document.createElement(elementType);
             if(id!==undefined)
                 ele.id=id;
             classes.forEach(clas=>ele.classList.add(clas));
@@ -272,9 +283,9 @@ function addToTable(stu){
         pTag1.appendChild(hrs)
         pTag2.appendChild(min)
         */
-        addingId++
-        but.innerHTML = "Add Time";
-        but.setAttribute("data-ref",stu.ref)
+        addingId++;
+        but.innerHTML = "Select Student";
+        but.setAttribute("data-ref",stu.ref);
         //but.setAttribute("data-ref",)
         but.onclick=async function(){
             /*
@@ -299,12 +310,12 @@ function addToTable(stu){
             //////////////////////////////////window.scrollTo('SubmitHrs'+id)
 
             */
-            calendarStudent=stu.ref
-            openLoadTab()
-            await loadAllCalendar(new Date().getMonth(),new Date().getFullYear())
+            calendarStudent=stu.ref;
+            openLoadTab();
+            await loadAllCalendar(new Date().getMonth(),new Date().getFullYear());
             openTab2()
         };
-        back.appendChild(but)
+        back.appendChild(but);
         //appendToY(dateE,pTag1,pTag2)
         row.appendChild(td);
         td.appendChild(back)
@@ -313,232 +324,237 @@ function addToTable(stu){
         dateE.onblur=function(){if(!cal.isVisible())cal.hide()}
         dateE.value=new Date().toDateString()*/
     }
-    var table=document.getElementById('stuView')
+    var table=document.getElementById('stuView');
     
-    var e1=addToRow(stu.lastName+",<br>&nbsp;&nbsp; "+stu.firstName).classList.add('stuName')
+    var e1=addToRow(stu.lastName+",<br>&nbsp;&nbsp; "+stu.firstName).classList.add('stuName');
 
-    var t=Time.toHours(stu.min+stu.extra)
+    var t=Time.toHours(stu.min+stu.extra);
 
     function parsePeriod(prd){
         if(prd==1)
-            return '1-4'
+            return '1-4';
         else if(prd==2)
-            return '5-7'
+            return '5-7';
         else return 'Unknown periods'
     }
     function parseYear(year=0){
         if(year==1)
-            return '1st'
+            return '1st';
         else if(year==2)
-            return '2nd'
+            return '2nd';
         //Just in case for debugging
         else if(year==3)
-            return '3rd'
+            return '3rd';
         else
             return year+'th'
     }
     function getTime(){
-        var minNeed=Time.toHours(MinutesNeeded-stu.min-stu.extra)
-        var str=t.hour+' hours, '+t.min+' minutes <br> <div>To go: '+minNeed.hour+':'
+        var minNeed=Time.toHours(MinutesNeeded-stu.min-stu.extra);
+        var str=t.hour+' hours, '+t.min+' minutes <br> <div>To go: '+minNeed.hour+':';
         if(minNeed.min.toString().length===1)
-            str+=('0'+minNeed.min)
+            str+=('0'+minNeed.min);
         else
-            str+=minNeed.min
+            str+=minNeed.min;
 
-        str+='</div>'
+        str+='</div>';
         return str
     }
     /////////////////////////////////////////////////////////Maybe swap positions
-    addToRow(parseYear(stu.year)).classList.add('stuYear')
-    addToRow(parsePeriod(stu.period)).classList.add('stuPeriod')
-    addToRow(getTime()).classList.add('dropDown','stuTime')
+    addToRow(parseYear(stu.year)).classList.add('stuYear');
+    addToRow(parsePeriod(stu.period)).classList.add('stuPeriod');
+    addToRow(getTime()).classList.add('dropDown','stuTime');
     addToRowInput();
 
     table.appendChild(row)
 }
+
+ function remove(){
+     removeByRef(calendarStudent);
+ }
+
+ function addAll(){
+     let index=1;
+     //Grab all the ones with inputs
+     Array.from(document.getElementsByClassName('hasInputs'))
+     //And filter down to the inputs only
+         .map(e=>Array.from(e.children[2].querySelectorAll('input')))
+         .forEach(e=>{
+             var dateNum=Number(e[0].parentElement.parentElement.parentElement.firstElementChild.innerText),
+                 hr=Number(e[0].value),
+                 min=Number(e[1].value),
+                 extra=e[2].checked;
+
+             if(hr!==0||min!==0){
+                 var dateCopy = new Date(calendarDate);
+                 dateCopy.setDate(dateNum);
+                 var dateObj=date(dateCopy.toDateString(),Time.toMin(hr,min),extra);
+                 setDateWithRef(calendarStudent,dateObj);
+                 e[0].value=0;
+                 e[1].value=0;
+                 e[2].checked=false
+             }
+             index++
+         });
+
+     loadAllCalendar(calendarDate.getMonth(), calendarDate.getFullYear());
+ }
+
 /**Loads in all dates on the calendar */
 async function loadAllCalendar(month,year){
     if(month===undefined){
         month=new Date().getMonth()
     }
-    var months=["January","February","March","April","May","June","July","August","September","October","November","December"]    
+    var months=["January","February","March","April","May","June","July","August","September","October","November","December"];
     
-    var first=new Date()
-    first.setMonth(month)
-    first.setDate(1)
+    var first=new Date();
+    first.setMonth(month);
+    first.setDate(1);
 
     if(year)
-        first.setFullYear(year)
-    var firstDayOfMonth=first.getDay()
-    
-    calendarDate=new Date(first)
+        first.setFullYear(year);
 
-    document.getElementById("month").innerHTML=months[first.getMonth()]+' '+first.getFullYear()
-    var stu=ref.child(calendarStudent)
-    var fn,ln
+    var firstDayOfMonth=first.getDay();
+    
+    calendarDate=new Date(first);
+
+    document.getElementById("month").innerHTML=months[first.getMonth()]+' '+first.getFullYear();
+    var stu=ref.child(calendarStudent);
+    var fn,ln;
     
     ///////////////////
-    var submitAll=document.createElement('button')
-    submitAll.innerHTML='Submit all'
-    submitAll.classList.add('addAll')
-    submitAll.style.color='green'
+    var submitAll=document.createElement('button');
+    submitAll.innerHTML='Submit all';
+    submitAll.classList.add('addAll');
+    submitAll.style.color='green';
 
-    document.getElementById("month").appendChild(submitAll)
+    document.getElementById("month").appendChild(submitAll);
 
-    document.querySelector("#addAll").addEventListener('click',event=>{
-        let index=1;
-        //Grab all the ones with inputs
-        Array.from(document.getElementsByClassName('hasInputs'))
-            //And filter down to the inputs only
-            .map(e=>Array.from(e.children[2].querySelectorAll('input')))
-            .forEach(e=>{
-                var dateNum=Number(e[0].parentElement.parentElement.parentElement.firstElementChild.innerText),
-                    hr=Number(e[0].value),
-                    min=Number(e[1].value),
-                    extra=e[2].checked
-
-               
-                if(hr!==0||min!==0){
-                    console.log(dateNum,hr,min,extra,index)
-                    first.setDate(dateNum)
-                    var dateObj=date(first.toDateString(),Time.toMin(hr,min),extra)
-                    setDateWithRef(calendarStudent,dateObj)
-                    e[0].value=0
-                    e[1].value=0
-                    e[2].checked=false
-                }
-                index++
-            })
-
-        first.setDate(1)
-        //console.log(eles)
-        loadAllCalendar()
-    })
 
     ///////////////////
 
     await stu.once('value',snap=>{
-        var val=snap.val()
-        fn=val['firstName']
+        var val=snap.val();
+        fn=val['firstName'];
         ln=val['lastName']
-    })
-    document.getElementsByClassName("NameOnCal")[0].innerHTML=fn+' '+ln
+    });
+    document.getElementsByClassName("NameOnCal")[0].innerHTML=fn+' '+ln;
 
-    var allEle=Array.from(document.getElementsByClassName('allDays'))
+    var allEle=Array.from(document.getElementsByClassName('allDays'));
 
     allEle.forEach(e=>{
-        e.innerHTML=''
+        e.innerHTML='';
         e.classList.remove('hasInputs')
-    })
-    var lastDayOfMonth=new Date()
-    lastDayOfMonth.setMonth(month+1)
-    lastDayOfMonth.setDate(0)
+    });
+    var lastDayOfMonth=new Date();
+    lastDayOfMonth.setMonth(month+1);
+    lastDayOfMonth.setDate(0);
     for(let i=firstDayOfMonth;i<lastDayOfMonth.getDate()+firstDayOfMonth;i++){
-        var span=document.createElement('span')
-        span.classList.add("gacha")
-        var curDay=i-firstDayOfMonth+1
-        span.innerHTML=curDay
-        allEle[i].appendChild(span)
-        allEle[i].appendChild(document.createElement('br'))
+        var span=document.createElement('span');
+        span.classList.add("gacha");
+        var curDay=i-firstDayOfMonth+1;
+        span.innerHTML=curDay;
+        allEle[i].appendChild(span);
+        allEle[i].appendChild(document.createElement('br'));
         
         if(allEle[i].classList.contains('Days')){
-            allEle[i].classList.add("hasInputs")
-            var prevTime=undefined
+            allEle[i].classList.add("hasInputs");
+            var prevTime=undefined;
             await stu.child('calendar').once('value',snap=>{
-                let val = snap.val()
-                var currentDate=new Date()
-                currentDate.setDate(i-firstDayOfMonth+1)
-                currentDate=currentDate.toDateString()
+                let val = snap.val();
+                var currentDate=new Date(calendarDate);
+                currentDate.setDate(i-firstDayOfMonth+1);
+                currentDate=currentDate.toDateString();
                 if(val[currentDate]){
                     prevTime=val[currentDate]
                 }
-            })
+            });
 
-            var b1=document.createElement('div')
-            b1.classList.add('block1')
+            var b1=document.createElement('div');
+            b1.classList.add('block1');
 
-            allEle[i].appendChild(b1)
+            allEle[i].appendChild(b1);
 
-            var d1=document.createElement('div')
-            d1.innerHTML='Hours:'
+            var d1=document.createElement('div');
+            d1.innerHTML='Hours:';
 
-            var curHourAndMin=undefined
+            var curHourAndMin=undefined;
             if(prevTime&&prevTime.min){
-                curHourAndMin=Time.toHours(Number(prevTime.min)+Number(prevTime.extra))
+                curHourAndMin=Time.toHours(Number(prevTime.min)+Number(prevTime.extra));
                 //console.log(curHourAndMin)
                 d1.innerHTML+=` (<span style="color:red">${curHourAndMin.hour}</span>) `
             }
 
-            b1.appendChild(d1)
+            b1.appendChild(d1);
 
-            var i1=document.createElement('input')
-            i1.type='number'
-            i1.max='23'
-            i1.min='0'
-            i1.value=0
-            i1.classList.add('resize')
-            d1.appendChild(i1)
+            var i1=document.createElement('input');
+            i1.type='number';
+            i1.max='23';
+            i1.min='0';
+            i1.value=0;
+            i1.classList.add('resize');
+            d1.appendChild(i1);
 
-            var d2=document.createElement('div')
-            d2.innerHTML='Minutes:'
+            var d2=document.createElement('div');
+            d2.innerHTML='Minutes:';
 
             if(curHourAndMin!==undefined){
                 d2.innerHTML+=` (<span style="color:red">${curHourAndMin.min}</span>)`
             }
 
-            b1.appendChild(d2)
+            b1.appendChild(d2);
 
-            var i2=document.createElement('input')
-            i2.type='number'
-            i2.max='59'
-            i2.min='0'
-            i2.value=0
-            i2.classList.add('resize')
-            d2.appendChild(i2)
+            var i2=document.createElement('input');
+            i2.type='number';
+            i2.max='59';
+            i2.min='0';
+            i2.value=0;
+            i2.classList.add('resize');
+            d2.appendChild(i2);
 
-            var d3=document.createElement('div')
-            d3.innerHTML='Is Extra Time:'
+            var d3=document.createElement('div');
+            d3.innerHTML='Is Extra Time:';
 
-            b1.appendChild(d3)
+            b1.appendChild(d3);
 
-            var i3=document.createElement('input')
-            i3.type='checkbox'
+            var i3=document.createElement('input');
+            i3.type='checkbox';
             
-            d3.appendChild(i3)
-            d3.innerHTML+='&nbsp;'
+            d3.appendChild(i3);
+            d3.innerHTML+='&nbsp;';
 
-            var btn1=document.createElement('button')
-            btn1.innerHTML='Set Time'
-            btn1.style.color='red'
-            btn1.tabIndex=-1
+            var btn1=document.createElement('button');
+            btn1.innerHTML='Set Time';
+            btn1.style.color='red';
+            btn1.tabIndex=-1;
 
             function addEvent(button,in1,in2,in3,thisDate,prevTime){
                 button.addEventListener('click',async event=>{
                     var hr=in1.value,
                         min=in2.value,
-                        isExtra=in3.checked
-                    var dateToAdd=(isExtra)?date(thisDate,0,Time.toMin(hr,min)):date(thisDate,Time.toMin(hr,min),0)
+                        isExtra=in3.checked;
+
+                    var dateToAdd=(isExtra)?date(thisDate,0,Time.toMin(hr,min)):date(thisDate,Time.toMin(hr,min),0);
                     //Get current extra
-                    var curExtra
-                    await ref.child(calendarStudent).child('extra').once('value',snap=>curExtra=snap.val())
+                    var curExtra = 0;
+                    await ref.child(calendarStudent).child('extra').once('value',snap=>curExtra=snap.val());
                     
                     if(curExtra+dateToAdd.extra>MaxExtra){
-                        dateToAdd.extra=MaxExtra-curExtra
+                        dateToAdd.extra=MaxExtra-curExtra;
                         alert("Student has achieved the maximum extra time available.")
                     }
 
                     //addDateWithRef(calendarStudent,dateToAdd)
-                    loadAllCalendar()
+                    loadAllCalendar(calendarDate.getMonth(), calendarDate.getFullYear());
 
                     //////////////////////////////////////////////////////////////////////////////////////////////
-                    setDateWithRef(calendarStudent,dateToAdd)
+                    setDateWithRef(calendarStudent,dateToAdd);
                     console.log(prevTime)
                 })
             }
-            var thisDate=new Date(first)
-            thisDate.setDate(Number(curDay))
+            var thisDate=new Date(first);
+            thisDate.setDate(Number(curDay));
 
-            addEvent(btn1,i1,i2,d3.querySelector('input'),thisDate.toDateString(),prevTime)
+            addEvent(btn1,i1,i2,d3.querySelector('input'),thisDate.toDateString(),prevTime);
 
             d3.appendChild(btn1)
         }
@@ -561,80 +577,80 @@ function loadPrevMonth(){
 }
 
 function getNextStudentOnCalendar(){
-    var arr=Array.from(document.getElementsByClassName('SubmitHrs'))
+    var arr=Array.from(document.getElementsByClassName('SubmitHrs'));
     var i=arr.findIndex(e=>{
         return e.dataset['ref']===calendarStudent
-    })
+    });
     if(i===arr.length-1)
-        return arr[0].dataset['ref']
+        return arr[0].dataset['ref'];
     return arr[i+1].dataset['ref']
 }
 function getPrevStudentOnCalendar(){
-    var arr=Array.from(document.getElementsByClassName('SubmitHrs'))
+    var arr=Array.from(document.getElementsByClassName('SubmitHrs'));
     var i=arr.findIndex(e=>{
         return e.dataset['ref']===calendarStudent
-    })
+    });
     if(i===0)
-        return arr[arr.length-1].dataset['ref']
+        return arr[arr.length-1].dataset['ref'];
     return arr[i-1].dataset['ref']
 }
 
-var filters={}
+var filters={};
 
 function filterChangePeriod(){
     var val=document.getElementById('periodFilter').value;
     if(val!=='all')
-        filters.period=val    
+        filters.period=val;
     else
-        delete filters.period
+        delete filters.period;
     
     //showStudentsInTable(findStusWith(filters))
-    clearTable()
+    clearTable();
     studentInit()
 }
 function filterChangeYear(){
     var val=document.getElementById('yearFilter').value;
     if(val!=='all')
-        filters.year=val    
+        filters.year=val;
     else
-        delete filters.year
+        delete filters.year;
 
     //showStudentsInTable(findStusWith(filters))
-    clearTable()
+    clearTable();
     studentInit()
 }
 
 function getTableNum(n){
-    var table=document.getElementById('listView').children[1]
+    var table=document.getElementById('listView').children[1];
     return table.children[n]
 }
 
 function sortStus(){
-    var stus=findStusWith(filters)
+    var stus=findStusWith(filters);
 
     //return stus.sort(byName)
 
     var y1=stus.filter(stu=>stu.stu.year==1),
-        y2=stus.filter(stu=>stu.stu.year==2)
+        y2=stus.filter(stu=>stu.stu.year==2);
 
-    return y1.sort(byName).concat(y2.sort(byName))
+    return y1.sort(byName).concat(y2.sort(byName));
 
     function byName(a,b){   
         
-        a=a.stu
-        b=b.stu
+        a=a.stu;
+        b=b.stu;
 
-        var ret=Number(a.year)-Number(b.year)
+        var ret=Number(a.year)-Number(b.year);
 
         if(a.lastName>b.lastName)
-            return 1//+ret;
+            return 1;//+ret;
         else if(a.lastName<b.lastName)
-            return -1//+ret
+            return -1;//+ret
 
         if(a.firstName<b.firstName)
-            return -1//+ret;
+            return -1;//+ret;
         else if(a.firstName>b.firstName)
-            return 1//+ret;
+            return 1;//+ret;
         else 
             return 0//+ret
     }
@@ -643,20 +659,20 @@ function sortStus(){
 /**Goes through every student and tallies up their calendar's minutes to update the running total minutes */
 function tallyStudentHours(){
     userRef.once('value',async snap=>{
-        var val=snap.val()
+        var val=snap.val();
         for(let uRef in val){
-            var stuRef=userRef.child(uRef)
-            var b,totalM=0,totalE=0
-            await stuRef.child('hasUpdatedTime').once('value',snp=>{b=snp.val()}).then(console.log(uRef))
-            console.log(uRef)
+            var stuRef=userRef.child(uRef);
+            var b,totalM=0,totalE=0;
+            await stuRef.child('hasUpdatedTime').once('value',snp=>{b=snp.val()}).then(console.log(uRef));
+            console.log(uRef);
             if(Boolean(b)){
                 stuRef.child('calendar').once('value',snapCal=>{
-                    var calVal=snapCal.val()
+                    var calVal=snapCal.val();
                     for(cRef in calVal){
-                        totalM+=Number(calVal[cRef].min)
+                        totalM+=Number(calVal[cRef].min);
                         totalE+=Number(calVal[cRef].extra)
                     }
-                })
+                });
                 stuRef.update({
                     min:totalM,
                     extra:totalE,
@@ -668,15 +684,15 @@ function tallyStudentHours(){
 }
 
 function tallySingleStu(studentRef){
-    var stuRef=ref.child(studentRef)
-    var totalM=0,totalE=0
+    var stuRef=ref.child(studentRef);
+    var totalM=0,totalE=0;
     stuRef.child('calendar').once('value',snapCal=>{
-        var calVal=snapCal.val()
+        var calVal=snapCal.val();
         for(cRef in calVal){
-            totalM+=Number(calVal[cRef].min)
+            totalM+=Number(calVal[cRef].min);
             totalE+=Number(calVal[cRef].extra)
         }
-    })
+    });
     stuRef.update({
         min:totalM,
         extra:totalE,
@@ -686,9 +702,9 @@ function tallySingleStu(studentRef){
 
 /**Adds all students from the database to the local students array */
 async function studentInit(){
-    openLoadTab()
-    students=[]
-    addingId=1
+    openLoadTab();
+    students=[];
+    addingId=1;
     ref.once('value',(snapshot)=>{
         var val=snapshot.val();
         for(p1 in val){
@@ -698,7 +714,7 @@ async function studentInit(){
             }
         }
     }).then(()=>{
-        sortStus().forEach(stu=>addToTable(stu.stu))
+        sortStus().forEach(stu=>addToTable(stu.stu));
         openTab1()
     })
 }
@@ -708,14 +724,14 @@ function logRefVal(ref){
 }
 
 async function showStudentsInTable(arr){
-    openLoadTab()
+    openLoadTab();
     new Promise(()=>{
         
-        clearTable()
-        addingId=0
+        clearTable();
+        addingId=0;
         //console.log(arr)
         if(arr.length===0)
-            return
+            return;
         //console.log(arr)
         if(arr[0].stu){
             arr.map(ele=>ele.stu).forEach(stu=>{
@@ -751,9 +767,9 @@ function listStudentsInConsole(){
  */
 async function addStudent(firstName,lastName,classPeriod,year,curHours=0,curMins=0){
     var hasData=(firstName!==undefined&&firstName!==''&&lastName!==undefined&&lastName!==''&&classPeriod!==undefined&&year!==undefined),
-        dataGood=(/^[1-2]{1}$/.test(classPeriod)&&/[1-2]{1}$/.test(year)&&parseInt(classPeriod)===parseFloat(classPeriod)&&parseInt(year)===parseFloat(year))
+        dataGood=(/^[1-2]{1}$/.test(classPeriod)&&/[1-2]{1}$/.test(year)&&parseInt(classPeriod)===parseFloat(classPeriod)&&parseInt(year)===parseFloat(year));
     if(hasData&&dataGood){
-        var date=today(Time.toMin(curHours,curMins))
+        var date=today(Time.toMin(curHours,curMins));
         var stu={
             firstName:firstName,
             lastName:lastName,
@@ -765,31 +781,31 @@ async function addStudent(firstName,lastName,classPeriod,year,curHours=0,curMins
             calendar:{},
             period:classPeriod,
             hasUpdatedTime:false
-        }
+        };
         stu.calendar[date.date]={
             min:date.min,
             extra:date.extra
-        }
-        userRef.push(stu)
+        };
+        userRef.push(stu);
 
         addCompletedWindow(firstName,lastName);
-        addToTable(stu)
-        addRefsToStus()
-        updateAll()
+        addToTable(stu);
+        addRefsToStus();
+        updateAll();
         return true;
     }else{
         if(!hasData)
             alert("Please enter all the requested data");
         else
-            alert("Make sure all inputs are within range")
+            alert("Make sure all inputs are within range");
         return false;
     }
 }
 
 function addRefsToStus(){
     userRef.once('value',(snapshot)=>{
-        var val=snapshot.val()
-        var o={}
+        var val=snapshot.val();
+        var o={};
         for(let nRef in val){
             if(val[nRef].ref===undefined){
                 o[nRef+'/ref']="users/"+nRef
@@ -801,10 +817,10 @@ function addRefsToStus(){
 }
 
 function makeUpdateObj(...pairs){
-    var o={}
+    var o={};
     pairs.forEach(pair=>{
         o[pair[0]]=pair[1]
-    })
+    });
     return o
 }
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -818,28 +834,28 @@ function addDateWithRef(stu,dateAndMin){
     }
     
     if(!stu.startsWith("users/"))
-        stu='users/'+stu
+        stu='users/'+stu;
 
-    var newRef=ref.child(stu)
+    var newRef=ref.child(stu);
 
-    var calendar=newRef.child('calendar')
+    var calendar=newRef.child('calendar');
     calendar.once('value',snap=>{
-        var val=snap.val()
+        var val=snap.val();
         if(val[dateAndMin.date]){
             var m=Number(val[dateAndMin.date].min)+Number(dateAndMin.min),
-                minExtra=Number(val[dateAndMin.date].extra)+Number(dateAndMin.extra)
-            val[dateAndMin.date].min=m
-            val[dateAndMin.date].extra=minExtra
+                minExtra=Number(val[dateAndMin.date].extra)+Number(dateAndMin.extra);
+            val[dateAndMin.date].min=m;
+            val[dateAndMin.date].extra=minExtra;
             calendar.set(val)
         }else{
             val[dateAndMin.date]={
                 min:dateAndMin.min,
                 extra:dateAndMin.extra
-            }
+            };
             calendar.set(val)
         }
-    })
-    newRef.child('hasUpdatedTime').set(true)
+    });
+    newRef.child('hasUpdatedTime').set(true);
 
     tallySingleStu(stu)
 }
@@ -851,11 +867,11 @@ function setDateWithRef(stu,dateAndMin){
     }
     
     if(!stu.startsWith("users/"))
-        stu='users/'+stu
+        stu='users/'+stu;
 
-    var newRef=ref.child(stu)
+    var newRef=ref.child(stu);
 
-    var calendar=newRef.child('calendar')
+    var calendar=newRef.child('calendar');
     if(dateAndMin.min===0&&dateAndMin.extra===0){
         calendar.child(dateAndMin.date).remove()
     }else{
@@ -882,7 +898,7 @@ function setDateWithRef(stu,dateAndMin){
         }
     })
     */
-    newRef.child('hasUpdatedTime').set(true)
+    newRef.child('hasUpdatedTime').set(true);
 
     tallySingleStu(stu)
 }
@@ -892,10 +908,10 @@ function getStuByRef(reference){
         reference=reference.substr('users/'.length)   
     }
     if(reference.endsWith('/'))
-        reference=reference.substr(0,reference.length-1)
+        reference=reference.substr(0,reference.length-1);
     return new Promise((resolve,reject)=>{
         userRef.once('value',(snapshot)=>{
-            var val=snapshot.val()
+            var val=snapshot.val();
             resolve(val[reference])
         })
     })
@@ -903,16 +919,16 @@ function getStuByRef(reference){
 
 /**Uses the actual student object to update the date */
 function addDateToStu(stuAndRef,dateAndMin){
-    var o={}
-    var cal=stuAndRef.stu.calendar
+    var o={};
+    var cal=stuAndRef.stu.calendar;
     cal[dateAndMin.date]={
         min:dateAndMin.min,
         extra:dateAndMin.extra
-    }
-    cal.push(dateAndMin)
-    o[stuAndRef.ref+'calendar/']=cal
-    o[stuAndRef.ref+'hasUpdatedTime']=true
-    ref.update(o)
+    };
+    cal.push(dateAndMin);
+    o[stuAndRef.ref+'calendar/']=cal;
+    o[stuAndRef.ref+'hasUpdatedTime']=true;
+    ref.update(o);
     stuAndRef.stu.hasUpdatedTime=true
 }
 
@@ -925,9 +941,9 @@ const completedWindowTimeoutMax=100;
 
 /**Adds a window showing the name of the student that was last added */
 function addCompletedWindow(first,last){
-    var ele=document.getElementById('addedStudent')
-    ele.innerHTML=first+' '+last+' was added successfully'
-    ele.style.visibility='visible'
+    var ele=document.getElementById('addedStudent');
+    ele.innerHTML=first+' '+last+' was added successfully';
+    ele.style.visibility='visible';
     newWindow=true
 }
 
@@ -938,31 +954,31 @@ function eleInit(){
 
 /**Opens and closes the new student window */
 function toggleNewStudentWindow(){
-    var newStu=document.getElementById('newStudent')
-    var stuBtn=document.getElementById('studentBtn')
+    var newStu=document.getElementById('newStudent');
+    var stuBtn=document.getElementById('studentBtn');
     switch(newStu.style.visibility){
         case 'visible':
-            newStu.style.visibility='hidden'
-            stuBtn.style.visibility='visible'
-            break
+            newStu.style.visibility='hidden';
+            stuBtn.style.visibility='visible';
+            break;
         case 'hidden':
-            newStu.style.visibility='visible'
-            stuBtn.style.visibility='hidden'            
+            newStu.style.visibility='visible';
+            stuBtn.style.visibility='hidden';
             break
     }
 }
 
 /**Opens and closes the remove student window */
 function toggleRemoveStudentWindow(){
-    var btn=document.getElementById('RemoveStu')
-    var window=document.getElementById('RemoveMenu')
+    var btn=document.getElementById('RemoveStu');
+    var window=document.getElementById('RemoveMenu');
     switch(btn.style.visibility){
         case 'visible':
-            btn.style.visibility='hidden'
-            window.style.visibility='visible'
-            break
+            btn.style.visibility='hidden';
+            window.style.visibility='visible';
+            break;
         case 'hidden':
-            btn.style.visibility='visible'
+            btn.style.visibility='visible';
             window.style.visibility='hidden'
 
     }
@@ -971,19 +987,19 @@ function toggleRemoveStudentWindow(){
 /**Removes the new student window after a time */
 var completedTimeout=setInterval(()=>{
     if(newWindow&&completedWindowTimeout<completedWindowTimeoutMax)
-        completedWindowTimeout++
+        completedWindowTimeout++;
     else{
-        completedWindowTimeout=0
+        completedWindowTimeout=0;
         newWindow=false;
         document.getElementById('addedStudent').style.visibility='hidden'
     }
-},60)
+},60);
 
 /**Gets rid of all elements in the table aside from the header */
 function clearTable(){
-    var div=document.getElementById('listView')
-    var table=div.querySelector('table')
-    var rows=table.querySelectorAll('tr')
+    var div=document.getElementById('listView');
+    var table=div.querySelector('table');
+    var rows=table.querySelectorAll('tr');
     for(let i=1;i<rows.length;i++){
         table.removeChild(rows[i])
     }
@@ -1001,16 +1017,16 @@ function updateAll(){
 }
 
 function updateTable(){
-    clearTable()
+    clearTable();
     studentInit()
 }
 
-var overrideAskRemove=false
+var overrideAskRemove=false;
 
 /**Removes all students that are year 2 and moves all year 1 students to 2 */
 async function removeYear2(){
     if(confirm('Are you sure you want to remove all year 2 students?')&&confirm('Are you really sure?')){
-        overrideAskRemove=true
+        overrideAskRemove=true;
         /*
         students.filter(stu=>stu.stu.year>=2).forEach(stu=>{
             //removeByRef(stu.ref)
@@ -1023,17 +1039,17 @@ async function removeYear2(){
 
         userRef.once('value',snap=>{
             snap.forEach(val=>{
-                var key='users/'+val.key
-                var stu=val.val()
+                var key='users/'+val.key;
+                var stu=val.val();
                 if(stu.year===2){
                     removeByRef(key)
                 }else{
                     ref.child(key).child('year').set(2)
                 }
             })
-        })
+        });
         
-        updateAll()
+        updateAll();
         
         
         overrideAskRemove=false
@@ -1043,27 +1059,27 @@ async function removeYear2(){
 /**Just for testing because I can't be bothered to keep adding a ton of random students manually */
 function sampleStudents(n=1){
     var fns=['Joe','Hannah','Gary','Sue','John','Jenny','Bob','Tim','Mary','Neo','Devin','Linda','Brenda','Paula','Marie','Lucy',
-            'Alice','Shane','Sam','Anne','Aliyah','Jean','Ellen','Max','Alan','Erik','Charles','Omar','Robbie','Oliver','Jimmy']
+            'Alice','Shane','Sam','Anne','Aliyah','Jean','Ellen','Max','Alan','Erik','Charles','Omar','Robbie','Oliver','Jimmy'];
     var lns=['Smith','Johnson','Holtsclaw','Phelps','Brito','Mayorga','Smith','Law','Jones','Davis','Miller','Brown','Williams',
-            'Hill','Lopez','Young','Allen','Morris','Price','Long','Nelson','Jackson','White','Phillips','Clark','Lee','Lewis']
+            'Hill','Lopez','Young','Allen','Morris','Price','Long','Nelson','Jackson','White','Phillips','Clark','Lee','Lewis'];
 
     var yrs=[1,2],
-        pds=[1,2]
+        pds=[1,2];
     function rnd(arr){
         return arr[parseInt(Math.random()*arr.length)]
     }
     var i=0;
     var func=function(){
         //////////////////////////////////////////////////////////////////////////
-        var fn=rnd(fns),ln=rnd(lns)
+        var fn=rnd(fns),ln=rnd(lns);
         while(students.some(stu=>stu.stu.firstName===fn)&&students.some(stu=>stu.stu.lastName===ln)){
-            fn=rnd(fns)
+            fn=rnd(fns);
             ln=rnd(lns)
         }
-        addStudent(fn,ln,rnd(pds),rnd(yrs))
+        addStudent(fn,ln,rnd(pds),rnd(yrs));
         if(++i<n)
             setTimeout(func,75)
-    }
+    };
     setTimeout(func,75)
 }
 
@@ -1078,30 +1094,66 @@ function submit(){
 }
 
 /**This is an offline copy of the database updated every time the database changes */
-var o
+var o;
 userRef.on('value',function(snap){
     o=snap.val()
-})
+});
 
 function clearAllStudents(){
     if(confirm("Are you sure you want to delete all students?")&&confirm("This is irreversable and cannot be recovered after."+
     " Are you really sure?")){
-        userRef.remove()
-        clearTable()
+        userRef.remove();
+        clearTable();
         studentInit()
     }
 }
 
 function testSignIn(){
-    var inUser=document.getElementById('userLogin').value.toString()
-    var inPass=document.getElementById('passwordLogin').value.toString()
-    var errEle=document.getElementById('loginError')
+    var inUser=document.getElementById('userLogin').value.toString();
+    var inPass=document.getElementById('passwordLogin').value.toString();
+    var errEle=document.getElementById('loginError');
     if(verifyUserAndPass(inUser,inPass)){
-        errEle.innerHTML=''
-        openTab1()
-        document.getElementById('logIn').style.display='none'
+        errEle.innerHTML='';
+        openTab1();
+        document.getElementById('logIn').style.display='none';
         studentInit()
     }else{
         errEle.innerHTML='<div style="color:red">Invalid username or password</div>'
     }
+}
+
+function SignIn(){
+    var errEle=document.getElementById('loginError');
+    var provider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithPopup(provider).then(function(result) {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        // The signed-in user info.
+        let gUser = result.user;        // ...
+        if(gUser.email === "jlaw@warren.k12.in.us" || gUser.email === "lsummei1@warren.k12.in.us" || gUser.email === "dhert@warren.k12.in.us"){
+            errEle.innerHTML='';
+            openTab1();
+            document.getElementById('logIn').style.display='none';
+            studentInit()
+        }else{
+            errEle.innerHTML='<div style="color:red">ACCESS NOT GRANTED</div>'
+        }
+    }).catch(function(error) {
+        // Handle Errors here.
+        errEle.innerHTML='<div style="color:red">Invalid username or password</div>'
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // The email of the user's account used.
+        var email = error.email;
+        // The firebase.auth.AuthCredential type that was used.
+        var credential = error.credential;
+        // ...
+    });
+}
+function SignOut(){
+    firebase.auth().signOut().then(function() {
+        // Sign-out successful.
+        location.reload(true);
+    }).catch(function(error) {
+        // An error happened.
+    });
 }

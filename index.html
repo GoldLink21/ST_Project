@@ -18,12 +18,10 @@
             databaseURL:"https://st-project-36358.firebaseio.com"
         })
     </script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id" content="768962788613-4na9lv6amel7qjev77bcqv3intti93pa.apps.googleusercontent.com">
     <script src='src/cal/codebase/dhtmlxcalendar.js'></script>
     <link rel='stylesheet' href="src/cal/codebase/dhtmlxcalendar.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script src='newStudent.js'></script>
     <link rel="stylesheet" href="index.css" type="text/css">
     <meta charset="UTF-8">
@@ -34,97 +32,70 @@
 </head>
 <body id="body" onload="calOnLoad()">
     
-    <div class="logIn" id="logIn">
+<div class="logIn" id="logIn">
 
-        <div id='transparent' class="transparent" onload="document.getElementsByClassName('transparent').style.width=window.innerWidth;document.getElementsByClassName('transparent').style.height=window.innerHeight;">
+<div id='transparent' class="transparent" onload="document.getElementsByClassName('transparent').style.width=window.innerWidth;document.getElementsByClassName('transparent').style.height=window.innerHeight;"></div>
+<div class="signInMenu" id='signInMenu'>Please Enter <div id='loginError'></div><div class="email">Username: <input class="user" id="userLogin"></div><div class="password">Password: &nbsp;<input type='password' class="pass" id="passwordLogin">  <div class="signIn" id="signin"><button class="signinbutton" onclick="testSignIn()" id="signinBut">Sign In</button></div></div>
+<!--- <div class="signInMenu" id='signInMenu'>Please Sign In<div id='loginError'></div><button class="signinbutton" onclick="SignIn()" id="signinBut">Sign In</button></div></div>
+</div> -->
 
-        </div>
-        <div class="signInMenu" id='signInMenu'>Please Enter
-            <div id='loginError'></div>
-            <label for="userLogin" class="email">Username:</label>
-            <input class="user" id="userLogin"><br>
-            <label for="passwordLogin" class="password">Password:</label>
-            <input type='password' class="pass" id="passwordLogin"><br>
-            <div class="signIn" id="signin"><button class="signinbutton" onclick="testSignIn()" id="signinBut">Sign In</button></div>
-            <div class="signIn"><button class="signinbutton" onclick="SignIn()" id="signinBut2">Sign In With Google - NOT ENABLED</button></div>
-        </div>
+</div>
 
+    <div id="Tab1">
 
-        <!--- <div class="signInMenu" id='signInMenu'>Please Enter
-            <div id='loginError'></div>
-            <div class="email">Username: </div><input class="user" id="userLogin">
-            <div class="password">Password: &nbsp;<input type='password' class="pass" id="passwordLogin"></div>
-            <div class="signIn" id="signin"><button class="signinbutton" onclick="testSignIn()" id="signinBut">Sign In</button></div>
-            <div class="signIn"><button class="signinbutton" onclick="SignIn()" id="signinBut2">Sign In With Google</button></div>
-        </div> -->
+    <div id="addedStudent"></div>
+
+    <h1 class="Head">Warren Central High School Cosmetology</h1>
+
+    <div class="newStudent"><button class="altbutton" id="studentBtn" onclick="toggleNewStudentWindow()">Add Student</button></div>
+    <div id="newStudent" class='newStudent'>
+        <p>First Name:</p><input type="text" class="input1" id="firstName1">
+        <p>Last Name:</p><input type="text" class="input1" id="lastName1">
+        <div class="pack1"><p class="input2">Period:</p>
+        <div class="subpack" onclick="document.getElementsByName('period')[0].click()"><input class="input2" type="radio" value=1 id="classPeriod" name='period' checked>(1-4)</div><br>
+        <div class="subpack" onclick="document.getElementsByName('period')[1].click()"><input class="input2" type="radio" value=2 id="classPeriod" name='period'>(5-7)</div></div>
+        <div class="pack2"><p>Year:</p>
+        <div class="subpack"  onclick="document.getElementsByName('year')[0].click()"><input type=radio name="year" value=1 class="radio" checked>1 &emsp;</div>
+        <div class="subpack" onclick="document.getElementsByName('year')[1].click()"><input type=radio name="year" value=2 class='radio'>2</div></div><br>
+        <p class="extraSpace"><button class="submit1" id="submit1" onclick="newStuFunc();document.getElementById('firstName1').focus()">Submit</button></p>
+        <br><button id='close1' onclick="toggleNewStudentWindow()">Close</button>
     </div>
-
-    <div id="Tab1" class="container-fluid">
-
-        <div id="addedStudent"></div>
-
-        <h1 class="Head">Warren Central High School Cosmetology</h1>
-
-        <div class="newStudent"><button class="altbutton" id="studentBtn" onclick="toggleNewStudentWindow()">Add Student</button></div>
-        <div id="newStudent" class='newStudent'>
-            <p>First Name:</p><input type="text" class="input1" id="firstName1">
-            <p>Last Name:</p><input type="text" class="input1" id="lastName1">
-            <div class="pack1"><p class="input2">Period:</p>
-            <div class="subpack" onclick="document.getElementsByName('period')[0].click()"><input class="input2" type="radio" value=1 id="classPeriod" name='period' checked>(1-4)</div><br>
-            <div class="subpack" onclick="document.getElementsByName('period')[1].click()"><input class="input2" type="radio" value=2 id="classPeriod" name='period'>(5-7)</div></div>
-            <div class="pack2"><p>Year:</p>
-            <div class="subpack"  onclick="document.getElementsByName('year')[0].click()"><input type=radio name="year" value=1 class="radio" checked>1 &emsp;</div>
-            <div class="subpack" onclick="document.getElementsByName('year')[1].click()"><input type=radio name="year" value=2 class='radio'>2</div></div><br>
-            <p class="extraSpace"><button class="submit1" id="submit1" onclick="newStuFunc();document.getElementById('firstName1').focus()">Submit</button></p>
-            <br><button id='close1' onclick="toggleNewStudentWindow()">Close</button>
-        </div>
-        <div id="RemoveStu"><button class="altbutton" onclick=toggleRemoveStudentWindow()>Options</button></div>
-        <div id="RemoveMenu">
-            <button class="submit" onclick="removeYear2()">Move All Students Up</button>
-            <button class="submit" onclick="SignOut()">SIGN OUT - NOT ENABLED</button>
-            <button id="close2" onclick='toggleRemoveStudentWindow()'>Close</button>
-        </div>
-        <div id="listView">
-            <table id="stuView" class="stuView">
-                <tr>
-                    <div class="header">
-                        <th>Student</th>
-                        <th>Year <select id='yearFilter' class="drowDown" onchange="filterChangeYear()">
-                            <option value="all">All</option>
-                            <option value="1">1st</option>
-                            <option value="2">2nd</option>
-                        </select></th>
-                        <th>Period <select id='periodFilter' class="dropDown" onchange="filterChangePeriod()">
-                            <option value="all">All</option>
-                            <option value="1">1-4</option>
-                            <option value="2">5-7</option>
-                        </select></th>
-                        <th>Student Time</th>
-                        <th>Adding Time</th>
-                    </div>
-                </tr>
-            </table>
-        </div>
+    <div id="RemoveStu"><button class="altbutton" onclick=toggleRemoveStudentWindow()>Options</button></div>
+    <div id="RemoveMenu">
+        <button class="submit" onclick="removeYear2()">Move All Students Up</button>
+        <button class="submit" onclick="SignOut()">SIGN OUT</button>
+        <button id="close2" onclick='toggleRemoveStudentWindow()'>Close</button>
     </div>
-
-
-    <div id="Tab2"  class="container-fluid">
+    <div id="listView">
+        <table id="stuView" class="stuView">
+            <tr>
+                <div class="header">
+                    <th>Student</th>
+                    <th>Year <select id='yearFilter' class="drowDown" onchange="filterChangeYear()">
+                        <option value="all">All</option>
+                        <option value="1">1st</option>
+                        <option value="2">2nd</option>
+                    </select></th>
+                    <th>Period <select id='periodFilter' class="dropDown" onchange="filterChangePeriod()">
+                        <option value="all">All</option>
+                        <option value="1">1-4</option>
+                        <option value="2">5-7</option>
+                    </select></th>
+                    <th>Student Time</th>
+                    <th>Adding Time</th>
+                </div>
+            </tr>
+        </table>
+    </div>
+    </div>
+    <div id="Tab2">
         <div class="tab1"><button class="wider" id="tab1" onclick="openTab1();updateAll()">Go Back</button></div>
         <div class="addAll"><button class="wider" id="addAll" onclick="addAll()">Set All</button></div>
         <div class="rmvStu"><button class="wider" id="rmvStu" onclick="remove()">Remove Student</button></div>
 
         <div class="calender"><table class="calendared" id="calendered">
-            <tr>
-                <th class="navButLeft"><button class="arrows leftArrow1" onclick="calendarStudent=getPrevStudentOnCalendar();loadAllCalendar()">&larr;</button></th>
-                <th class="headingRow" colspan='5'><div class="NameOnCal" >Student Name</div></th>
-                <th class="navButRight "><button class="arrows rightArrow1" onclick="calendarStudent=getNextStudentOnCalendar();loadAllCalendar()">&rarr;</button></th>
-            </tr>
-            <tr>
-                <th class="navButLeft navButMonth"><button class="arrows leftArrow2" onclick="loadPrevMonth()">&larr;</button></th>
-                <th class="month headingRow" id="month" colspan="5">May</th>
-                <th class="navButRight navButMonth"><button class="arrows rightArrow2" onclick="loadNextMonth()">&rarr;</button></th>
-            </tr>
-
+            <tr><div class="leftArrow1" onclick="calendarStudent=getPrevStudentOnCalendar();loadAllCalendar()">&larr;</div><td class="NameOnCal" colspan='7'>Student Name</td></tr><div class="rightArrow1" onclick="calendarStudent=getNextStudentOnCalendar();loadAllCalendar()">&rarr;</div>
+            <tr><div class="leftArrow2" onclick="loadPrevMonth()">&larr;</div><th class="month" id="month" colspan="7">May</th></tr><div class="rightArrow2" onclick="loadNextMonth()">&rarr;</div>
             <tr>
                 <td class="calday weekend sunday">Sunday</td>
                 <td class="calday weekday">Monday</td>
@@ -137,10 +108,10 @@
             <tr>
                 <td class="sunday allDays"></td>
                 <td class="Days allDays">
-                    <div class="gacha">1</div><br><div class="block1"><div>Hours:<input class="resize" min="0" max='24' type="number"></div><div>Minutes:<input class="resize" min='0' max='59' type="number"></div><div>IsExtra:<input type="checkbox">&nbsp;<button>Submit</button></div></div>
+                    <span class="gacha">1</span><br><div class="block1"><div>Hours:<input class="resize" min="0" max='24' type="number"></div><div>Minutes:<input class="resize" min='0' max='59' type="number"></div><div>IsExtra:<input type="checkbox">&nbsp;<button>Submit</button></div></div>
                 </td>
                 <td class="Days allDays">
-                    <div class="gacha">1</div><br><div class="block1"><div>Hours:<input class="resize" min="0" max='24' type="number"></div><div>Minutes:<input class="resize" min='0' max='59' type="number"></div><div>IsExtra:<input type="checkbox">&nbsp;<button>Submit</button></div></div>
+                    <span class="gacha">1</span><br><div class="block1"><div>Hours:<input class="resize" min="0" max='24' type="number"></div><div>Minutes:<input class="resize" min='0' max='59' type="number"></div><div>IsExtra:<input type="checkbox">&nbsp;<button>Submit</button></div></div>
                 </td>
                 <td class="Days allDays"></td>
                 <td class="Days allDays"></td>

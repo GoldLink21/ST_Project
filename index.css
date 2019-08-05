@@ -378,6 +378,10 @@ h2 {
     border: 1px solid black;
 }
 
+.signIn{
+    padding-bottom: 20px;
+}
+
 .signinBut{
     width: 50%;
 }

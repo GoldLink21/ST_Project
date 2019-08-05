@@ -64,9 +64,7 @@
  */
 
 const USERS={
-    'lsummei1':'w6tvmr',
-    'dhert':'7qr0zi11',
-    'admin':'admin'
+   'admin':'admin'
 };
 
 function verifyUserAndPass(user,pass){

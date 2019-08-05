@@ -369,6 +369,8 @@ h2 {
 
 .signInMenu{
     font-size: 2.7vw;
+    font-family: Milonga;
+    font-weight: 600;
     text-align: center;
     margin: 5% auto;
     height: auto;

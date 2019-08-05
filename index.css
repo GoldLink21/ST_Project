@@ -383,6 +383,9 @@ h2 {
 }
 
 .transparent{
+    background-image:url("cosmo2.JPG");
+    background-repeat:no-repeat;
+    background-size:contain;
     background-color: gray;
     opacity: 0.8;
     position: absolute;

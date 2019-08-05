@@ -324,7 +324,7 @@ function addToTable(stu){
     }
     var table=document.getElementById('stuView');
     
-    var e1=addToRow(stu.lastName+",<br>&nbsp;&nbsp; "+stu.firstName).classList.add('stuName');
+    var e1=addToRow(stu.lastName+",  "+stu.firstName).classList.add('stuName');
 
     var t=Time.toHours(stu.min+stu.extra);
 
@@ -450,9 +450,12 @@ async function loadAllCalendar(month,year){
         var span=document.createElement('div');
         span.classList.add("gacha");
         var curDay=i-firstDayOfMonth+1;
-        span.innerHTML=curDay;
-        allEle[i].appendChild(span);
-        allEle[i].appendChild(document.createElement('br'));
+
+        if(!allEle[i].classList.contains('sunday')){
+            span.innerHTML=curDay;
+            allEle[i].appendChild(span);
+            allEle[i].appendChild(document.createElement('br'));
+        }
         
         if(allEle[i].classList.contains('Days')){
             allEle[i].classList.add("hasInputs");

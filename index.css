@@ -58,9 +58,7 @@ button{
 }
 
 body{
-    background-color: #34635a;
-    background-size: 50%;
-    background-repeat: repeat;
+    background-image: url("prism.png");
 }
 
 .newStudent{
@@ -117,11 +115,11 @@ td, th {
 }
 
 tr:nth-child(odd){
-    background-color: #ffffff;
+    background-color: #eeeeee;
 }
 
 tr:nth-child(even){
-    background-color: #dddddd;
+    background-color: #bca070;
 }
 
 .header{
@@ -178,6 +176,7 @@ tr:nth-child(even){
 }
 
 h1 {
+    font-family: Milonga;
     text-align: center;
     border: 3px solid rgb(95, 95, 95);
     background-color: rgb(199, 199, 199);
@@ -200,7 +199,7 @@ h1 {
     margin-left: 5px;
     margin-top: 50px;
     position: fixed;
-    background-color: cornsilk;
+    background-color: #bca070;
     border: 1px solid black;
     box-shadow: 0px 8px 16px 0px rgb(0, 0, 0, 0.2);
 }
@@ -246,6 +245,7 @@ h2 {
     height: 50%;
     font-size: .9vw;
     margin-top: 14px;
+    background-color: #bca070;
 }
 
 .dropArrow {
@@ -284,6 +284,7 @@ h2 {
 .stuName{
     width:10%;
     font-size: 1.4vw;
+    text-align:left;
 }
 
 .all{
@@ -298,7 +299,7 @@ h2 {
 .back{
     border: 1px black solid;
     Height: 60px;
-    background-color: cornsilk;
+    background-color: #dddddd;
 }
 
 .calday{
@@ -317,12 +318,8 @@ h2 {
     background-color: gray;
 }
 
-.weekend{
-    background-color: slategray
-}
-
 .weekday{
-    background-color: cornsilk;
+    background-color: #eeeeee;
 }
 
 .Days{
@@ -331,7 +328,7 @@ h2 {
 }
 
 .NameOnCal{
-    font-size: 1.2em;
+    font-size: 1.4em;
 }
 
 .block1{
@@ -344,7 +341,7 @@ h2 {
 }
 
 .month{
-    background-color: cornsilk;
+    background-color: #bca070;
     font-size: 2em;
 }
 
@@ -353,9 +350,8 @@ h2 {
 }
 
 .gacha{
-    float: left;
-    font-size: 0.8em;
-    border: 1px black solid;
+    float: right;
+    font-size: 1em;
 }
 
 .logIn{
@@ -412,7 +408,7 @@ h2 {
     margin-right: 1%;
     margin-top: 50px;
     position: fixed;
-    background-color: cornsilk;
+    background-color: #bca070;
     border: 1px solid black;
     box-shadow: 0px 8px 16px 0px rgb(0, 0, 0, 0.2);
 }
@@ -426,7 +422,7 @@ h2 {
     margin-right: 1%;
     margin-top: 120px;
     position: fixed;
-    background-color: cornsilk;
+    background-color: #bca070;
     border: 1px solid black;
     box-shadow: 0px 8px 16px 0px rgb(0, 0, 0, 0.2);
 }
@@ -480,6 +476,6 @@ h2 {
     border-right:none;
 }
 .navButMonth{
-    background-color: cornsilk;
+    background-color: #bca070;
 
 }

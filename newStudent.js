@@ -113,49 +113,12 @@ function calOnLoad(){
 }
 
 /**Takes a date string and uses it to make an object with minutes */
-function date(dateString,min,extra=0){
+function date(dateString,min,extra=0) {
     return {
-        date:new Date(dateString).toDateString(),
-        min:min,
-        extra:extra}
-}
-
-/**@returns {Promise} a promise with the student data in it. Use getStu instead because it returns from the student array */
-async function getStudent(fn,ln,isCaseSensitive=false){
-    return new Promise((resolve,reject)=>{
-        ref.once('value',(snapshot)=>{
-            var val=snapshot.val();
-            for(p1 in val){
-                for(p2 in val[p1]){
-                    if(strEqual(val[p1][p2].firstName,fn,isCaseSensitive)&&strEqual(val[p1][p2].lastName,ln,isCaseSensitive))
-                        resolve(val[p1][p2])
-                }
-            }
-        });
-        reject('Student not found')
-    })
-}
-
-/**Gets a student from the students array */
-function getStu(fn='',ln='',isCaseSensitive=false){
-    return students.filter(stu=>strEqual(stu.stu.firstName,fn,isCaseSensitive)&&strEqual(stu.stu.lastName,ln,isCaseSensitive))[0]
-}
-
-/**Finds student fn,ln and sets their data to properties passed in */
-function setStuData(fn,ln,{firstName,lastName,period,year,min}={}){
-    var stuAndRef=getStu(fn,ln);
-    var updateObj={};
-    if(firstName)
-        updateObj[stuAndRef.ref+'firstName']=firstName;
-    if(lastName)
-        updateObj[stuAndRef.ref+'lastName']=lastName;
-    if(period)
-        updateObj[stuAndRef.ref+'period']=period;
-    if(year)
-        updateObj[stuAndRef.ref+'year']=year;
-    if(min)
-        updateObj[stuAndRef.ref+'min']=min;
-    ref.update(updateObj)
+        date: new Date(dateString).toDateString(),
+        min: min,
+        extra: extra
+    }
 }
 
 function findStusWith({firstName,lastName,period,minMin,minMax,year}={}){
@@ -200,8 +163,6 @@ function removeStu(fn,ln,isCaseSensitive){
 
  async function removeByRef(stu){
 
-  
-
     if(stu.endsWith('/')){
         stu=stu.substr(0,stu.length-1)
     }
@@ -240,13 +201,7 @@ function addToTable(stu){
     function addToRowInput(){
         var td = document.createElement('td');
         td.classList.add('all');
-        /*
-        var y=document.createElement("div")
-        y.classList.add("dateAndTime")
-        td.appendChild(y)
-        function appendToY(...eles){
-            eles.forEach(ele=>y.appendChild(ele));
-        }*/
+
         /**@returns {HTMLElement} */
         function e(elementType,id,type,...classes){
             var ele=document.createElement(elementType);
@@ -262,65 +217,21 @@ function addToTable(stu){
             }
             return ele;
         }
-        /*
-        var dateE = e('input',"addingTimeDate"+addingId,'text',"addingTimeDate");
-        var hrs = e('input',"addingHrs"+addingId,'number',"addingTime");
-        var min = e('input',"addingMin"+addingId,'number',"addingTime");
-        */
-        var but = e("button","SubmitHrs"+addingId,undefined,"SubmitHrs");
-        var back = e('div',undefined,undefined,'back');
-        /*
-        hrs.setAttribute('max',23)
-        min.setAttribute('max',59)
 
-        //Since you didn't want to create them I did lol. You get to add the classes and all that but I did what I wanted to do.
-        var pTag1 = e('p',undefined,undefined,'addingTime');
-        var pTag2 = e('p',undefined,undefined,'addingTime');
-        pTag1.innerHTML='Hours'
-        pTag2.innerHTML='Minutes'
-        pTag1.appendChild(hrs)
-        pTag2.appendChild(min)
-        */
+        var but = e("button","SubmitHrs"+addingId,undefined,"SubmitHrs");
         addingId++;
         but.innerHTML = "Select Student";
         but.setAttribute("data-ref",stu.ref);
-        //but.setAttribute("data-ref",)
         but.onclick=async function(){
-            /*
 
-            var student=await getStuByRef(but.dataset['ref'])
-            /*
-            var d=document.getElementById('addingTimeDate'+id),
-                h=document.getElementById('addingHrs'+id),
-                m=document.getElementById('addingMin'+id)
-               * 
-            //var nDate=new Date(d.value).toDateString()
-            var nDate=new Date(dateE.value).toDateString()
-
-            var dat=date(nDate,Time.toMin(Number(hrs.value),Number(min.value)))
-
-            if(dat.date!=='Invalid Date'&&dat.min!==0){
-                //addDateToStu(student,dat)
-                addDateWithRef(student,dat)
-            }
-            tallyStudentHours()
-            updateAll()
-            //////////////////////////////////window.scrollTo('SubmitHrs'+id)
-
-            */
             calendarStudent=stu.ref;
             openLoadTab();
             await loadAllCalendar(new Date().getMonth(),new Date().getFullYear());
             openTab2()
         };
-        back.appendChild(but);
-        //appendToY(dateE,pTag1,pTag2)
         row.appendChild(td);
-        td.appendChild(back)
-        /*cal.attachObj(dateE);
-        dateE.onfocus=function(){if(cal.isVisible())cal.show(date.id)}
-        dateE.onblur=function(){if(!cal.isVisible())cal.hide()}
-        dateE.value=new Date().toDateString()*/
+        td.appendChild(but);
+
     }
     var table=document.getElementById('stuView');
     
@@ -544,7 +455,6 @@ async function loadAllCalendar(month,year){
                         alert("Student has achieved the maximum extra time available.")
                     }
 
-                    //addDateWithRef(calendarStudent,dateToAdd)
                     loadAllCalendar(calendarDate.getMonth(), calendarDate.getFullYear());
 
                     //////////////////////////////////////////////////////////////////////////////////////////////
@@ -559,22 +469,17 @@ async function loadAllCalendar(month,year){
 
             d3.appendChild(btn1)
         }
-
-
-
     }
 }
 
 function loadNextMonth(){
     calendarDate.setMonth(calendarDate.getMonth()+1);
     loadAllCalendar(calendarDate.getMonth(),calendarDate.getFullYear())
-    //console.log(calendarDate)
 }
 
 function loadPrevMonth(){
     calendarDate.setMonth(calendarDate.getMonth()-1);
     loadAllCalendar(calendarDate.getMonth(),calendarDate.getFullYear())
-    //console.log(calendarDate)
 }
 
 function getNextStudentOnCalendar(){
@@ -604,8 +509,7 @@ function filterChangePeriod(){
         filters.period=val;
     else
         delete filters.period;
-    
-    //showStudentsInTable(findStusWith(filters))
+
     clearTable();
     studentInit()
 }
@@ -616,20 +520,12 @@ function filterChangeYear(){
     else
         delete filters.year;
 
-    //showStudentsInTable(findStusWith(filters))
     clearTable();
     studentInit()
 }
 
-function getTableNum(n){
-    var table=document.getElementById('listView').children[1];
-    return table.children[n]
-}
-
 function sortStus(){
     var stus=findStusWith(filters);
-
-    //return stus.sort(byName)
 
     var y1=stus.filter(stu=>stu.stu.year==1),
         y2=stus.filter(stu=>stu.stu.year==2);
@@ -658,32 +554,6 @@ function sortStus(){
 }
 
 /**Goes through every student and tallies up their calendar's minutes to update the running total minutes */
-function tallyStudentHours(){
-    userRef.once('value',async snap=>{
-        var val=snap.val();
-        for(let uRef in val){
-            var stuRef=userRef.child(uRef);
-            var b,totalM=0,totalE=0;
-            await stuRef.child('hasUpdatedTime').once('value',snp=>{b=snp.val()}).then(console.log(uRef));
-            console.log(uRef);
-            if(Boolean(b)){
-                stuRef.child('calendar').once('value',snapCal=>{
-                    var calVal=snapCal.val();
-                    for(cRef in calVal){
-                        totalM+=Number(calVal[cRef].min);
-                        totalE+=Number(calVal[cRef].extra)
-                    }
-                });
-                stuRef.update({
-                    min:totalM,
-                    extra:totalE,
-                    hasUpdatedTime:false
-                })
-            }
-        }
-    })
-}
-
 function tallySingleStu(studentRef){
     var stuRef=ref.child(studentRef);
     var totalM=0,totalE=0;
@@ -718,32 +588,6 @@ async function studentInit(){
         sortStus().forEach(stu=>addToTable(stu.stu));
         openTab1()
     })
-}
-
-function logRefVal(ref){
-    ref.once('value',snap=>console.log(snap.val()))
-}
-
-async function showStudentsInTable(arr){
-    openLoadTab();
-    new Promise(()=>{
-        
-        clearTable();
-        addingId=0;
-        //console.log(arr)
-        if(arr.length===0)
-            return;
-        //console.log(arr)
-        if(arr[0].stu){
-            arr.map(ele=>ele.stu).forEach(stu=>{
-                addToTable(stu)
-            })
-        }else{
-            arr.forEach(stu=>{
-                addToTable(stu)
-            })
-        }
-    }).then(openTab1())
 }
 
 /**Just a debugging function to confirm access to the database */
@@ -816,52 +660,11 @@ function addRefsToStus(){
             userRef.update(o)
     })
 }
-
-function makeUpdateObj(...pairs){
-    var o={};
-    pairs.forEach(pair=>{
-        o[pair[0]]=pair[1]
-    });
-    return o
-}
 ////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////
 /**@param {string} stu */
-function addDateWithRef(stu,dateAndMin){
-    if(stu.endsWith('/')){
-        stu=stu.substr(0,stu.length-1)
-    }
-    
-    if(!stu.startsWith("users/"))
-        stu='users/'+stu;
-
-    var newRef=ref.child(stu);
-
-    var calendar=newRef.child('calendar');
-    calendar.once('value',snap=>{
-        var val=snap.val();
-        if(val[dateAndMin.date]){
-            var m=Number(val[dateAndMin.date].min)+Number(dateAndMin.min),
-                minExtra=Number(val[dateAndMin.date].extra)+Number(dateAndMin.extra);
-            val[dateAndMin.date].min=m;
-            val[dateAndMin.date].extra=minExtra;
-            calendar.set(val)
-        }else{
-            val[dateAndMin.date]={
-                min:dateAndMin.min,
-                extra:dateAndMin.extra
-            };
-            calendar.set(val)
-        }
-    });
-    newRef.child('hasUpdatedTime').set(true);
-
-    tallySingleStu(stu)
-}
-
-
 function setDateWithRef(stu,dateAndMin){
     if(stu.endsWith('/')){
         stu=stu.substr(0,stu.length-1)
@@ -881,56 +684,9 @@ function setDateWithRef(stu,dateAndMin){
             extra:dateAndMin.extra
         })
     }
-    /*
-    calendar.once('value',snap=>{
-        var val=snap.val()
-        if(val[dateAndMin.date]){
-            var m=Number(val[dateAndMin.date].min)+Number(dateAndMin.min),
-                minExtra=Number(val[dateAndMin.date].extra)+Number(dateAndMin.extra)
-            val[dateAndMin.date].min=m
-            val[dateAndMin.date].extra=minExtra
-            calendar.set(val)
-        }else{
-            val[dateAndMin.date]={
-                min:dateAndMin.min,
-                extra:dateAndMin.extra
-            }
-            calendar.set(val)
-        }
-    })
-    */
     newRef.child('hasUpdatedTime').set(true);
 
     tallySingleStu(stu)
-}
-
-function getStuByRef(reference){
-    if(reference.startsWith('users')){
-        reference=reference.substr('users/'.length)   
-    }
-    if(reference.endsWith('/'))
-        reference=reference.substr(0,reference.length-1);
-    return new Promise((resolve,reject)=>{
-        userRef.once('value',(snapshot)=>{
-            var val=snapshot.val();
-            resolve(val[reference])
-        })
-    })
-}
-
-/**Uses the actual student object to update the date */
-function addDateToStu(stuAndRef,dateAndMin){
-    var o={};
-    var cal=stuAndRef.stu.calendar;
-    cal[dateAndMin.date]={
-        min:dateAndMin.min,
-        extra:dateAndMin.extra
-    };
-    cal.push(dateAndMin);
-    o[stuAndRef.ref+'calendar/']=cal;
-    o[stuAndRef.ref+'hasUpdatedTime']=true;
-    ref.update(o);
-    stuAndRef.stu.hasUpdatedTime=true
 }
 
 function today(min,extra=0){
@@ -1006,11 +762,6 @@ function clearTable(){
     }
 }
 
-//These update the table on any value changing in the database
-//ref.on('child_added',updateAll)
-//ref.on('child_removed',updateAll)
-//ref.on('child_changed',updateAll)
-//ref.on('child_moved',updateAll)
 
 /**I keep this here in case I need to update more than just the table when the database changes */
 function updateAll(){
@@ -1028,16 +779,6 @@ var overrideAskRemove=false;
 async function removeYear2(){
     if(confirm('Are you sure you want to remove all year 2 students?')&&confirm('Are you really sure?')){
         overrideAskRemove=true;
-        /*
-        students.filter(stu=>stu.stu.year>=2).forEach(stu=>{
-            //removeByRef(stu.ref)
-        })
-        
-        students.forEach(stuAndRef=>{
-            console.log(stuAndRef)
-            //userRef.child(stuAndRef.ref).child('year').set(2)
-        })*/
-
         userRef.once('value',snap=>{
             snap.forEach(val=>{
                 var key='users/'+val.key;
@@ -1049,49 +790,9 @@ async function removeYear2(){
                 }
             })
         });
-        
         updateAll();
-        
-        
         overrideAskRemove=false
     }
-}
-
-/**Just for testing because I can't be bothered to keep adding a ton of random students manually */
-function sampleStudents(n=1){
-    var fns=['Joe','Hannah','Gary','Sue','John','Jenny','Bob','Tim','Mary','Neo','Devin','Linda','Brenda','Paula','Marie','Lucy',
-            'Alice','Shane','Sam','Anne','Aliyah','Jean','Ellen','Max','Alan','Erik','Charles','Omar','Robbie','Oliver','Jimmy'];
-    var lns=['Smith','Johnson','Holtsclaw','Phelps','Brito','Mayorga','Smith','Law','Jones','Davis','Miller','Brown','Williams',
-            'Hill','Lopez','Young','Allen','Morris','Price','Long','Nelson','Jackson','White','Phillips','Clark','Lee','Lewis'];
-
-    var yrs=[1,2],
-        pds=[1,2];
-    function rnd(arr){
-        return arr[parseInt(Math.random()*arr.length)]
-    }
-    var i=0;
-    var func=function(){
-        //////////////////////////////////////////////////////////////////////////
-        var fn=rnd(fns),ln=rnd(lns);
-        while(students.some(stu=>stu.stu.firstName===fn)&&students.some(stu=>stu.stu.lastName===ln)){
-            fn=rnd(fns);
-            ln=rnd(lns)
-        }
-        addStudent(fn,ln,rnd(pds),rnd(yrs));
-        if(++i<n)
-            setTimeout(func,75)
-    };
-    setTimeout(func,75)
-}
-
-function addRangedTimeToStus(rnd=500){
-    students.forEach(stuAndRef=>{
-        addDateWithRef(stuAndRef.ref,today(parseInt(Math.random()*rnd)))
-    })  
-}
-
-function submit(){
-    document.body.style.backgroundColor = 'black';
 }
 
 /**This is an offline copy of the database updated every time the database changes */
@@ -1100,38 +801,11 @@ userRef.on('value',function(snap){
     o=snap.val()
 });
 
-function clearAllStudents(){
-    if(confirm("Are you sure you want to delete all students?")&&confirm("This is irreversable and cannot be recovered after."+
-    " Are you really sure?")){
-        userRef.remove();
-        clearTable();
-        studentInit()
-    }
-}
-
-function testSignIn(){
-    var inUser=document.getElementById('userLogin').value.toString();
-    var inPass=document.getElementById('passwordLogin').value.toString();
-    var errEle=document.getElementById('loginError');
-    if(verifyUserAndPass(inUser,inPass)){
-        errEle.innerHTML='';
-        console.log("password verified");
-        openTab1();
-        document.getElementById('logIn').style.display='none';
-        studentInit()
-    }else{
-        errEle.innerHTML='<div style="color:red">Invalid username or password</div>'
-    }
-}
-
 function SignIn(){
     var errEle=document.getElementById('loginError');
     var provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithPopup(provider).then(function(result) {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        var token = result.credential.accessToken;
-        // The signed-in user info.
-        let gUser = result.user;        // ...
+        let gUser = result.user;
         if(gUser.email === "jlaw@warren.k12.in.us" || gUser.email === "lsummei1@warren.k12.in.us" || gUser.email === "dhert@warren.k12.in.us"){
             errEle.innerHTML='';
             openTab1();
@@ -1142,13 +816,8 @@ function SignIn(){
         }
     }).catch(function(error) {
         // Handle Errors here.
-        errEle.innerHTML='<div style="color:red">Invalid username or password</div>'
-        var errorCode = error.code;
         var errorMessage = error.message;
-        // The email of the user's account used.
-        var email = error.email;
-        // The firebase.auth.AuthCredential type that was used.
-        var credential = error.credential;
+        errEle.innerHTML='<div style="color:red">'+errorMessage + '</div>';
         // ...
     });
 }

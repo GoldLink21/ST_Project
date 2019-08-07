@@ -75,9 +75,9 @@ body{
     margin-left: 5px;
     margin-top: 10px;
     position: fixed;
-    background-color: #dddddd;
+    background-color: #bca070;
     border: 1px solid black;
-    box-shadow: 0px 8px 16px 0px rgb(0, 0, 0, 0.2);
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
 }
 
 .newStudentMenue{
@@ -153,9 +153,9 @@ tr:nth-child(even){
     margin-right: 1%;
     margin-top: 10px;
     position: fixed;
-    background-color: #dddddd;
+    background-color: #bca070;
     border: 1px solid black;
-    box-shadow: 0px 8px 16px 0px rgb(0, 0, 0, 0.2);
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
 }
 
 #RemoveMenu{
@@ -179,7 +179,7 @@ h1 {
     font-family: Milonga;
     text-align: center;
     border: 3px solid rgb(95, 95, 95);
-    background-color: rgb(199, 199, 199);
+    background-color: #fff;
     width: 55%;
     padding: auto;
     margin: auto;
@@ -241,10 +241,9 @@ h2 {
 }
 
 .SubmitHrs{
-    width: 75%;
-    height: 50%;
-    font-size: .9vw;
-    margin-top: 14px;
+    width: 100%;
+    height: 80%;
+    font-size: 1.2vw;
     background-color: #bca070;
 }
 

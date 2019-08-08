@@ -818,13 +818,12 @@ function SignIn(){
     var provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithPopup(provider).then(function(result) {
         let gUser = result.user;
-        if(gUser.email === "lsummei1@warren.k12.in.us" || gUser.email === "dhert@warren.k12.in.us"){
+        if(gUser.email === "jlaw@warren.k12.in.us" || gUser.email === "lsummei1@warren.k12.in.us" || gUser.email === "dhert@warren.k12.in.us"){
             errEle.innerHTML='';
             openTab1();
             document.getElementById('logIn').style.display='none';
             studentInit();
         }else{
-            //loadStudentCalendarByName('Anna', 'Bailey', new Date().getMonth(), new Date().getFullYear());
             loadStudentCalendarByName(gUser.displayName.split(" ")[0], gUser.displayName.split(" ")[1], new Date().getMonth(), new Date().getFullYear());
         }
     }).catch(function(error) {

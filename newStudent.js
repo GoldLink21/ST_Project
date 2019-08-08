@@ -473,13 +473,25 @@ async function loadAllCalendar(month,year){
 }
 
 function loadNextMonth(){
-    calendarDate.setMonth(calendarDate.getMonth()+1);
-    loadAllCalendar(calendarDate.getMonth(),calendarDate.getFullYear())
+    if(isStudentCalendar){
+        var nDate=new Date(calendarDate);
+        nDate.setMonth(nDate.getMonth()+1);
+        loadStudentCalendar(calendarStudent,nDate.getMonth(),nDate.getFullYear())
+    }else{
+        calendarDate.setMonth(calendarDate.getMonth()+1);
+        loadAllCalendar(calendarDate.getMonth(),calendarDate.getFullYear())
+    }
 }
 
 function loadPrevMonth(){
-    calendarDate.setMonth(calendarDate.getMonth()-1);
-    loadAllCalendar(calendarDate.getMonth(),calendarDate.getFullYear())
+    if(isStudentCalendar){
+        var nDate=new Date(calendarDate);
+        nDate.setMonth(nDate.getMonth()-1);
+        loadStudentCalendar(calendarStudent,nDate.getMonth(),nDate.getFullYear())
+    }else{
+        calendarDate.setMonth(calendarDate.getMonth()-1);
+        loadAllCalendar(calendarDate.getMonth(),calendarDate.getFullYear())
+    }
 }
 
 function getNextStudentOnCalendar(){
@@ -802,17 +814,18 @@ userRef.on('value',function(snap){
 });
 
 function SignIn(){
-    var errEle=document.getElementById('loginError');
+    let errEle=document.getElementById('loginError');
     var provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithPopup(provider).then(function(result) {
         let gUser = result.user;
-        if(gUser.email === "jlaw@warren.k12.in.us" || gUser.email === "lsummei1@warren.k12.in.us" || gUser.email === "dhert@warren.k12.in.us"){
+        if(gUser.email === "lsummei1@warren.k12.in.us" || gUser.email === "dhert@warren.k12.in.us"){
             errEle.innerHTML='';
             openTab1();
             document.getElementById('logIn').style.display='none';
-            studentInit()
+            studentInit();
         }else{
-            errEle.innerHTML='<div style="color:red">ACCESS NOT GRANTED</div>'
+            //loadStudentCalendarByName('Anna', 'Bailey', new Date().getMonth(), new Date().getFullYear());
+            loadStudentCalendarByName(gUser.displayName.split(" ")[0], gUser.displayName.split(" ")[1], new Date().getMonth(), new Date().getFullYear());
         }
     }).catch(function(error) {
         // Handle Errors here.
@@ -829,3 +842,81 @@ function SignOut(){
         // An error happened.
     });
 }
+
+ //Tells if the loaded calendar is a students
+ var isStudentCalendar = false;
+
+ /**Gets the database reference for a student by first and last name */
+ async function getStuRefByName(first,last){
+     var toReturn=false;
+     //Go through the database once
+     userRef.once('value',snap=>{
+         //Iterates through all auto-generated references
+         snap.forEach(stuRef=>{
+             var stuToCheck=stuRef.val();
+             //Check for name equality
+             let dataFirst = stuToCheck.firstName.replace(" ", "").toLowerCase();
+             let dataLast = stuToCheck.lastName.replace(' ', "").toLowerCase();
+             first = first.toLowerCase();
+             last = last.toLowerCase();
+             if(dataFirst === first && dataLast ===last){
+                 toReturn=stuToCheck.ref
+             }
+         })
+     });
+     //Returns false if it found the student or the string of the database ref otherwise
+     return toReturn;
+ }
+
+ async function loadStudentCalendar(stuRef,month,year){
+     console.log(stuRef);
+     isStudentCalendar=true;
+     if(!stuRef.startsWith('users/')){
+         stuRef='users/'+stuRef;
+     }
+     calendarStudent=stuRef;
+
+     openLoadTab();
+     await loadAllCalendar(month,year);
+     openTab2();
+
+     //Do some tweaks to the calendar to stop data editing
+     document.getElementsByClassName('addAll')[0].remove();
+     document.getElementsByClassName('rmvStu')[0].style.display='none';
+     document.getElementsByClassName("leftArrow1")[0].style.display='none';
+     document.getElementsByClassName("rightArrow1")[0].style.display='none';
+     //Of elements with inputs,
+     Array.from(document.getElementsByClassName('hasInputs')).forEach(element=>{
+         var ele=element.lastChild;
+         //Remove specific inputs from all
+         ele.lastChild.remove();
+         ele.childNodes.forEach(child=>{
+             child.lastChild.remove()
+         })
+     })
+ }
+
+ /**Shortcut for loading by name utilizing other functions */
+ async function loadStudentCalendarByName(first,last,month,year){
+     var stuRef = await getStuRefByName(first,last);
+     let errEle=document.getElementById('loginError');
+     //Make sure that the student was found
+     if(stuRef){
+         errEle.innerHTML='';
+         document.getElementById('logIn').style.display='none';
+         loadStudentCalendar(stuRef,month,year);
+     }else{
+         //This means there is no students with that name. Change this to whatever
+         errEle.innerHTML='<div style="color:red">ACCESS NOT GRANTED</div>'
+     }
+ }
+
+ function goBack(){
+     console.log("GO BACK: " + isStudentCalendar);
+     if(isStudentCalendar){
+         SignOut()
+     }else{
+         openTab1()
+         updateAll()
+     }
+ }

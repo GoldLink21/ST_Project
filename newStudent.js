@@ -915,7 +915,7 @@ function SignOut(){
      if(isStudentCalendar){
          SignOut()
      }else{
-         openTab1()
+         openTab1();
          updateAll()
      }
  }

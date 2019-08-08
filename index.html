@@ -46,15 +46,6 @@
         <div class="signIn"><button class="signinbutton" onclick="SignIn()" id="signinBut2">Sign In With Google</button></div>
         <div><img class="p-3" src="walker_cc.jpg" alt="WCC Logo" width=50%></div>
     </div>
-
-
-    <!--- <div class="signInMenu" id='signInMenu'>Please Enter
-        <div id='loginError'></div>
-        <div class="email">Username: </div><input class="user" id="userLogin">
-        <div class="password">Password: &nbsp;<input type='password' class="pass" id="passwordLogin"></div>
-        <div class="signIn" id="signin"><button class="signinbutton" onclick="testSignIn()" id="signinBut">Sign In</button></div>
-        <div class="signIn"><button class="signinbutton" onclick="SignIn()" id="signinBut2">Sign In With Google</button></div>
-    </div> -->
 </div>
 
 <div id="Tab1" class="container-fluid">
@@ -134,22 +125,7 @@
         </tr>
         <tr>
             <td class="sunday allDays"></td>
-            <td class="Days allDays">
-                <div class="gacha">1</div><br><div class="block1"><div>Hours:<input class="resize" min="0" max='24' type="number"></div><div>Minutes:<input class="resize" min='0' max='59' type="number"></div><div>IsExtra:<input type="checkbox">&nbsp;<button>Submit</button></div></div>
-            </td>
-            <td class="Days allDays">
-                <div class="gacha">1</div><br><div class="block1"><div>Hours:<input class="resize" min="0" max='24' type="number"></div><div>Minutes:<input class="resize" min='0' max='59' type="number"></div><div>IsExtra:<input type="checkbox">&nbsp;<button>Submit</button></div></div>
-            </td>
             <td class="Days allDays"></td>
-            <td class="Days allDays"></td>
-            <td class="Days allDays"></td>
-            <td class="Days allDays"></td>
-        </tr>
-        <tr>
-            <td class="sunday allDays"></td>
-            <td class="Days allDays">
-                <span class="gacha">1</span><br><div class="block1"><div>Hours:<input class="resize" min="0" max='24' type="number"></div><div>Minutes:<input class="resize" min='0' max='59' type="number"></div><div>IsExtra:<input type="checkbox">&nbsp;<button>Submit</button></div></div>
-            </td>
             <td class="Days allDays"></td>
             <td class="Days allDays"></td>
             <td class="Days allDays"></td>
@@ -158,9 +134,7 @@
         </tr>
         <tr>
             <td class="sunday allDays"></td>
-            <td class="Days allDays">
-                <span class="gacha">1</span><br><div class="block1"><div>Hours:<input class="resize" min="0" max='24' type="number"></div><div>Minutes:<input class="resize" min='0' max='59' type="number"></div><div>IsExtra:<input type="checkbox">&nbsp;<button>Submit</button></div></div>
-            </td>
+            <td class="Days allDays"></td>
             <td class="Days allDays"></td>
             <td class="Days allDays"></td>
             <td class="Days allDays"></td>
@@ -169,9 +143,7 @@
         </tr>
         <tr>
             <td class="sunday allDays"></td>
-            <td class="Days allDays">
-                <span class="gacha">1</span><br><div class="block1"><div>Hours:<input class="resize" min="0" max='24' type="number"></div><div>Minutes:<input class="resize" min='0' max='59' type="number"></div><div>IsExtra:<input type="checkbox">&nbsp;<button>Submit</button></div></div>
-            </td>
+            <td class="Days allDays"></td>
             <td class="Days allDays"></td>
             <td class="Days allDays"></td>
             <td class="Days allDays"></td>
@@ -180,9 +152,7 @@
         </tr>
         <tr>
             <td class="sunday allDays"></td>
-            <td class="Days allDays">
-                <span class="gacha">1</span><br><div class="block1"><div>Hours:<input class="resize" min="0" max='24' type="number"></div><div>Minutes:<input class="resize" min='0' max='59' type="number"></div><div>IsExtra:<input type="checkbox">&nbsp;<button>Submit</button></div></div>
-            </td>
+            <td class="Days allDays"></td>
             <td class="Days allDays"></td>
             <td class="Days allDays"></td>
             <td class="Days allDays"></td>
@@ -191,9 +161,16 @@
         </tr>
         <tr>
             <td class="sunday allDays"></td>
-            <td class="Days allDays">
-                <span class="gacha">1</span><br><div class="block1"><div>Hours:<input class="resize" min="0" max='24' type="number"></div><div>Minutes:<input class="resize" min='0' max='59' type="number"></div><div>IsExtra:<input type="checkbox">&nbsp;<button>Submit</button></div></div>
-            </td>
+            <td class="Days allDays"></td>
+            <td class="Days allDays"></td>
+            <td class="Days allDays"></td>
+            <td class="Days allDays"></td>
+            <td class="Days allDays"></td>
+            <td class="Days allDays"></td>
+        </tr>
+        <tr>
+            <td class="sunday allDays"></td>
+            <td class="Days allDays"></td>
             <td class="Days allDays"></td>
             <td class="Days allDays"></td>
             <td class="Days allDays"></td>
@@ -224,16 +201,16 @@
             yearVal,
             classVal,
             min,
-            hour
+            hour;
 
         Array.from(year).forEach(ele=>{
             if(ele.checked)
                 yearVal=ele.value
-        })
+        });
         Array.from(classNum).forEach(ele=>{
             if(ele.checked)
                 classVal=ele.value
-        })
+        });
         if (addStudent(first.value, last.value,classVal, yearVal,hour,min)) {
             first.value = "";
             last.value = "";
@@ -241,15 +218,6 @@
             year.value = null;
 
         }
-    }
-
-    function remStuFunc(){
-        var first=document.getElementById('firstName2'),
-            last=document.getElementById('lastName2'),
-            insens=document.getElementById('checked2')
-        removeStu(first.value,last.value,insens.checked);
-        first.value='';
-        last.value='';
     }
 
     function openTab1() {

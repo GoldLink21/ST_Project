@@ -339,6 +339,11 @@ h2 {
     width: 80%;
 }
 
+.hidden{
+    display:none;
+}
+
+
 .month{
     background-color: #bca070;
     font-size: 2em;
@@ -398,33 +403,22 @@ h2 {
     z-index: -1;
 }
 
-.addAll{
-    height:auto;
-    width: 13%;
-    padding: 10px;
-    text-align: center;
+.sideBar{
+    width:13%;
     margin-left: 84.4%;
-    margin-right: 1%;
-    margin-top: 50px;
+    margin-right:1%;
+    padding-top:50px;
     position: fixed;
-    background-color: #bca070;
-    border: 1px solid black;
-    box-shadow: 0px 8px 16px 0px rgb(0, 0, 0, 0.2);
 }
 
-.rmvStu{
-    height:auto;
-    width: 13%;
+.sideBarButton{
     padding: 10px;
     text-align: center;
-    margin-left: 84.4%;
-    margin-right: 1%;
-    margin-top: 120px;
-    position: fixed;
     background-color: #bca070;
     border: 1px solid black;
-    box-shadow: 0px 8px 16px 0px rgb(0, 0, 0, 0.2);
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
 }
+
 .arrows:hover{
     background-color: #34635a;
 }

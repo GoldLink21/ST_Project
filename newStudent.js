@@ -67,15 +67,6 @@ const USERS={
    'admin':'admin'
 };
 
-function verifyUserAndPass(user,pass){
-    for(let u in USERS){
-        if(user===u&&USERS[u]===pass){
-            return true
-        }
-    }
-    return false
-}
-
 const Time={
     /**Returns the time in minutes from hours and minutes */
     toMin(hour=0,min=0){
@@ -137,30 +128,6 @@ function findStusWith({firstName,lastName,period,minMin,minMax,year}={}){
     })
 }
 
-function removeStu(fn,ln,isCaseSensitive){
-    console.log('Trying to remove',fn,ln);
-    var hasRemoved=false;
-
-    userRef.once('value',(snapshot)=>{
-        var val=snapshot.val();
-        for(p1 in val){
-            if(strEqual(val[p1].firstName,fn,isCaseSensitive)&&strEqual(val[p1].lastName,ln,isCaseSensitive)){
-                //Confirm pops up a yes or no option which returns true if yes and false if no
-                if(confirm('Are you sure you want to remove '+fn+' '+ln+'?')){
-                    var updateObj={};
-                    updateObj[p1]=null;
-                    userRef.update(updateObj);
-                    hasRemoved=true
-                }else{
-                    hasRemoved=true
-                }
-            }
-        }
-    });
-    if(!hasRemoved)
-        alert('Could not find student '+fn+' '+ln)
-}
-
  async function removeByRef(stu){
 
     if(stu.endsWith('/')){
@@ -185,6 +152,8 @@ function removeStu(fn,ln,isCaseSensitive){
 
 var calendarStudent='',
     calendarDate=new Date();
+
+var correction=false;
 
 var addingId=1;
 function addToTable(stu){
@@ -234,8 +203,8 @@ function addToTable(stu){
 
     }
     var table=document.getElementById('stuView');
-    
-    var e1=addToRow(stu.lastName+",  "+stu.firstName).classList.add('stuName');
+
+    addToRow(stu.lastName+",  "+stu.firstName).classList.add('stuName');
 
     var t=Time.toHours(stu.min+stu.extra);
 
@@ -289,18 +258,15 @@ function addToTable(stu){
          .map(e=>Array.from(e.children[2].querySelectorAll('input')))
          .forEach(e=>{
              var dateNum=Number(e[0].parentElement.parentElement.parentElement.firstElementChild.innerText),
-                 hr=Number(e[0].value),
-                 min=Number(e[1].value),
-                 extra=e[2].checked;
+                 hr=Math.trunc(Number(e[0].value)),
+                 min=(Number(e[0].value)*100)%100;
 
              if(hr!==0||min!==0){
                  var dateCopy = new Date(calendarDate);
                  dateCopy.setDate(dateNum);
-                 var dateObj=date(dateCopy.toDateString(),Time.toMin(hr,min),extra);
+                 var dateObj=date(dateCopy.toDateString(),Time.toMin(hr,min),0);
                  setDateWithRef(calendarStudent,dateObj);
-                 e[0].value=0;
-                 e[1].value=0;
-                 e[2].checked=false
+                 e[0].value='0';
              }
              index++
          });
@@ -329,17 +295,6 @@ async function loadAllCalendar(month,year){
     document.getElementById("month").innerHTML=months[first.getMonth()]+' '+first.getFullYear();
     var stu=ref.child(calendarStudent);
     var fn,ln;
-    
-    ///////////////////
-    var submitAll=document.createElement('button');
-    submitAll.innerHTML='Submit all';
-    submitAll.classList.add('addAll');
-    submitAll.style.color='green';
-
-    document.getElementById("month").appendChild(submitAll);
-
-
-    ///////////////////
 
     await stu.once('value',snap=>{
         var val=snap.val();
@@ -363,7 +318,7 @@ async function loadAllCalendar(month,year){
         var curDay=i-firstDayOfMonth+1;
 
         if(!allEle[i].classList.contains('sunday')){
-            span.innerHTML=curDay;
+            span.innerHTML=curDay.toString();
             allEle[i].appendChild(span);
             allEle[i].appendChild(document.createElement('br'));
         }
@@ -384,90 +339,81 @@ async function loadAllCalendar(month,year){
             var b1=document.createElement('div');
             b1.classList.add('block1');
 
-            allEle[i].appendChild(b1);
-
+            //CREATES HOURS AND MINS INPUT BOXES
             var d1=document.createElement('div');
-            d1.innerHTML='Hours:';
+            d1.innerHTML='Time:';
 
+
+            var i1=document.createElement('input');
+            i1.type='number';
+            i1.min='0';
+            i1.placeholder='0';
+            i1.classList.add('resize');
+
+
+            var d2=document.createElement('div');
+            d2.innerHTML='Entered: ';
             var curHourAndMin=undefined;
             if(prevTime&&prevTime.min){
                 curHourAndMin=Time.toHours(Number(prevTime.min)+Number(prevTime.extra));
                 //console.log(curHourAndMin)
-                d1.innerHTML+=` (<span style="color:red">${curHourAndMin.hour}</span>) `
+                d2.innerHTML+=`<span >${curHourAndMin.hour}</span>.`
             }
-
-            b1.appendChild(d1);
-
-            var i1=document.createElement('input');
-            i1.type='number';
-            i1.max='23';
-            i1.min='0';
-            i1.value=0;
-            i1.classList.add('resize');
-            d1.appendChild(i1);
-
-            var d2=document.createElement('div');
-            d2.innerHTML='Minutes:';
-
             if(curHourAndMin!==undefined){
-                d2.innerHTML+=` (<span style="color:red">${curHourAndMin.min}</span>)`
+                d2.innerHTML+=`<span >${curHourAndMin.min}</span>`
             }
 
-            b1.appendChild(d2);
 
-            var i2=document.createElement('input');
-            i2.type='number';
-            i2.max='59';
-            i2.min='0';
-            i2.value=0;
-            i2.classList.add('resize');
-            d2.appendChild(i2);
 
+            //CREATE EXTRA TIME CHECKBOX
             var d3=document.createElement('div');
-            d3.innerHTML='Is Extra Time:';
-
-            b1.appendChild(d3);
-
+            /*d3.innerHTML='Is Extra Time:';
             var i3=document.createElement('input');
-            i3.type='checkbox';
-            
-            d3.appendChild(i3);
+            i3.type='checkbox';*/
+
             d3.innerHTML+='&nbsp;';
+            if(correction === false){
+                d3.classList.add('hidden');
+            }
+
+
+
 
             var btn1=document.createElement('button');
             btn1.innerHTML='Set Time';
-            btn1.style.color='red';
             btn1.tabIndex=-1;
 
-            function addEvent(button,in1,in2,in3,thisDate,prevTime){
+            function addEvent(button,in1,in3,thisDate){
                 button.addEventListener('click',async event=>{
-                    var hr=in1.value,
-                        min=in2.value,
-                        isExtra=in3.checked;
+                    var hr=Math.trunc(in1.value),
+                        min=(in1.value*100)%10;
 
-                    var dateToAdd=(isExtra)?date(thisDate,0,Time.toMin(hr,min)):date(thisDate,Time.toMin(hr,min),0);
+                    var dateToAdd=date(thisDate,Time.toMin(hr,min),0);
                     //Get current extra
-                    var curExtra = 0;
+                    /*ar curExtra = 0;
                     await ref.child(calendarStudent).child('extra').once('value',snap=>curExtra=snap.val());
                     
                     if(curExtra+dateToAdd.extra>MaxExtra){
                         dateToAdd.extra=MaxExtra-curExtra;
                         alert("Student has achieved the maximum extra time available.")
-                    }
+                    }*/
 
                     loadAllCalendar(calendarDate.getMonth(), calendarDate.getFullYear());
 
                     //////////////////////////////////////////////////////////////////////////////////////////////
                     setDateWithRef(calendarStudent,dateToAdd);
-                    console.log(prevTime)
                 })
             }
             var thisDate=new Date(first);
             thisDate.setDate(Number(curDay));
-
-            addEvent(btn1,i1,i2,d3.querySelector('input'),thisDate.toDateString(),prevTime);
-
-            d3.appendChild(btn1)
+            addEvent(btn1,i1,d3.querySelector('input'),thisDate.toDateString(),prevTime);
+            //d3.appendChild(i3);
+            d3.appendChild(btn1);
+            d1.appendChild(i1);
+            b1.appendChild(d1);
+            b1.appendChild(d2);
+            b1.appendChild(d3);
+            allEle[i].appendChild(b1);
         }
     }
 }
@@ -681,7 +627,7 @@ function setDateWithRef(stu,dateAndMin){
     if(stu.endsWith('/')){
         stu=stu.substr(0,stu.length-1)
     }
-    
+
     if(!stu.startsWith("users/"))
         stu='users/'+stu;
 
@@ -699,6 +645,14 @@ function setDateWithRef(stu,dateAndMin){
     newRef.child('hasUpdatedTime').set(true);
 
     tallySingleStu(stu)
+}
+
+function setExtraTime(){
+
+}
+
+function removeExtraTime(){
+
 }
 
 function today(min,extra=0){
@@ -720,6 +674,27 @@ function eleInit(){
     document.getElementById('newStudent').style.visibility='hidden';
     document.getElementById('RemoveStu').style.visibility='visible'
 }
+
+function doCorrections(){
+    if(correction === false){
+        correction = true
+    }else
+        correction = false;
+
+    loadAllCalendar(calendarDate.getMonth(), calendarDate.getFullYear());
+}
+
+function extraMenu(){
+    document.getElementById("extraMenu").classList.toggle('hidden');
+    document.getElementById("inputMenu").classList.add('hidden');
+    document.getElementById("clearExtraTime").classList.remove('hidden');
+}
+
+ function addMenu(){
+     document.getElementById("inputMenu").classList.toggle('hidden');
+     document.getElementById("clearExtraTime").classList.toggle('hidden');
+ }
+
 
 /**Opens and closes the new student window */
 function toggleNewStudentWindow(){

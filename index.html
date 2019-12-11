@@ -7,17 +7,15 @@
     <script src="https://www.gstatic.com/firebasejs/5.5.6/firebase-auth.js"></script>
     <script>
         // Initialize Firebase
-        /*firebase.initializeApp({
+        firebase.initializeApp({
             apiKey: "AIzaSyD95RzrdQpI6PBNMfEOBRfmCpnN9ucqTbU",
             authDomain: "st-project-36358.firebaseapp.com",
             databaseURL: "https://st-project-36358.firebaseio.com",
             projectId:"st-project-36358",
             storageBucket: "st-project-36358.appspot.com",
-            messagingSenderId: "236006288802",
-            //serviceAccount:"node-client-app/service-account.json",
-            databaseURL:"https://st-project-36358.firebaseio.com"
-        })*/
-        firebase.initializeApp({
+            messagingSenderId: "236006288802"
+        })
+        /*firebase.initializeApp({
             apiKey: "AIzaSyBYcBBpflqRcVCipgdGBJmW1TKRq739OvE",
             authDomain: "cosmo-test-151ed.firebaseapp.com",
             databaseURL: "https://cosmo-test-151ed.firebaseio.com",
@@ -25,7 +23,7 @@
             storageBucket: "",
             messagingSenderId: "120662157931",
             appId: "1:120662157931:web:e21e35f2dbdfa9a4"
-        });
+        });*/
     </script>
     <script src='src/cal/codebase/dhtmlxcalendar.js'></script>
     <link rel='stylesheet' href="src/cal/codebase/dhtmlxcalendar.css">
@@ -114,9 +112,9 @@
         <div class="sideBarButton"><button class="wider" id="corrections" onclick="doCorrections()">Correct Time</button></div>
         <div class="sideBarButton"><button class="wider" id="extraTime" onclick="extraMenu()">Extra Time</button></div>
         <div class="sideBarButton hidden" id="extraMenu">
-            <div class="wider" id="curExtraTime"></div>
+            <div class="sideBarText" id="curExtraTime"></div>
             <button class="wider" id="addExtraTime" onclick="addMenu()">Add Extra Time</button><br>
-                <div id="inputMenu" class="hidden"><label for="inputExtraTime" class='wider'>ENTER EXTRA TIME:</label><br>
+                <div id="inputMenu" class="hidden"><label for="inputExtraTime" class='wider sideBarText'>ENTER EXTRA TIME:</label><br>
                     <input class='wider' type="number" id="inputExtraTime"><br>
                     <button class="wider" id="submitExtraTime" onclick="setExtraTime()">Set Time</button><br>
                 </div>

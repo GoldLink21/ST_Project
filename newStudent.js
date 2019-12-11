@@ -260,13 +260,15 @@ function addToTable(stu){
              var dateNum=Number(e[0].parentElement.parentElement.parentElement.firstElementChild.innerText),
                  hr,
                  min;
-
              var split = e[0].value.split('.');
              if(split.length === 1){
                  hr = Number(split[0]);
                  min = 0;
              }else{
                  hr = Number(split[0]);
+                 if(split[1].length === 1){
+                     split[1] = split[1] + "0";
+                 }
                  min = Number(split[1]);
              }
 
@@ -369,16 +371,15 @@ async function loadAllCalendar(month,year){
                 d2.innerHTML+=`<span >${curHourAndMin.hour}</span>.`
             }
             if(curHourAndMin!==undefined){
-                d2.innerHTML+=`<span >${curHourAndMin.min}</span>`
+                let minutes = curHourAndMin.min;
+                if(curHourAndMin.min < 10){
+                    minutes = "0" + curHourAndMin.min
+                }
+                d2.innerHTML+="<span >" + minutes + "</span>";
             }
-
-
 
             //CREATE EXTRA TIME CHECKBOX
             var d3=document.createElement('div');
-            /*d3.innerHTML='Is Extra Time:';
-            var i3=document.createElement('input');
-            i3.type='checkbox';*/
 
             d3.innerHTML+='&nbsp;';
             if(correction === false){
@@ -399,6 +400,9 @@ async function loadAllCalendar(month,year){
                         min = 0;
                     }else{
                         hr = Number(split[0]);
+                        if(split[1].length === 1){
+                            split[1] = split[1] + "0";
+                        }
                         min = Number(split[1]);
                     }
 
@@ -550,15 +554,15 @@ async function studentInit(){
 }
 
 /**Just a debugging function to confirm access to the database */
-function listStudentsInConsole(){
-    userRef.orderByChild('lastName').once('value',function(snapshot){
-        var val = snapshot.val();
-        for(part in val)
-            console.log(val[part])
-    },(errorObject)=>{
-        console.log('Read Failed: '+errorObject.code)
-    })
-}
+ /*function listStudentsInConsole(){
+     userRef.orderByChild('lastName').once('value',function(snapshot){
+         var val = snapshot.val();
+         for(part in val)
+             console.log(val[part])
+     },(errorObject)=>{
+         console.log('Read Failed: '+errorObject.code)
+     })
+ }*/
 
 /**
  * @description Adds a new student to the students array. Called from the HTML
@@ -650,27 +654,36 @@ function setDateWithRef(stu,dateAndMin){
      var stuRef = ref.child(calendarStudent);
 
      var minutesToSet;
-     console.log(calendarStudent);
-     if(inputElement.value == ""){
+     if(inputElement.value === ""){
          alert("Please input a value for the extra hours");
          return;
      }
      if(inputElement.value.includes(".")){
          let split = inputElement.value.split(".");
+         if(split[1].length === 1){
+             split[1] = split[1] + '0';
+         }
          minutesToSet = Time.toMin(split[0],split[1]);
      }else{
-         minutesToSet = Number(inputElement.value);
+         minutesToSet = Time.toMin(Number(inputElement.value));
      }
      stuRef.once('value',snap=>{
          var val = snap.val();
          stuRef.child("extra").set(Number(val.extra)+minutesToSet);
-     })
+     });
+
+     document.getElementById("extraMenu").classList.toggle('hidden');
+     document.getElementById("inputMenu").classList.add('hidden');
+     inputElement.value="";
+
  }
 
  function removeExtraTime(){
      if(confirm("Are you sure you want to remove all of this student's extra time?")){
          ref.child(calendarStudent).child("extra").set(0);
      }
+     document.getElementById("extraMenu").classList.toggle('hidden');
+     document.getElementById("inputMenu").classList.add('hidden');
  }
 
 function today(min,extra=0){
@@ -711,7 +724,13 @@ function extraMenu(){
 
     stuRef.once('value',snap=>{
         var val = snap.val();
-        document.getElementById("curExtraTime").innerHTML = "Extra Time Given:" + val.extra;
+        let extraTime = Time.toHours(val.extra);
+        let minFloat = extraTime.min/100;
+        let minutes = (minFloat + "").split('.')[1];
+        if(minutes === undefined){
+            minutes = '0';
+        }
+        document.getElementById("curExtraTime").innerHTML = "Extra Time Given: " + extraTime.hour + "." + minutes;
     })
 }
 
@@ -911,11 +930,13 @@ function SignOut(){
  }
 
  function goBack(){
-     console.log("GO BACK: " + isStudentCalendar);
      if(isStudentCalendar){
          SignOut()
      }else{
          openTab1();
+         document.getElementById("extraMenu").classList.add('hidden');
+         document.getElementById("inputMenu").classList.add('hidden');
+         correction = false;
          updateAll()
      }
  }

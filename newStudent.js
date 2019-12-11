@@ -258,8 +258,17 @@ function addToTable(stu){
          .map(e=>Array.from(e.children[2].querySelectorAll('input')))
          .forEach(e=>{
              var dateNum=Number(e[0].parentElement.parentElement.parentElement.firstElementChild.innerText),
-                 hr=Math.trunc(Number(e[0].value)),
-                 min=(Number(e[0].value)*100)%100;
+                 hr,
+                 min;
+
+             var split = e[0].value.split('.');
+             if(split.length === 1){
+                 hr = Number(split[0]);
+                 min = 0;
+             }else{
+                 hr = Number(split[0]);
+                 min = Number(split[1]);
+             }
 
              if(hr!==0||min!==0){
                  var dateCopy = new Date(calendarDate);
@@ -375,39 +384,33 @@ async function loadAllCalendar(month,year){
             if(correction === false){
                 d3.classList.add('hidden');
             }
-
-
-
-
             var btn1=document.createElement('button');
             btn1.innerHTML='Set Time';
             btn1.tabIndex=-1;
 
             function addEvent(button,in1,in3,thisDate){
                 button.addEventListener('click',async event=>{
-                    var hr=Math.trunc(in1.value),
-                        min=(in1.value*100)%10;
+                    var hr,
+                        min;
+
+                    var split = in1.value.split('.');
+                    if(split.length === 1){
+                        hr = Number(split[0]);
+                        min = 0;
+                    }else{
+                        hr = Number(split[0]);
+                        min = Number(split[1]);
+                    }
 
                     var dateToAdd=date(thisDate,Time.toMin(hr,min),0);
-                    //Get current extra
-                    /*ar curExtra = 0;
-                    await ref.child(calendarStudent).child('extra').once('value',snap=>curExtra=snap.val());
-                    
-                    if(curExtra+dateToAdd.extra>MaxExtra){
-                        dateToAdd.extra=MaxExtra-curExtra;
-                        alert("Student has achieved the maximum extra time available.")
-                    }*/
 
                     loadAllCalendar(calendarDate.getMonth(), calendarDate.getFullYear());
-
-                    //////////////////////////////////////////////////////////////////////////////////////////////
                     setDateWithRef(calendarStudent,dateToAdd);
                 })
             }
             var thisDate=new Date(first);
             thisDate.setDate(Number(curDay));
             addEvent(btn1,i1,d3.querySelector('input'),thisDate.toDateString(),prevTime);
-            //d3.appendChild(i3);
             d3.appendChild(btn1);
             d1.appendChild(i1);
             b1.appendChild(d1);
@@ -514,17 +517,15 @@ function sortStus(){
 /**Goes through every student and tallies up their calendar's minutes to update the running total minutes */
 function tallySingleStu(studentRef){
     var stuRef=ref.child(studentRef);
-    var totalM=0,totalE=0;
+    var totalM=0;
     stuRef.child('calendar').once('value',snapCal=>{
         var calVal=snapCal.val();
         for(cRef in calVal){
-            totalM+=Number(calVal[cRef].min);
-            totalE+=Number(calVal[cRef].extra)
+            totalM+=Number(calVal[cRef].min)
         }
     });
     stuRef.update({
         min:totalM,
-        extra:totalE,
         hasUpdatedTime:false
     })
 }
@@ -634,26 +635,43 @@ function setDateWithRef(stu,dateAndMin){
     var newRef=ref.child(stu);
 
     var calendar=newRef.child('calendar');
-    if(dateAndMin.min===0&&dateAndMin.extra===0){
-        calendar.child(dateAndMin.date).remove()
-    }else{
-        calendar.child(dateAndMin.date).update({
+    calendar.child(dateAndMin.date).update({
             min:dateAndMin.min,
             extra:dateAndMin.extra
-        })
-    }
+    })
+
     newRef.child('hasUpdatedTime').set(true);
 
     tallySingleStu(stu)
 }
 
-function setExtraTime(){
+ function setExtraTime(){
+     var inputElement = document.getElementById("inputExtraTime");
+     var stuRef = ref.child(calendarStudent);
 
-}
+     var minutesToSet;
+     console.log(calendarStudent);
+     if(inputElement.value == ""){
+         alert("Please input a value for the extra hours");
+         return;
+     }
+     if(inputElement.value.includes(".")){
+         let split = inputElement.value.split(".");
+         minutesToSet = Time.toMin(split[0],split[1]);
+     }else{
+         minutesToSet = Number(inputElement.value);
+     }
+     stuRef.once('value',snap=>{
+         var val = snap.val();
+         stuRef.child("extra").set(Number(val.extra)+minutesToSet);
+     })
+ }
 
-function removeExtraTime(){
-
-}
+ function removeExtraTime(){
+     if(confirm("Are you sure you want to remove all of this student's extra time?")){
+         ref.child(calendarStudent).child("extra").set(0);
+     }
+ }
 
 function today(min,extra=0){
     return date(new Date().toDateString(),min,extra)
@@ -688,6 +706,13 @@ function extraMenu(){
     document.getElementById("extraMenu").classList.toggle('hidden');
     document.getElementById("inputMenu").classList.add('hidden');
     document.getElementById("clearExtraTime").classList.remove('hidden');
+
+    var stuRef = ref.child(calendarStudent);
+
+    stuRef.once('value',snap=>{
+        var val = snap.val();
+        document.getElementById("curExtraTime").innerHTML = "Extra Time Given:" + val.extra;
+    })
 }
 
  function addMenu(){
@@ -798,7 +823,7 @@ function SignIn(){
             openTab1();
             document.getElementById('logIn').style.display='none';
             studentInit();
-        }else{
+       }else{
             loadStudentCalendarByName(gUser.displayName.split(" ")[0], gUser.displayName.split(" ")[1], new Date().getMonth(), new Date().getFullYear());
         }
     }).catch(function(error) {

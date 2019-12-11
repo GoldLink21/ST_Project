@@ -905,10 +905,11 @@ function SignOut(){
      //Of elements with inputs,
      Array.from(document.getElementsByClassName('hasInputs')).forEach(element=>{
          var ele=element.lastChild;
+         console.log(ele);
          //Remove specific inputs from all
          //ele.lastChild.remove();
          ele.childNodes.forEach(child=>{
-             child.lastChild.remove()
+             //child.lastChild.remove()
          })
      })
  }

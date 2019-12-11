@@ -906,7 +906,13 @@ function SignOut(){
      document.getElementsByClassName("rightArrow1")[0].style.display='none';
      //Of elements with inputs,
      Array.from(document.getElementsByClassName('hasInputs')).forEach(element=>{
-         element.remove();
+         var ele=element.lastElementChild.remove();
+
+         //Remove specific inputs from all
+         ele.lastChild.remove();
+         ele.childNodes.forEach(child=>{
+             child.lastChild.remove()
+         })
      })
  }
 

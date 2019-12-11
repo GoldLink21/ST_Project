@@ -900,7 +900,7 @@ function SignOut(){
      openTab2();
 
      //Do some tweaks to the calendar to stop data editing
-     document.getElementsByClassName('sidebar')[0].remove();
+     document.getElementsByClassName('sideBar')[0].remove();
      document.getElementsByClassName("leftArrow1")[0].style.display='none';
      document.getElementsByClassName("rightArrow1")[0].style.display='none';
      //Of elements with inputs,

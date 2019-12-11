@@ -359,6 +359,7 @@ async function loadAllCalendar(month,year){
             i1.type='number';
             i1.min='0';
             i1.placeholder='0';
+            i1.classList.add('hasInputs');
             i1.classList.add('resize');
 
 
@@ -899,8 +900,7 @@ function SignOut(){
      openTab2();
 
      //Do some tweaks to the calendar to stop data editing
-     document.getElementsByClassName('addAll')[0].remove();
-     document.getElementsByClassName('rmvStu')[0].style.display='none';
+     document.getElementsByClassName('sidebar')[0].remove();
      document.getElementsByClassName("leftArrow1")[0].style.display='none';
      document.getElementsByClassName("rightArrow1")[0].style.display='none';
      //Of elements with inputs,

@@ -353,14 +353,12 @@ async function loadAllCalendar(month,year){
             //CREATES HOURS AND MINS INPUT BOXES
             var d1=document.createElement('div');
             d1.innerHTML='Time:';
-            d1.classList.add('hasInputs');
 
 
             var i1=document.createElement('input');
             i1.type='number';
             i1.min='0';
             i1.placeholder='0';
-            i1.classList.add('hasInputs');
             i1.classList.add('resize');
 
 
@@ -906,8 +904,12 @@ function SignOut(){
      document.getElementsByClassName("rightArrow1")[0].style.display='none';
      //Of elements with inputs,
      Array.from(document.getElementsByClassName('hasInputs')).forEach(element=>{
-         element.lastElementChild.remove();
-
+         var ele=element.lastChild;
+         //Remove specific inputs from all
+         ele.lastChild.remove();
+         ele.childNodes.forEach(child=>{
+             child.lastChild.remove()
+         })
      })
  }
 

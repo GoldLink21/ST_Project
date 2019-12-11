@@ -353,6 +353,7 @@ async function loadAllCalendar(month,year){
             //CREATES HOURS AND MINS INPUT BOXES
             var d1=document.createElement('div');
             d1.innerHTML='Time:';
+            d1.classList.add('hasInputs');
 
 
             var i1=document.createElement('input');

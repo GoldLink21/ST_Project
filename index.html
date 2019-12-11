@@ -127,9 +127,9 @@
 
     <div class="calender"><table class="calendared" id="calendered">
         <tr>
-            <th class="navButLeft"><button class="arrows leftArrow1" onclick="calendarStudent=getPrevStudentOnCalendar();loadAllCalendar()">&larr;</button></th>
+            <th class="navButLeft"><button class="arrows leftArrow1" onclick="calendarStudent=getPrevStudentOnCalendar();loadAllCalendar(calendarDate.getMonth(), calendarDate.getFullYear())">&larr;</button></th>
             <th class="headingRow" colspan='5'><div class="NameOnCal" >Student Name</div></th>
-            <th class="navButRight "><button class="arrows rightArrow1" onclick="calendarStudent=getNextStudentOnCalendar();loadAllCalendar()">&rarr;</button></th>
+            <th class="navButRight "><button class="arrows rightArrow1" onclick="calendarStudent=getNextStudentOnCalendar();loadAllCalendar(calendarDate.getMonth(), calendarDate.getFullYear())">&rarr;</button></th>
         </tr>
         <tr>
             <th class="navButLeft navButMonth"><button class="arrows leftArrow2" onclick="loadPrevMonth()">&larr;</button></th>

@@ -412,6 +412,7 @@ h2 {
 }
 
 .sideBarButton{
+    font-size:1.2em;
     padding: 10px;
     text-align: center;
     background-color: #bca070;
@@ -419,8 +420,9 @@ h2 {
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
 }
 
-.sideBarButton{
-    font-size:1.2em;
+.stuDisplay{
+    font-size:1.3em;
+    color: #34635a;
 }
 
 .arrows:hover{

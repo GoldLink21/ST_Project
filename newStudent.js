@@ -136,8 +136,6 @@ function findStusWith({firstName,lastName,period,minMin,minMax,year}={}){
     
     if(!stu.startsWith("users/"))
         stu='users/'+stu;
-  
-    console.log(stu);
     //If you pass in stu and ref
     if(confirm("ARE YOU SURE YOU WANT TO DELETE THIS STUDENT?")){
         await ref.child(stu).remove((error)=>console.log(error))
@@ -305,14 +303,17 @@ async function loadAllCalendar(month,year){
 
     document.getElementById("month").innerHTML=months[first.getMonth()]+' '+first.getFullYear();
     var stu=ref.child(calendarStudent);
-    var fn,ln;
+    var fn,ln, min, extra;
 
     await stu.once('value',snap=>{
         var val=snap.val();
         fn=val['firstName'];
-        ln=val['lastName']
+        ln=val['lastName'];
+        min= val['min'];
+        extra = val['extra'];
     });
-    document.getElementsByClassName("NameOnCal")[0].innerHTML=fn+' '+ln;
+    var stuTime = Time.toHours(min + extra);
+    document.getElementsByClassName("NameOnCal")[0].innerHTML=fn+' '+ln + "<div class='hidden onlyStudent'>Total Time: " + stuTime.hour + " hours and " + stuTime.min + " minutes. <br>Extra Time: " + Time.toHours(extra).hour + " hours and " + Time.toHours(extra).min + " minutes. </div>";
 
     var allEle=Array.from(document.getElementsByClassName('allDays'));
 
@@ -353,6 +354,7 @@ async function loadAllCalendar(month,year){
             //CREATES HOURS AND MINS INPUT BOXES
             var d1=document.createElement('div');
             d1.innerHTML='Time:';
+            d1.classList.add("noStudent");
 
 
             var i1=document.createElement('input');
@@ -360,6 +362,7 @@ async function loadAllCalendar(month,year){
             i1.min='0';
             i1.placeholder='0';
             i1.classList.add('resize');
+            i1.classList.add('noStudent');
 
 
             var d2=document.createElement('div');
@@ -367,7 +370,6 @@ async function loadAllCalendar(month,year){
             var curHourAndMin=undefined;
             if(prevTime&&prevTime.min){
                 curHourAndMin=Time.toHours(Number(prevTime.min)+Number(prevTime.extra));
-                //console.log(curHourAndMin)
                 d2.innerHTML+=`<span >${curHourAndMin.hour}</span>.`
             }
             if(curHourAndMin!==undefined){
@@ -377,6 +379,7 @@ async function loadAllCalendar(month,year){
                 }
                 d2.innerHTML+="<span >" + minutes + "</span>";
             }
+            d2.classList.add('studentOutput');
 
             //CREATE EXTRA TIME CHECKBOX
             var d3=document.createElement('div');
@@ -408,7 +411,7 @@ async function loadAllCalendar(month,year){
 
                     var dateToAdd=date(thisDate,Time.toMin(hr,min),0);
 
-                    loadAllCalendar(calendarDate.getMonth(), calendarDate.getFullYear());
+                    await loadAllCalendar(calendarDate.getMonth(), calendarDate.getFullYear());
                     setDateWithRef(calendarStudent,dateToAdd);
                 })
             }
@@ -887,7 +890,6 @@ function SignOut(){
  }
 
  async function loadStudentCalendar(stuRef,month,year){
-     console.log(stuRef);
      isStudentCalendar=true;
      if(!stuRef.startsWith('users/')){
          stuRef='users/'+stuRef;
@@ -903,15 +905,17 @@ function SignOut(){
      document.getElementsByClassName("leftArrow1")[0].style.display='none';
      document.getElementsByClassName("rightArrow1")[0].style.display='none';
      //Of elements with inputs,
-     Array.from(document.getElementsByClassName('hasInputs')).forEach(element=>{
-         var ele=element.lastChild;
-         console.log(ele);
-         //Remove specific inputs from all
-         //ele.lastChild.remove();
-         ele.childNodes.forEach(child=>{
-             //child.lastChild.remove()
-         })
-     })
+     Array.from(document.getElementsByClassName('noStudent ')).forEach(element=>{
+         element.classList.add('hidden');
+     });
+     Array.from(document.getElementsByClassName('studentOutput')).forEach(element=>{
+         element.classList.add('stuDisplay');
+     });
+
+     Array.from(document.getElementsByClassName('onlyStudent')).forEach(element=>{
+         element.classList.remove('hidden');
+     });
+
  }
 
  /**Shortcut for loading by name utilizing other functions */

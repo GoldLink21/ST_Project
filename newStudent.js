@@ -817,10 +817,11 @@ async function removeYear2(){
             snap.forEach(val=>{
                 var key='users/'+val.key;
                 var stu=val.val();
-                if(stu.year===2){
-                    removeByRef(key)
+                if(stu.year==="2"){
+                    ref.child(key).remove()
                 }else{
-                    ref.child(key).child('year').set(2)
+                    ref.child(key).child('year').set("2")
+                    ref.child(key).child('period').set("2")
                 }
             })
         });

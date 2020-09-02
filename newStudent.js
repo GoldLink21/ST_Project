@@ -1,70 +1,70 @@
- /*
- For future classes in case they need to fix or update anything, read this
+/*
+For future classes in case they need to fix or update anything, read this
 
- The Firebase database uses objects to reference parts of the database
- As such, to set any data you need to create this object. I simply do
+The Firebase database uses objects to reference parts of the database
+As such, to set any data you need to create this object. I simply do
 
- var o={}
- o[uniqueUserId+'part/Im/Trying/To/Access']=value
- ref.update(o)
+var o={}
+o[uniqueUserId+'part/Im/Trying/To/Access']=value
+ref.update(o)
 
- Where the part I'm trying to acces would be either the student calendar, their first and last name,
- the period range they are in, or thir year.
+Where the part I'm trying to acces would be either the student calendar, their first and last name,
+the period range they are in, or thir year.
 
- Anytime you want to access the data in the database, you have to do a screenshot of what it has now
+Anytime you want to access the data in the database, you have to do a screenshot of what it has now
 
- //This lets you see the data once
- userRef.once('value',snapshot=>{
-     //First get the values from the snapshot
-     var val=snapshot.val()
-     //val is an object that has all the values of the database in it. I tend to reference them with 
-     // the other syntax of val['partToReference']
+//This lets you see the data once
+userRef.once('value',snapshot=>{
+    //First get the values from the snapshot
+    var val=snapshot.val()
+    //val is an object that has all the values of the database in it. I tend to reference them with
+    // the other syntax of val['partToReference']
 
-     for(var reference in val){
-        //reference is the unique reference for each student
-        val[reference]//This is the students data
-     }
+    for(var reference in val){
+       //reference is the unique reference for each student
+       val[reference]//This is the students data
+    }
 
- })
- 
- The students array holds a local instance of all the students on the database and updates whenever 
- the database changes. The difference between using the database and the array is that the values
- of the array hold the student's data, and their unique reference to the database
+})
 
- //This is the format of all objects in the students array
- students[0] === { stu:ThisWouldBeTheStudent, ref:'This is the students reference as a string'}
- 
- students[0].stu === { 
-     firstName:"Something", 
-     lastName:"Something", 
-     min:"20",
-     hasUpdatedTime:true||false,
-     period:"1",
-     year:"2",
-     calendar:[
-         0:{date:DateObject,min:"10"},
-         1:{date:DateObject,min:"10"}
-     ]
-  }
- 
- You may want to research destructuring parameters as well as I use that in some parts of the code
+The students array holds a local instance of all the students on the database and updates whenever
+the database changes. The difference between using the database and the array is that the values
+of the array hold the student's data, and their unique reference to the database
 
- //This is the general layout for destructuring
- function findStusWith({firstName,lastName,min,period}={}){ //You set the object param to an empty
-                                                           // object in case you forget to pass in anything
-     //The {} in the parameters means you would pass in an object with those properties
+//This is the format of all objects in the students array
+students[0] === { stu:ThisWouldBeTheStudent, ref:'This is the students reference as a string'}
+
+students[0].stu === {
+    firstName:"Something",
+    lastName:"Something",
+    min:"20",
+    hasUpdatedTime:true||false,
+    period:"1",
+    year:"2",
+    calendar:[
+        0:{date:DateObject,min:"10"},
+        1:{date:DateObject,min:"10"}
+    ]
  }
- //You would call this as such
- findStuWith({firstName:'Bob',lastName:'Smith'})
- //You can leave out some parameters then and include specific ones. I could skip first and last name too
- findStusWith({min:10})
+
+You may want to research destructuring parameters as well as I use that in some parts of the code
+
+//This is the general layout for destructuring
+function findStusWith({firstName,lastName,min,period}={}){ //You set the object param to an empty
+                                                          // object in case you forget to pass in anything
+    //The {} in the parameters means you would pass in an object with those properties
+}
+//You would call this as such
+findStuWith({firstName:'Bob',lastName:'Smith'})
+//You can leave out some parameters then and include specific ones. I could skip first and last name too
+findStusWith({min:10})
 
 
- ADD VARIABLES FOR CALENDARDATE and CURRENT DATE
- */
+ADD VARIABLES FOR CALENDARDATE and CURRENT DATE
+*/
 
 const USERS={
-   'admin':'admin'
+    'admin':'admin'
 };
 
 const Time={
@@ -93,15 +93,6 @@ var students=[];
 function strEqual(s1,s2,isCaseSensitive=false){
     return (isCaseSensitive)?s1===s2:s1.toLowerCase()===s2.toLowerCase()
 }
-var cal;
-
-/**Used to setup the calendar on the date inputs */
-function calOnLoad(){
-    cal=new dhtmlXCalendarObject('date');
-    cal.hideTime();
-    cal.setDateFormat('%l %M %j %Y');
-    cal.setPosition('right')
-}
 
 /**Takes a date string and uses it to make an object with minutes */
 function date(dateString,min,extra=0) {
@@ -115,25 +106,25 @@ function date(dateString,min,extra=0) {
 function findStusWith({firstName,lastName,period,minMin,minMax,year}={}){
     return students.filter(stuAndRef=>{
         var stu=stuAndRef.stu;
-        
+
         var fn=firstName===undefined||stu.firstName.includes(firstName),
             ln=lastName===undefined||stu.lastName.includes(lastName),
             sMin=parseInt(stu.min),
             minLess=minMin===undefined||sMin>=minMin,
             minMore=minMax===undefined||sMin<=minMax,
             years=year===undefined||parseInt(stu.year)==parseInt(year);
-            periods=period===undefined||parseInt(stu.period)==parseInt(period);
+        periods=period===undefined||parseInt(stu.period)==parseInt(period);
 
         return fn&&ln&&minLess&&minMore&&years&&periods
     })
 }
 
- async function removeByRef(stu){
+async function removeByRef(stu){
 
     if(stu.endsWith('/')){
         stu=stu.substr(0,stu.length-1)
     }
-    
+
     if(!stu.startsWith("users/"))
         stu='users/'+stu;
     //If you pass in stu and ref
@@ -155,7 +146,7 @@ var correction=false;
 
 var addingId=1;
 function addToTable(stu){
-    
+
     var row=document.createElement('tr');
 
     function addToRow(s){
@@ -164,7 +155,7 @@ function addToTable(stu){
         row.appendChild(ele);
         return ele;
     }
-    
+
     function addToRowInput(){
         var td = document.createElement('td');
         td.classList.add('all');
@@ -244,44 +235,44 @@ function addToTable(stu){
     table.appendChild(row)
 }
 
- function remove(){
-     removeByRef(calendarStudent);
- }
+function remove(){
+    removeByRef(calendarStudent);
+}
 
- function addAll(){
-     let index=1;
-     //Grab all the ones with inputs
-     Array.from(document.getElementsByClassName('hasInputs'))
-     //And filter down to the inputs only
-         .map(e=>Array.from(e.children[2].querySelectorAll('input')))
-         .forEach(e=>{
-             var dateNum=Number(e[0].parentElement.parentElement.parentElement.firstElementChild.innerText),
-                 hr,
-                 min;
-             var split = e[0].value.split('.');
-             if(split.length === 1){
-                 hr = Number(split[0]);
-                 min = 0;
-             }else{
-                 hr = Number(split[0]);
-                 if(split[1].length === 1){
-                     split[1] = split[1] + "0";
-                 }
-                 min = Number(split[1]);
-             }
+function addAll(){
+    let index=1;
+    //Grab all the ones with inputs
+    Array.from(document.getElementsByClassName('hasInputs'))
+        //And filter down to the inputs only
+        .map(e=>Array.from(e.children[2].querySelectorAll('input')))
+        .forEach(e=>{
+            var dateNum=Number(e[0].parentElement.parentElement.parentElement.firstElementChild.innerText),
+                hr,
+                min;
+            var split = e[0].value.split('.');
+            if(split.length === 1){
+                hr = Number(split[0]);
+                min = 0;
+            }else{
+                hr = Number(split[0]);
+                if(split[1].length === 1){
+                    split[1] = split[1] + "0";
+                }
+                min = Number(split[1]);
+            }
 
-             if(hr!==0||min!==0){
-                 var dateCopy = new Date(calendarDate);
-                 dateCopy.setDate(dateNum);
-                 var dateObj=date(dateCopy.toDateString(),Time.toMin(hr,min),0);
-                 setDateWithRef(calendarStudent,dateObj);
-                 e[0].value='0';
-             }
-             index++
-         });
+            if(hr!==0||min!==0){
+                var dateCopy = new Date(calendarDate);
+                dateCopy.setDate(dateNum);
+                var dateObj=date(dateCopy.toDateString(),Time.toMin(hr,min),0);
+                setDateWithRef(calendarStudent,dateObj);
+                e[0].value='0';
+            }
+            index++
+        });
 
-     loadAllCalendar(calendarDate.getMonth(), calendarDate.getFullYear());
- }
+    loadAllCalendar(calendarDate.getMonth(), calendarDate.getFullYear());
+}
 
 /**Loads in all dates on the calendar */
 async function loadAllCalendar(month,year){
@@ -289,16 +280,18 @@ async function loadAllCalendar(month,year){
         month=new Date().getMonth()
     }
     var months=["January","February","March","April","May","June","July","August","September","October","November","December"];
-    
+
     var first=new Date();
-    first.setMonth(month);
     first.setDate(1);
+    first.setMonth(month);
 
     if(year)
         first.setFullYear(year);
 
+    //Gets the day that the month starts on. E.g. Monday = I think 1
+    //This is so the calendar starts on the correct day
     var firstDayOfMonth=first.getDay();
-    
+
     calendarDate=new Date(first);
 
     document.getElementById("month").innerHTML=months[first.getMonth()]+' '+first.getFullYear();
@@ -321,7 +314,7 @@ async function loadAllCalendar(month,year){
         e.innerHTML='';
         e.classList.remove('hasInputs')
     });
-    var lastDayOfMonth=new Date();
+    var lastDayOfMonth=new Date(first);
     lastDayOfMonth.setMonth(month+1);
     lastDayOfMonth.setDate(0);
     for(let i=firstDayOfMonth;i<lastDayOfMonth.getDate()+firstDayOfMonth;i++){
@@ -334,7 +327,7 @@ async function loadAllCalendar(month,year){
             allEle[i].appendChild(span);
             allEle[i].appendChild(document.createElement('br'));
         }
-        
+
         if(allEle[i].classList.contains('Days')){
             allEle[i].classList.add("hasInputs");
             var prevTime=undefined;
@@ -500,8 +493,8 @@ function sortStus(){
 
     return y1.sort(byName).concat(y2.sort(byName));
 
-    function byName(a,b){   
-        
+    function byName(a,b){
+
         a=a.stu;
         b=b.stu;
 
@@ -516,7 +509,7 @@ function sortStus(){
             return -1;//+ret;
         else if(a.firstName>b.firstName)
             return 1;//+ret;
-        else 
+        else
             return 0//+ret
     }
 }
@@ -557,15 +550,15 @@ async function studentInit(){
 }
 
 /**Just a debugging function to confirm access to the database */
- /*function listStudentsInConsole(){
-     userRef.orderByChild('lastName').once('value',function(snapshot){
-         var val = snapshot.val();
-         for(part in val)
-             console.log(val[part])
-     },(errorObject)=>{
-         console.log('Read Failed: '+errorObject.code)
-     })
- }*/
+/*function listStudentsInConsole(){
+    userRef.orderByChild('lastName').once('value',function(snapshot){
+        var val = snapshot.val();
+        for(part in val)
+            console.log(val[part])
+    },(errorObject)=>{
+        console.log('Read Failed: '+errorObject.code)
+    })
+}*/
 
 /**
  * @description Adds a new student to the students array. Called from the HTML
@@ -643,8 +636,8 @@ function setDateWithRef(stu,dateAndMin){
 
     var calendar=newRef.child('calendar');
     calendar.child(dateAndMin.date).update({
-            min:dateAndMin.min,
-            extra:dateAndMin.extra
+        min:dateAndMin.min,
+        extra:dateAndMin.extra
     })
 
     newRef.child('hasUpdatedTime').set(true);
@@ -652,42 +645,42 @@ function setDateWithRef(stu,dateAndMin){
     tallySingleStu(stu)
 }
 
- function setExtraTime(){
-     var inputElement = document.getElementById("inputExtraTime");
-     var stuRef = ref.child(calendarStudent);
+function setExtraTime(){
+    var inputElement = document.getElementById("inputExtraTime");
+    var stuRef = ref.child(calendarStudent);
 
-     var minutesToSet;
-     if(inputElement.value === ""){
-         alert("Please input a value for the extra hours");
-         return;
-     }
-     if(inputElement.value.includes(".")){
-         let split = inputElement.value.split(".");
-         if(split[1].length === 1){
-             split[1] = split[1] + '0';
-         }
-         minutesToSet = Time.toMin(split[0],split[1]);
-     }else{
-         minutesToSet = Time.toMin(Number(inputElement.value));
-     }
-     stuRef.once('value',snap=>{
-         var val = snap.val();
-         stuRef.child("extra").set(Number(val.extra)+minutesToSet);
-     });
+    var minutesToSet;
+    if(inputElement.value === ""){
+        alert("Please input a value for the extra hours");
+        return;
+    }
+    if(inputElement.value.includes(".")){
+        let split = inputElement.value.split(".");
+        if(split[1].length === 1){
+            split[1] = split[1] + '0';
+        }
+        minutesToSet = Time.toMin(split[0],split[1]);
+    }else{
+        minutesToSet = Time.toMin(Number(inputElement.value));
+    }
+    stuRef.once('value',snap=>{
+        var val = snap.val();
+        stuRef.child("extra").set(Number(val.extra)+minutesToSet);
+    });
 
-     document.getElementById("extraMenu").classList.toggle('hidden');
-     document.getElementById("inputMenu").classList.add('hidden');
-     inputElement.value="";
+    document.getElementById("extraMenu").classList.toggle('hidden');
+    document.getElementById("inputMenu").classList.add('hidden');
+    inputElement.value="";
 
- }
+}
 
- function removeExtraTime(){
-     if(confirm("Are you sure you want to remove all of this student's extra time?")){
-         ref.child(calendarStudent).child("extra").set(0);
-     }
-     document.getElementById("extraMenu").classList.toggle('hidden');
-     document.getElementById("inputMenu").classList.add('hidden');
- }
+function removeExtraTime(){
+    if(confirm("Are you sure you want to remove all of this student's extra time?")){
+        ref.child(calendarStudent).child("extra").set(0);
+    }
+    document.getElementById("extraMenu").classList.toggle('hidden');
+    document.getElementById("inputMenu").classList.add('hidden');
+}
 
 function today(min,extra=0){
     return date(new Date().toDateString(),min,extra)
@@ -737,10 +730,10 @@ function extraMenu(){
     })
 }
 
- function addMenu(){
-     document.getElementById("inputMenu").classList.toggle('hidden');
-     document.getElementById("clearExtraTime").classList.toggle('hidden');
- }
+function addMenu(){
+    document.getElementById("inputMenu").classList.toggle('hidden');
+    document.getElementById("clearExtraTime").classList.toggle('hidden');
+}
 
 
 /**Opens and closes the new student window */
@@ -846,7 +839,7 @@ function SignIn(){
             openTab1();
             document.getElementById('logIn').style.display='none';
             studentInit();
-       }else{
+        }else{
             loadStudentCalendarByName(gUser.displayName.split(" ")[0], gUser.displayName.split(" ")[1], new Date().getMonth(), new Date().getFullYear());
         }
     }).catch(function(error) {
@@ -865,83 +858,83 @@ function SignOut(){
     });
 }
 
- //Tells if the loaded calendar is a students
- var isStudentCalendar = false;
+//Tells if the loaded calendar is a students
+var isStudentCalendar = false;
 
- /**Gets the database reference for a student by first and last name */
- async function getStuRefByName(first,last){
-     var toReturn=false;
-     //Go through the database once
-     userRef.once('value',snap=>{
-         //Iterates through all auto-generated references
-         snap.forEach(stuRef=>{
-             var stuToCheck=stuRef.val();
-             //Check for name equality
-             let dataFirst = stuToCheck.firstName.replace(" ", "").toLowerCase();
-             let dataLast = stuToCheck.lastName.replace(' ', "").toLowerCase();
-             first = first.toLowerCase();
-             last = last.toLowerCase();
-             if(dataFirst === first && dataLast ===last){
-                 toReturn=stuToCheck.ref
-             }
-         })
-     });
-     //Returns false if it found the student or the string of the database ref otherwise
-     return toReturn;
- }
+/**Gets the database reference for a student by first and last name */
+async function getStuRefByName(first,last){
+    var toReturn=false;
+    //Go through the database once
+    userRef.once('value',snap=>{
+        //Iterates through all auto-generated references
+        snap.forEach(stuRef=>{
+            var stuToCheck=stuRef.val();
+            //Check for name equality
+            let dataFirst = stuToCheck.firstName.replace(" ", "").toLowerCase();
+            let dataLast = stuToCheck.lastName.replace(' ', "").toLowerCase();
+            first = first.toLowerCase();
+            last = last.toLowerCase();
+            if(dataFirst === first && dataLast ===last){
+                toReturn=stuToCheck.ref
+            }
+        })
+    });
+    //Returns false if it found the student or the string of the database ref otherwise
+    return toReturn;
+}
 
- async function loadStudentCalendar(stuRef,month,year){
-     isStudentCalendar=true;
-     if(!stuRef.startsWith('users/')){
-         stuRef='users/'+stuRef;
-     }
-     calendarStudent=stuRef;
+async function loadStudentCalendar(stuRef,month,year){
+    isStudentCalendar=true;
+    if(!stuRef.startsWith('users/')){
+        stuRef='users/'+stuRef;
+    }
+    calendarStudent=stuRef;
 
-     openLoadTab();
-     await loadAllCalendar(month,year);
-     openTab2();
+    openLoadTab();
+    await loadAllCalendar(month,year);
+    openTab2();
 
-     //Do some tweaks to the calendar to stop data editing
-     document.getElementsByClassName('sideBar')[0].classList.add('hidden');
-     document.getElementsByClassName("leftArrow1")[0].style.display='none';
-     document.getElementsByClassName("rightArrow1")[0].style.display='none';
-     //Of elements with inputs,
-     Array.from(document.getElementsByClassName('noStudent ')).forEach(element=>{
-         element.classList.add('hidden');
-     });
-     Array.from(document.getElementsByClassName('studentOutput')).forEach(element=>{
-         element.classList.add('stuDisplay');
-     });
+    //Do some tweaks to the calendar to stop data editing
+    document.getElementsByClassName('sideBar')[0].classList.add('hidden');
+    document.getElementsByClassName("leftArrow1")[0].style.display='none';
+    document.getElementsByClassName("rightArrow1")[0].style.display='none';
+    //Of elements with inputs,
+    Array.from(document.getElementsByClassName('noStudent ')).forEach(element=>{
+        element.classList.add('hidden');
+    });
+    Array.from(document.getElementsByClassName('studentOutput')).forEach(element=>{
+        element.classList.add('stuDisplay');
+    });
 
-     Array.from(document.getElementsByClassName('onlyStudent')).forEach(element=>{
-         element.classList.remove('hidden');
-     });
+    Array.from(document.getElementsByClassName('onlyStudent')).forEach(element=>{
+        element.classList.remove('hidden');
+    });
 
- }
+}
 
- /**Shortcut for loading by name utilizing other functions */
- async function loadStudentCalendarByName(first,last,month,year){
-     var stuRef = await getStuRefByName(first,last);
-     let errEle=document.getElementById('loginError');
-     //Make sure that the student was found
-     if(stuRef){
-         errEle.innerHTML='';
-         document.getElementById('logIn').style.display='none';
-         loadStudentCalendar(stuRef,month,year);
-     }else{
-         //This means there is no students with that name. Change this to whatever
-         errEle.innerHTML='<div style="color:red">ACCESS NOT GRANTED</div>'
-     }
- }
+/**Shortcut for loading by name utilizing other functions */
+async function loadStudentCalendarByName(first,last,month,year){
+    var stuRef = await getStuRefByName(first,last);
+    let errEle=document.getElementById('loginError');
+    //Make sure that the student was found
+    if(stuRef){
+        errEle.innerHTML='';
+        document.getElementById('logIn').style.display='none';
+        loadStudentCalendar(stuRef,month,year);
+    }else{
+        //This means there is no students with that name. Change this to whatever
+        errEle.innerHTML='<div style="color:red">ACCESS NOT GRANTED</div>'
+    }
+}
 
- function goBack(){
-     if(isStudentCalendar){
-         SignOut()
-     }else{
-         openTab1();
-         document.getElementById("extraMenu").classList.add('hidden');
-         document.getElementById("inputMenu").classList.add('hidden');
-         correction = false;
-         updateAll()
-     }
- }
+function goBack(){
+    if(isStudentCalendar){
+        SignOut()
+    }else{
+        openTab1();
+        document.getElementById("extraMenu").classList.add('hidden');
+        document.getElementById("inputMenu").classList.add('hidden');
+        correction = false;
+        updateAll()
+    }
+}
